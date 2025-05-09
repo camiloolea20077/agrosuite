@@ -1,15 +1,21 @@
 package com.erp.backend_erp.util;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.sql.Array;
+import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.io.IOException;
+import java.util.Date;
+import springfox.documentation.spring.web.json.Json;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -76,6 +82,156 @@ public class MapperRepository {
         }
         return dto;
     }
+    public static <T> T mapResultSetToObject(Map<String, Object> resultMap, Class<T> clazz) {
+        T instance;
+        try {
+            instance = clazz.getDeclaredConstructor().newInstance();
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            for (Map.Entry<String, Object> entry : resultMap.entrySet()) {
+                String columnName = entry.getKey();
+                Object value = entry.getValue();
+
+                try {
+                    Field field = clazz.getDeclaredField(columnName);
+                    field.setAccessible(true);
+
+                    if (field.getType().equals(LocalDateTime.class)) {
+                        field.set(instance, convertToLocalDateTime(value));
+                    } else if (field.getType().equals(LocalDate.class)) {
+                        field.set(instance, convertToLocalDate(value));
+                    } else if (field.getType().equals(LocalTime.class)) {
+                        field.set(instance, convertToLocalTime(value));
+                    } else if (field.getType().equals(Integer.class)) {
+                        if(value != null){
+                            field.set(instance, ((Number) value).intValue());
+                        }else{
+                            field.set(instance, 0);
+                        }
+                    } else if (field.getType().equals(Long.class)) {
+                        if(value != null){
+                            field.set(instance, ((Number) value).longValue());
+                        }else{
+                            field.set(instance, 0L);
+                        }
+                    } else if (field.getType().equals(Short.class)) {
+                        if(value != null){
+                            field.set(instance, ((Number) value).shortValue());
+                        }else{
+                            field.set(instance, 0);
+                        }
+                    } else if (field.getType().equals(String.class)) {
+                        if(value != null){
+                            field.set(instance, value);
+                        }else{
+                            field.set(instance, "");
+                        }
+
+                    } else {
+                        // Handle other types as needed
+                    }
+                } catch (NoSuchFieldException e) {
+                    // Field not found in the class, ignore or handle accordingly
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to map result set to object", e);
+        }
+
+        return instance;
+    }
+
+        public static <T> T mapResultSetToObjectNull(Map<String, Object> resultMap, Class<T> clazz) {
+        T instance;
+        try {
+            instance = clazz.getDeclaredConstructor().newInstance();
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            for (Map.Entry<String, Object> entry : resultMap.entrySet()) {
+                String columnName = entry.getKey();
+                Object value = entry.getValue();
+                value = value == null ? "" : value;
+                try {
+                    Field field = clazz.getDeclaredField(columnName);
+                    field.setAccessible(true);
+                    if (value instanceof String && ((String) value).isEmpty()) {
+                        // Si el valor es una cadena vacía, establecer null en lugar de intentar asignar a campos numéricos
+                        if (field.getType().equals(LocalDateTime.class) || field.getType().equals(LocalDate.class) ||
+                                field.getType().equals(Date.class) || field.getType().equals(LocalTime.class) || field.getType().equals(Time.class)) {
+                            field.set(instance, null);
+                        }else if (field.getType().equals(Integer.class) || field.getType().equals(Long.class)
+                                || field.getType().equals(Short.class)  || field.getType().equals(BigDecimal.class)) {
+                            field.set(instance, null);
+                        }else if (field.getType().equals(String.class) ) {
+                            field.set(instance, null);
+                        }else if (field.getType().equals(Json.class) ) {
+                            field.set(instance, null);
+                        } else {
+                            field.set(instance, "");
+                        }
+                    } else {
+
+                        // Convertir el valor al tipo apropiado antes de asignarlo al campo
+                        if (field.getType().equals(Integer.class)) {
+                            field.set(instance, ((Number) value).intValue());
+                        } else if (field.getType().equals(Long.class)) {
+                            field.set(instance, ((Number) value).longValue());
+                        } else if (field.getType().equals(Short.class)) {
+                            field.set(instance, ((Number) value).shortValue());
+                        } else if (field.getType().equals(BigDecimal.class)) {
+
+                            if (value instanceof String) {
+                                field.set(instance, new BigDecimal((String) value));
+                            } else if (value instanceof Number) {
+                                field.set(instance, BigDecimal.valueOf(((Number) value).doubleValue()));
+                            }
+                        } else if (field.getType().equals(String.class)) {
+                            field.set(instance, value.toString());
+                        } else if (field.getType().equals(LocalDateTime.class)) {
+                            field.set(instance, convertToLocalDateTime(value));
+                        } else if (field.getType().equals(LocalDate.class)) {
+                            field.set(instance, convertToLocalDate(value));
+                        } else if (field.getType().equals(LocalTime.class)) {
+                            field.set(instance, convertToLocalTime(value));
+                        } else if (field.getType().equals(Json.class)) {
+                            field.set(instance, value.toString() );
+                        } else {
+                            field.set(instance, null );
+                        }
+                    }
+                } catch (NoSuchFieldException e) {
+                    // Field not found in the class, ignore or handle accordingly
+                }
+            }
+        } catch (Exception e) {e.printStackTrace();
+            throw new RuntimeException("Failed to map result set to object", e);
+        }
+
+        return instance;
+    }
+    private static LocalTime convertToLocalTime(Object value) {
+        if (value instanceof Time) {
+            return ((Time) value).toLocalTime();
+        } else if (value instanceof LocalTime) {
+            return (LocalTime) value;
+        }
+        return null; // O manejar el caso cuando no es convertible a LocalTime
+    }
+
+    private static LocalDate convertToLocalDate(Object value) {
+        if (value instanceof java.sql.Date) {
+            return ((java.sql.Date) value).toLocalDate();
+        } else if (value instanceof LocalDate) {
+            return (LocalDate) value;
+        }
+        return null; // O manejar el caso cuando no es convertible a LocalDate
+    }
+    private static LocalDateTime convertToLocalDateTime(Object value) {
+        if (value instanceof Timestamp) {
+            return ((Timestamp) value).toLocalDateTime();
+        }
+        return null;
+    }
 
     /**
      * Método que convierte una lista de Map<String, Object> en una lista de
@@ -86,10 +242,17 @@ public class MapperRepository {
      * @param dtoClass Class<T>
      * @return List<T>
      */
-    public <T> List<T> mapListToDtoList(List<Map<String, Object>> mapList, Class<T> dtoClass) {
+    public static <T> List<T> mapListToDtoList(List<Map<String, Object>> mapList, Class<T> dtoClass) {
         List<T> dtoList = new ArrayList<>();
         for (Map<String, Object> map : mapList) {
-            dtoList.add(mapToDto(map, dtoClass));
+            dtoList.add(mapResultSetToObject(map, dtoClass));
+        }
+        return dtoList;
+    }
+    public static <T> List<T> mapListToDtoListNull(List<Map<String, Object>> mapList, Class<T> dtoClass) {
+        List<T> dtoList = new ArrayList<>();
+        for (Map<String, Object> map : mapList) {
+            dtoList.add(mapResultSetToObjectNull(map, dtoClass));
         }
         return dtoList;
     }
