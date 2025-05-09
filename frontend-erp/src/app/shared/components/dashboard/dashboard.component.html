@@ -1,0 +1,16 @@
+<app-navbar></app-navbar>
+<app-sidebar></app-sidebar>
+<div class="dashboard">
+    <h2>Bienvenido al Panel Principal</h2>
+  
+    <div class="dashboard-cards">
+      <div class="card" *ngFor="let card of cards">
+        <i class="{{ card.icon }}"></i>
+        <div class="card-details">
+          <h3>{{ card.title }}</h3>
+          <p>{{ card.value }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
