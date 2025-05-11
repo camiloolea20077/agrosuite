@@ -29,9 +29,9 @@ import { SidebarComponent } from "../../shared/components/sidebar/sidebar.compon
     styleUrls: ['./clients.component.scss'],
     providers: [MessageService],
     imports: [FormsModule,
-    RouterModule,
-    InputTextModule,
-    ButtonModule, ReactiveFormsModule, TableModule, CommonModule, NavbarComponent, SidebarComponent],
+        RouterModule,
+        InputTextModule,
+        ButtonModule, ReactiveFormsModule, TableModule, CommonModule],
 })
 export class ClientsComponent {
     @Input() clientData: ClientDto | null = null;

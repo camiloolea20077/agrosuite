@@ -7,6 +7,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { SidebarComponent } from "./shared/components/sidebar/sidebar.component";
 import { NavbarComponent } from "./shared/components/navbar/navbar.component";
 import { RouterModule } from '@angular/router';
+import { LayoutComponent } from "./shared/components/layout/layout.component";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -14,10 +16,12 @@ import { RouterModule } from '@angular/router';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
     SidebarComponent,
-    NavbarComponent
+    NavbarComponent,
+    LayoutComponent
 ],
   providers: [],
   bootstrap: [AppComponent]

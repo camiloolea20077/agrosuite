@@ -8,15 +8,16 @@ const routes: Routes = [
       import('./shared/components/layout/layout.component').then(
         (c) => c.LayoutComponent
       ),
-      children: [
-        {
-          path: 'modules/',
-          loadComponent: () =>
-            import('./modules/modules.routing.module').then(
-              (c) => c.ModulesRoutingModule
-            ),
-        },
-      ],
+    children: [
+      {
+        path: 'clients',
+        loadComponent: () =>
+          import('./modules/clients/clients.component').then(
+            (m) => m.ClientsComponent
+          ),
+      }
+
+    ],
   },
   {
     path: 'login',
@@ -25,17 +26,10 @@ const routes: Routes = [
         (c) => c.LoginComponent
       ),
   },
-  // {
-  //   path: 'clients',
-  //   loadComponent: () =>
-  //     import('./modules/clients/clients.component').then(
-  //       (c) => c.ClientsComponent
-  //     ),
-  // }
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

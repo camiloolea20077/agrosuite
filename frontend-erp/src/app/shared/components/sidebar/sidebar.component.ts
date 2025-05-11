@@ -18,7 +18,7 @@ interface MenuItem {
 export class SidebarComponent {
     items: MenuItem[] = [
         { label: 'Dashboard', icon: 'pi pi-home', route: '/dashboard' },
-        { label: 'Clientes', icon: 'pi pi-users', route: '/modules/clients' },
+        { label: 'Clientes', icon: 'pi pi-users', route: '/clients' },
         { label: 'Productos', icon: 'pi pi-box', route: '/productos' },
         { label: 'Ventas', icon: 'pi pi-shopping-cart', route: '/ventas' },
         { label: 'Compras', icon: 'pi pi-briefcase', route: '/compras' },
