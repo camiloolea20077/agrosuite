@@ -1,0 +1,59 @@
+package com.erp.backend_erp.services.implementations;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.erp.backend_erp.dto.users.CreateUserDto;
+import com.erp.backend_erp.dto.users.UserDto;
+import com.erp.backend_erp.entity.UserEntity;
+import com.erp.backend_erp.mappers.users.UserMappers;
+import com.erp.backend_erp.repositories.users.UserJPARepository;
+import com.erp.backend_erp.repositories.users.UserQueryRepository;
+import com.erp.backend_erp.services.UserService;
+import com.erp.backend_erp.util.GlobalException;
+
+@Service
+public class UserServiceImpl implements UserService {
+
+    private final UserQueryRepository userQueryRepository;
+    private final UserJPARepository userJPARepository;
+    private final UserMappers userMappers;
+    private final PasswordEncoder passwordEncoder;
+
+    public UserServiceImpl(UserQueryRepository userQueryRepository, UserJPARepository userJPARepository,
+            UserMappers userMappers, PasswordEncoder passwordEncoder) {
+        this.userQueryRepository = userQueryRepository;
+        this.userJPARepository = userJPARepository;
+        this.userMappers = userMappers;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Override
+    public UserDto create(CreateUserDto createUserDto) {
+        Boolean exists = userQueryRepository.existsByEmail(createUserDto.getEmail().toLowerCase());
+        if (exists)
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "El correo ya se encuentra registrado");
+
+        try {
+            String encodedPassword = passwordEncoder.encode(createUserDto.getPassword());
+            createUserDto.setPassword(encodedPassword);
+            System.out.println("Creando usuario: " + createUserDto.getName());
+            System.out.println("Con email: " + createUserDto.getEmail());
+            System.out.println("Con contraseña: " + createUserDto.getPassword());
+            System.out.println("Con username: " + createUserDto.getUsername());
+            System.out.println("Con estado activo: " + createUserDto.getActive());
+            System.out.println("Creando usuario con rol: " + createUserDto.getRole_id());
+            UserEntity userEntity = userMappers
+                    .createToEntity(createUserDto);
+            UserEntity saveUserEntity = userJPARepository
+                    .save(userEntity);
+
+            return userMappers.toDto(saveUserEntity);
+        } catch (Exception e) {
+            System.err.println("Error al crear el usuario: " + e.toString());
+            e.printStackTrace();
+            throw new RuntimeException("Error al crear el usuario: " + e.getMessage(), e);
+        }
+    }
+}
