@@ -163,9 +163,6 @@ public AuthDto register(RegisterRequestDto dto) {
 
         CreateUserDto userDto = registerMapper.toCreateUserDto(dto);
         UserEntity userEntity = userMappers.createToEntity(userDto);
-        
-        userEntity.setRole(role);
-        userEntity.setFarm(farm);
         userEntity.setUsername(dto.getAdmin_email());
         userEntity.setEmail(dto.getAdmin_email());
         userEntity.setPassword(passwordEncoder.encode(dto.getPassword()));
