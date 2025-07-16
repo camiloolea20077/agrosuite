@@ -1,0 +1,92 @@
+<p-toast position="top-right"></p-toast>
+<div class="card">
+    <div class="grid flex flex-wrap align-items-center">
+        <div class="col-12 lg:col-6 md:col-6">
+            <h1 class="m-0">Listado Empleados</h1>
+        </div>
+        <div class="col-12 col-12 lg:col-2 lg:col-offset-2 md:col-3">
+        </div>
+        <div class="col-12 col-12 lg:col-2 md:col-3">
+            <button pButton class="p-button-rounded w-full p-button-success p-button-outlined w-full" type="button"
+                icon="pi pi-plus-circle" label="Nuevo" routerLink="create"></button>
+        </div>
+    </div>
+    <div class="col-12">
+        <p-table #dt [value]="employees" [lazy]="true" responsiveLayout="scroll" dataKey="id" [loading]="loadingTable"
+            [rows]="rowSize" [totalRecords]="totalRecords" [paginator]="true" (onLazyLoad)="loadTable($event)"
+            [rowsPerPageOptions]="[10, 25, 50]" [showCurrentPageReport]="true"
+            currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} entradas"
+            [class]="'small-font-table'">
+            <ng-template pTemplate="caption">
+                <div class="flex flex-row flex-wrap card-container blue-container">
+                    <div class="flex col-12 sm:col-6 sm:max-w-20rem ml-auto p-0 mt-2 sm:mt-0">
+                        <span class="p-input-icon-left w-full lg:w-7">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" class="w-full input-search-table"
+                                (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Buscar" />
+                        </span>
+                    </div>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <ng-container *ngFor="let col of cols">
+                        <th *ngIf="col.field != 'actions'" style="width: 10%" [class]="col.nameClass"
+                            [style]="col.minWidth" pSortableColumn="{{ col.field }}">
+                            <span [class]="col.nameClass"> {{ col.header }}</span>
+                            <p-sortIcon class="float-right" field="{{ col.field }}"></p-sortIcon>
+                        </th>
+                        <th *ngIf="col.field == 'actions'" style="width: 10%" [class]="col.nameClass">
+                            <span [class]="col.nameClass"> {{ col.header }}</span>
+                        </th>
+                    </ng-container>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item>
+                <tr>
+                    <td *ngFor="let col of cols" [class]="col.nameClass">
+                        <span *ngIf="col.type == 'icon'">
+                            <button *ngIf="item.activo == 1" pButton pTooltip="Activo" type="button"
+                                icon="pi true-icon pi-check-circle text-green-500"
+                                class="p-button-rounded p-button-text p-button-success"></button>
+                            <button *ngIf="item.activo == 2" pButton pTooltip="Inactivo" type="button"
+                                icon="pi false-icon pi-times-circle text-pink-500"
+                                class="p-button-rounded p-button-text p-button-danger"></button>
+                        </span>
+                        <span *ngIf="col.type == 'number'">
+                            {{ item[col.field] }}
+                        </span>
+                        <span *ngIf="col.type === 'string'">
+                            {{ item[col.field] | uppercase }}
+                        </span>
+                        <ng-container *ngIf="col.field == 'actions'">
+                            <div style="text-align: center; width: 100%">
+                                <button pButton type="button" icon="pi pi-pencil"
+                                    class="p-button-rounded p-button-outlined p-button-text"
+                                    [routerLink]="'edit/' + item.id"></button>
+                                <button pButton type="button" icon="pi pi-trash"
+                                    (click)="deleteEmployee(item.id)"
+                                    class="p-button-rounded p-button-text p-button-danger"
+                                    ></button>
+                            </div>
+                        </ng-container>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td [attr.colspan]="cols.length">
+                        <div class="pt-4 pb-4 text-center">No se encontraron registros.</div>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+<p-confirmDialog
+  [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+  [style]="{ width: '30vw' }"
+  [baseZIndex]="10000"
+  rejectButtonStyleClass="p-button-danger"
+>
+</p-confirmDialog>

@@ -1,0 +1,19 @@
+<p-toast position="top-right"></p-toast>
+<div class="sidebar">
+  <!-- <div class="sidebar-header">
+    <img src="../../../assets/capitolio.png" alt="Logo" class="logo" />
+    <span class="app-name">Capitolio</span>
+  </div> -->
+
+  <ul class="menu-list">
+    <li
+      *ngFor="let item of items"
+      routerLinkActive="active"
+      [routerLink]="item.route"
+      class="menu-item"
+    >
+      <i class="{{ item.icon }}"></i>
+      <span>{{ item.label }}</span>
+    </li>
+  </ul>
+</div>

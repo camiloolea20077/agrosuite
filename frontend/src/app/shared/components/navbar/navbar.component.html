@@ -1,0 +1,12 @@
+<nav class="navbar">
+    <div class="navbar-left">
+        <img src="../../../assets/barn_5341110.png" alt="Logo" class="logo" />
+        <span class="title">{{farmsNames}}</span>
+    </div>
+
+    <div class="navbar-right">
+        <span class="user-name">Hola, {{ userName}} - {{ roleName }}</span>
+        <button pButton type="button" icon="pi pi-sign-out" label="Cerrar sesión" class="p-button-text logout-button"
+            (click)="logout()"></button>
+    </div>
+</nav>

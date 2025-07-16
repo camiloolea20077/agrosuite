@@ -1,0 +1,98 @@
+<p-toast></p-toast>
+<div class="card">
+    <div class="grid flex flex-wrap align-items-center">
+        <div class="col-12 lg:col-10 md:col-9 sm:col-6">
+            <h1 class="m-0">{{ slug === 'edit' ? 'Editar Nacimiento' : 'Nuevo Nacimiento' }}</h1>
+        </div>
+    </div>
+    <hr />
+    <div class="grid formgrid p-fluid">
+        <form [formGroup]="frm" name="frm" id="frm" class="col-12 sm:col-12 md:col-12 lg:col-12" (ngSubmit)="buildsaveBirth()">
+            <div class="grid mt-1 p-2">
+                <div class="col-12 sm:col-12 md:col-12 lg:col-12 mt-2">
+                    <div class="grid lg:mt-4 sm:mt-1">
+                        <!-- Tipo de vaca (Dropdown) -->
+                        <div class="col-12 md:col-6 lg:col-6">
+                            <span class="p-float-label">
+                                <p-dropdown [options]="cattleFemales" optionLabel="numero_ganado" optionValue="id" formControlName="tipo_vaca"></p-dropdown>
+                                <label for="tipo_vaca">Numero de vaca</label>
+                            </span>
+                            <small class="p-error" *ngIf="frm.get('tipo_vaca')?.invalid && frm.get('tipo_vaca')?.touched">Campo obligatorio</small>
+                        </div>
+
+                        <!-- Nombre de toro (Dropdown) -->
+                        <div class="col-12 md:col-6 lg:col-6">
+                            <span class="p-float-label">
+                                <p-dropdown [options]="cattleMales" optionLabel="numero_ganado" optionValue="id" formControlName="nombre_toro"></p-dropdown>
+                                <label for="nombre_toro">Numero de toro</label>
+                            </span>
+                            <small class="p-error" *ngIf="frm.get('nombre_toro')?.invalid && frm.get('nombre_toro')?.touched">Campo obligatorio</small>
+                        </div>
+                    </div>
+                    <div class="grid lg:mt-4 sm:mt-1">
+                        <!-- Fecha de nacimiento -->
+                        <div class="col-12 md:col-6">
+                            <span class="p-float-label">
+                                <p-calendar id="fecha_nacimiento" formControlName="fecha_nacimiento" dateFormat="yy-mm-dd"></p-calendar>
+                                <label for="fecha_nacimiento">Fecha de nacimiento</label>
+                            </span>
+                            <small class="p-error" *ngIf="frm.get('fecha_nacimiento')?.invalid && frm.get('fecha_nacimiento')?.touched">Campo obligatorio</small>
+                        </div>
+
+                        <!-- Número de cría -->
+                        <div class="col-12 md:col-6">
+                            <span class="p-float-label">
+                                <input pInputText id="numero_cria" formControlName="numero_cria" />
+                                <label for="numero_cria">Número de cría</label>
+                            </span>
+                            <small class="p-error" *ngIf="frm.get('numero_cria')?.invalid && frm.get('numero_cria')?.touched">Campo obligatorio</small>
+                        </div>
+                    </div>
+
+                    <div class="grid lg:mt-4 sm:mt-1">
+                        <!-- Sexo -->
+                        <div class="col-12 md:col-6 lg:col-6">
+                            <span class="p-float-label">
+                                <p-dropdown [options]="sexOptions" optionLabel="name" optionValue="value" formControlName="sexo"></p-dropdown>
+                                <label for="sexo">Sexo</label>
+                            </span>
+                            <small class="p-error" *ngIf="frm.get('sexo')?.invalid && frm.get('sexo')?.touched">Campo obligatorio</small>
+                        </div>
+
+                        <!-- Color de cría -->
+                        <div class="col-12 md:col-6">
+                            <span class="p-float-label">
+                                <input pInputText id="color_cria" formControlName="color_cria" />
+                                <label for="color_cria">Color de cría</label>
+                            </span>
+                            <small class="p-error" *ngIf="frm.get('color_cria')?.invalid && frm.get('color_cria')?.touched">Campo obligatorio</small>
+                        </div>
+                    </div>
+
+                    <div class="grid lg:mt-4 sm:mt-1">
+                        <!-- Observaciones -->
+                        <div class="col-12">
+                            <span class="p-float-label">
+                                <textarea pInputTextarea rows="3" id="observaciones" formControlName="observaciones"></textarea>
+                                <label for="observaciones">Observaciones</label>
+                            </span>
+                            <small class="p-error" *ngIf="frm.get('observaciones')?.invalid && frm.get('observaciones')?.touched">Campo obligatorio</small>
+                        </div>
+                    </div>
+                </div>
+                <!-- Botones -->
+                <div class="grid col-12 p-0 mt-3 justify-end">
+                    <div class="col-12 md:col-3">
+                        <button pButton type="submit" label="Guardar" icon="pi pi-save" class="p-button-success w-full p-button-rounded"></button>
+                    </div>
+                    <div class="col-12 md:col-3">
+                        <button pButton type="button" label="Limpiar" icon="pi pi-trash" class="p-button-warning w-full p-button-rounded" (click)="resetForm()"></button>
+                    </div>
+                    <div class="col-12 md:col-3">
+                        <button pButton type="button" label="Volver" icon="pi pi-arrow-left" class="p-button-secondary w-full p-button-rounded" routerLink="/births"></button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

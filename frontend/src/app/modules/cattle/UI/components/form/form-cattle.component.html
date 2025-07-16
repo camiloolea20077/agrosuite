@@ -1,0 +1,147 @@
+<p-toast></p-toast>
+<div class="card">
+  <div class="grid flex flex-wrap align-items-center">
+    <div class="col-12 lg:col-10 md:col-9 sm:col-6">
+      <h1 class="m-0">{{ slug === 'edit' ? 'Editar Ganado' : 'Nuevo Ganado' }}</h1>
+    </div>
+  </div>
+  <hr />
+  <div class="grid formgrid p-fluid">
+    <form [formGroup]="frmGanado"  name="frmGanado" id="frmGanado" class="col-12 sm:col-12 md:col-12 lg:col-12" (ngSubmit)="buildsaveCattle()">
+      <div class="grid mt-1 p-2">
+        <div class="col-12 sm:col-12 md:col-12 lg:col-12 mt-2">
+          <div class="grid mt-2">
+            <div class="grid">
+              <!-- Activo -->
+              <div class="col-12 mt-3">
+                <div class="field-checkbox">
+                  <p-inputSwitch formControlName="activo"></p-inputSwitch>
+                  <label class="ml-2">Activo</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid lg:mt-4 sm:mt-1">
+            <!-- Tipo de ganado -->
+            <div class="col-12 md:col-6 lg:col-6">
+              <span class="p-float-label">
+                <input pInputText id="tipo_ganado" formControlName="tipo_ganado" />
+                <label for="tipo_ganado">Tipo de ganado</label>
+              </span>
+              <small class="p-error" *ngIf="frmGanado.get('tipo_ganado')?.invalid && frmGanado.get('tipo_ganado')?.touched">
+                Campo obligatorio
+              </small>
+            </div>
+
+            <!-- Número de ganado -->
+            <div class="col-12 md:col-6 lg:col-6">
+              <span class="p-float-label">
+                <input pInputText id="numero_ganado" formControlName="numero_ganado" />
+                <label for="numero_ganado">Número de ganado</label>
+              </span>
+              <small class="p-error" *ngIf="frmGanado.get('numero_ganado')?.invalid && frmGanado.get('numero_ganado')?.touched">
+                Campo obligatorio
+              </small>
+            </div>
+          </div>
+          <div class="grid lg:mt-4 sm:mt-1">
+            <!-- Sexo -->
+            <div class="col-12 md:col-6 lg:col-6">
+              <span class="p-float-label">
+                <p-dropdown [options]="sexOptions" optionLabel="name" optionValue="value"
+                  formControlName="sexo"></p-dropdown>
+                <label for="sexo">Sexo</label>
+              </span>
+              <small class="p-error" *ngIf="frmGanado.get('sexo')?.invalid && frmGanado.get('sexo')?.touched">
+                Campo obligatorio
+              </small>
+            </div>
+
+            <!-- Color -->
+            <div class="col-12 md:col-6">
+              <span class="p-float-label">
+                <input pInputText id="color" formControlName="color" />
+                <label for="color">Color</label>
+              </span>
+              <small class="p-error" *ngIf="frmGanado.get('color')?.invalid && frmGanado.get('color')?.touched">
+                Campo obligatorio
+              </small>
+            </div>
+          </div>
+
+          <div class="grid lg:mt-4 sm:mt-1">
+            <!-- Peso -->
+            <div class="col-12 md:col-6">
+              <span class="p-float-label">
+                <input pInputText id="peso" formControlName="peso" />
+                <label for="peso">Peso (kg)</label>
+              </span>
+              <small class="p-error" *ngIf="frmGanado.get('peso')?.invalid && frmGanado.get('peso')?.touched">
+                Campo obligatorio
+              </small>
+            </div>
+
+            <!-- Fecha de nacimiento -->
+            <div class="col-12 md:col-6">
+              <span class="p-float-label">
+                <p-calendar id="fecha_nacimiento" formControlName="fecha_nacimiento" dateFormat="yy-mm-dd"></p-calendar>
+                <label for="fecha_nacimiento">Fecha de nacimiento</label>
+              </span>
+              <small class="p-error" *ngIf="frmGanado.get('fecha_nacimiento')?.invalid && frmGanado.get('fecha_nacimiento')?.touched">
+                Campo obligatorio
+              </small>
+            </div>
+          </div>
+
+          <div class="grid lg:mt-4 sm:mt-1">
+            <!-- Lote ganado -->
+            <div class="col-12 md:col-6">
+              <span class="p-float-label">
+                <input pInputText id="lote_ganado" formControlName="lote_ganado" />
+                <label for="lote_ganado">Lote</label>
+              </span>
+              <small class="p-error" *ngIf="frmGanado.get('lote_ganado')?.invalid && frmGanado.get('lote_ganado')?.touched">
+                Campo obligatorio
+              </small>
+            </div>
+          </div>
+          <div class="grid lg:mt-4 sm:mt-1">
+            <!-- Observaciones -->
+            <div class="col-12">
+              <span class="p-float-label">
+                <textarea pInputTextarea rows="3" id="observaciones" formControlName="observaciones"></textarea>
+                <label for="observaciones">Observaciones</label>
+              </span>
+              <small class="p-error" *ngIf="frmGanado.get('observaciones')?.invalid && frmGanado.get('observaciones')?.touched">
+                Campo obligatorio
+              </small>
+            </div>
+          </div>
+        </div>
+        <!-- Botones -->
+        <div class="grid col-12 p-0 mt-3 justify-end">
+          <div class="col-12 md:col-3">
+            <button pButton type="submit" label="Guardar" icon="pi pi-save"
+              class="p-button-success w-full p-button-rounded"></button>
+          </div>
+          <div class="col-12 md:col-3">
+            <button pButton type="button" label="Limpiar" icon="pi pi-trash"
+              class="p-button-warning w-full p-button-rounded" (click)="resetForm()"></button>
+          </div>
+          <div class="col-12 md:col-3">
+            <button pButton type="button" label="Volver" icon="pi pi-arrow-left"
+              class="p-button-secondary w-full p-button-rounded" routerLink="/cattle"></button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<p-confirmDialog
+  [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
+  [style]="{ width: '30vw' }"
+  [baseZIndex]="10000"
+  rejectButtonStyleClass="p-button-danger"
+>
+</p-confirmDialog>

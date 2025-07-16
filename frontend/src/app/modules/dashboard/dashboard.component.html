@@ -1,0 +1,34 @@
+<div class="dashboard-container p-4">
+  <div class="grid mb-4">
+    <div class="col-12 md:col-4">
+      <p-card header="Total Empleados Activos" class="summary-card">
+        <p class="value">{{ totalEmployees }}</p>
+      </p-card>
+    </div>
+    <div class="col-12 md:col-4">
+      <p-card header="Nacimientos" class="summary-card">
+        <p class="value">{{ totalBirths }}</p>
+      </p-card>
+    </div>
+    <div class="col-12 md:col-4">
+      <p-card header="Ganado activo en finca" class="summary-card">
+        <p class="value">{{ totalCattle }}</p>
+      </p-card>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="col-12 md:col-6">
+      <p-card header="Nacimientos Machos vs Hembras">
+        <p-chart type="bar" [data]="barChartData"></p-chart>
+      </p-card>
+    </div>
+    <div class="col-12 md:col-6">
+      <p-card header="Distribución de Nacimientos">
+        <div class="flex justify-content-center align-items-center">
+            <p-chart type="pie" [data]="pieChartData" class="w-30rem"></p-chart>
+        </div>
+      </p-card>
+    </div>
+  </div>
+</div>
