@@ -8,6 +8,6 @@ import com.erp.backend_erp.entity.role.Role;
 import com.erp.backend_erp.entity.role.RoleEntity;
 
 public interface RoleJPARepository extends JpaRepository<RoleEntity, Long> {
-    Optional<Role> findByName(String name);
-    public Optional<RoleEntity> existsByName(String name);
+    Optional<Role> findByNombre(String nombre);
+    public Optional<RoleEntity> existsByNombre(String nombre);
 }
