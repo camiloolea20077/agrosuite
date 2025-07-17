@@ -70,7 +70,7 @@ export class IndexCattleComponent {
         },
         {
             field: 'fecha_nacimiento',
-            header: 'Fecha Nacimiento',
+            header: 'Fecha Ingreso',
             type: 'string',
             nameClass: 'text-left',
         },

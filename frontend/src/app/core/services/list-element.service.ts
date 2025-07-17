@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
+import { environment } from "src/app/environments/environment";
 import { CreateBirthsDto } from "src/app/modules/births/domain/dto/create-births.dto";
 import { BirthsModel } from "src/app/modules/births/domain/models/births.model";
 import { ListElementFarmsModes } from "src/app/shared/utils/models/list-element-farms.model";
@@ -11,7 +12,9 @@ import { ResponseModel } from "src/app/shared/utils/models/responde.models";
     providedIn: 'root'
 })
 export class ListElementService {
-    private apiUrl = 'http://localhost:9001/list-elements';
+
+    private apiUrl = environment.listElementUrl;
+
     constructor(private readonly http: HttpClient) { }
 
 

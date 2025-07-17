@@ -85,8 +85,8 @@
             <!-- Fecha de nacimiento -->
             <div class="col-12 md:col-6">
               <span class="p-float-label">
-                <p-calendar id="fecha_nacimiento" formControlName="fecha_nacimiento" dateFormat="yy-mm-dd"></p-calendar>
-                <label for="fecha_nacimiento">Fecha de nacimiento</label>
+                <p-calendar id="fecha_nacimiento" formControlName="fecha_nacimiento" class="calendar-sm" dateFormat="yy-mm-dd"></p-calendar>
+                <label for="fecha_nacimiento">Fecha de Ingreso</label>
               </span>
               <small class="p-error" *ngIf="frmGanado.get('fecha_nacimiento')?.invalid && frmGanado.get('fecha_nacimiento')?.touched">
                 Campo obligatorio

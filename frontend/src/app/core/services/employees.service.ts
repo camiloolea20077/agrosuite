@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
+import { environment } from "src/app/environments/environment";
 import { CreateEmployeesDto } from "src/app/modules/employees/domain/dto/create-employees.dto";
 import { UpdateEmployeesDto } from "src/app/modules/employees/domain/dto/update-employees.dto";
 import { IEmployeesFilterTable } from "src/app/modules/employees/domain/models/employees-filter-table.models";
@@ -15,7 +16,7 @@ import { ResponseTableModel } from "src/app/shared/utils/models/response-table.m
 })
 export class EmployeesService {
 
-    private apiUrl = 'http://localhost:9001/employees';
+    private apiUrl = environment.cattleUrl;
 
     constructor(private http: HttpClient) { }
 

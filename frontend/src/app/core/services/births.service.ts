@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
+import { environment } from "src/app/environments/environment";
 import { CreateBirthsDto } from "src/app/modules/births/domain/dto/create-births.dto";
 import { UpdateBirthsDto } from "src/app/modules/births/domain/dto/update-births.dto";
 import { IBirthsFilterTable } from "src/app/modules/births/domain/models/births-filter-table.model";
@@ -14,7 +15,7 @@ import { ResponseTableModel } from "src/app/shared/utils/models/response-table.m
     providedIn: 'root',
 })
 export class BirthsService {
-    private apiUrl = 'http://localhost:9001/births';
+    private apiUrl = environment.birthsUrl;
 
     constructor(private http: HttpClient) { }
 

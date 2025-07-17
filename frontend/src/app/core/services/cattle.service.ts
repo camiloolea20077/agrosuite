@@ -9,12 +9,13 @@ import { ResponseModel } from 'src/app/shared/utils/models/responde.models';
 import { CreateCattleDto } from '../models/cattle/create-cattle.dto';
 import { CattleModel } from '../models/cattle/cattle.models';
 import { UpdateCattleDto } from '../models/cattle/update-cattle.dto';
+import { environment } from 'src/app/environments/environment';
 
 @Injectable({
     providedIn: 'root',
 })
 export class CattleService {
-    private apiUrl = 'http://localhost:9001/cattle';
+    private apiUrl = environment.cattleUrl;
 
     constructor(private http: HttpClient) { }
 

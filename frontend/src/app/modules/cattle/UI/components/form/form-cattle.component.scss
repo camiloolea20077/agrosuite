@@ -4,3 +4,22 @@
 p-toast {
     z-index: 9999;
 }
+::ng-deep .p-datepicker {
+  font-size: 0.8rem; // Reduce el tamaño general del popup
+  width: 100px !important; // Ajusta el ancho del calendario emergente
+}
+
+::ng-deep .p-datepicker table td {
+  padding: 0.25rem !important; // Reduce espacio entre los días
+}
+
+::ng-deep .p-datepicker .p-datepicker-header {
+  padding: 0.25rem 0.5rem !important;
+}
+
+::ng-deep .p-datepicker .p-datepicker-title {
+  font-size: 0.85rem;
+}
+.p-calendar .p-datepicker {
+    min-width: 50%;
+}

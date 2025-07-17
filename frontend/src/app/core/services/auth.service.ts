@@ -5,10 +5,11 @@ import { AuthResponse, LoginDto } from '../models/auth.model';
 import { ResponseModel } from 'src/app/shared/utils/models/responde.models';
 import * as localForage from 'localforage';
 import { Router } from '@angular/router';
+import { environment } from 'src/app/environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-    private readonly apiUrl = 'http://localhost:9001/';
+    private readonly apiUrl = environment.apiUrl;
 
     constructor(private http: HttpClient, private router: Router) {
         localForage.config({
