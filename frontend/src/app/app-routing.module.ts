@@ -1,8 +1,19 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './modules/auth/auth.guard';
+import { DummyComponent } from './shared/components/dummy-component/dummy.component';
 
 const routes: Routes = [
+  {
+    path: '',
+    redirectTo: 'redirector',
+    pathMatch: 'full',
+  },
+  {
+    path: 'redirector',
+    canActivate: [AuthGuard],
+    component: DummyComponent,
+  },
   {
     path: '',
     loadComponent: () =>
@@ -49,6 +60,14 @@ const routes: Routes = [
             (m) => m.EmployeesModule
           ),
           canActivate: [AuthGuard],
+      },
+      {
+        path: 'users',
+        loadChildren: () =>
+          import('./modules/users/users.module').then(
+            (m) => m.UsersModule
+          ),
+          canActivate: [AuthGuard],
       }
     ],
   },
@@ -60,7 +79,13 @@ const routes: Routes = [
       ),
     canActivate: [AuthGuard],
   },
-
+  {
+  path: '**',
+  loadComponent: () =>
+    import('./shared/components/not-found/not-found.component').then(
+      (m) => m.NotFoundComponent
+    ),
+  },
 ];
 
 @NgModule({

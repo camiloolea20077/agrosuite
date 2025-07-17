@@ -64,7 +64,6 @@ export class FormCattleComponent implements OnInit {
         this.id = Number(this._activatedRoute.snapshot.params['id'])
     }
     async ngOnInit() {
-        console.log(this.id)
         this.loadForm();
         if (this.slug === 'edit') {
             this.loadCattleById(this.frmGanado.controls['id'].value);
@@ -113,7 +112,6 @@ export class FormCattleComponent implements OnInit {
             return;
         }
         const data: CreateCattleDto | UpdateCattleDto = await this.buildDataCattle();
-        console.log('data', data);
         try {
             const response = await this.saveCattle(data);
             if (response) this.handleResponse(response);
@@ -138,7 +136,7 @@ export class FormCattleComponent implements OnInit {
     }
     private handleResponse(response: ResponseModel<CattleModel | boolean>): void {
         if (response?.status === 200 || response?.status === 201) {
-            const message = response.data
+            const message = this.slug === 'create'
                 ? 'Ganado creado correctamente'
                 : 'Ganado actualizado correctamente';
             this.messageService.add({

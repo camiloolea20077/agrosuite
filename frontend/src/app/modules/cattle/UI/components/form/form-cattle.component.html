@@ -46,6 +46,17 @@
             </div>
           </div>
           <div class="grid lg:mt-4 sm:mt-1">
+
+            <!-- Fecha de nacimiento -->
+            <div class="col-12 md:col-6">
+              <span class="p-float-label">
+                <p-calendar id="fecha_nacimiento" formControlName="fecha_nacimiento" class="calendar-sm" dateFormat="yy-mm-dd"></p-calendar>
+                <label for="fecha_nacimiento">Fecha de Ingreso</label>
+              </span>
+              <small class="p-error" *ngIf="frmGanado.get('fecha_nacimiento')?.invalid && frmGanado.get('fecha_nacimiento')?.touched">
+                Campo obligatorio
+              </small>
+            </div>
             <!-- Sexo -->
             <div class="col-12 md:col-6 lg:col-6">
               <span class="p-float-label">
@@ -54,17 +65,6 @@
                 <label for="sexo">Sexo</label>
               </span>
               <small class="p-error" *ngIf="frmGanado.get('sexo')?.invalid && frmGanado.get('sexo')?.touched">
-                Campo obligatorio
-              </small>
-            </div>
-
-            <!-- Color -->
-            <div class="col-12 md:col-6">
-              <span class="p-float-label">
-                <input pInputText id="color" formControlName="color" />
-                <label for="color">Color</label>
-              </span>
-              <small class="p-error" *ngIf="frmGanado.get('color')?.invalid && frmGanado.get('color')?.touched">
                 Campo obligatorio
               </small>
             </div>
@@ -81,14 +81,13 @@
                 Campo obligatorio
               </small>
             </div>
-
-            <!-- Fecha de nacimiento -->
+            <!-- Color -->
             <div class="col-12 md:col-6">
               <span class="p-float-label">
-                <p-calendar id="fecha_nacimiento" formControlName="fecha_nacimiento" class="calendar-sm" dateFormat="yy-mm-dd"></p-calendar>
-                <label for="fecha_nacimiento">Fecha de Ingreso</label>
+                <input pInputText id="color" formControlName="color" />
+                <label for="color">Color</label>
               </span>
-              <small class="p-error" *ngIf="frmGanado.get('fecha_nacimiento')?.invalid && frmGanado.get('fecha_nacimiento')?.touched">
+              <small class="p-error" *ngIf="frmGanado.get('color')?.invalid && frmGanado.get('color')?.touched">
                 Campo obligatorio
               </small>
             </div>

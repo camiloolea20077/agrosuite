@@ -15,38 +15,41 @@ export class AuthGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router) {}
 
 
-canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
+  const isLoginRoute = state.url === '/login';
+  const isRootRoute = state.url === '/';
+
   return this.authService.getAuthResponse().toPromise().then((authResponse) => {
-    const isLoginRoute = state.url === '/login';
-    
-    if (authResponse) {
-      const token = authResponse.token;
-      const isExpired = this.authService.isTokenExpired(token);
-      
-      if (isExpired) {
-        console.log('Token expired, redirecting to login');
-        this.router.navigate(['/login']);
-        return false;
-      }
-      
-      // Si el token es válido y está intentando acceder a login, redirigir a dashboard
-      if (isLoginRoute) {
+    const token = authResponse?.token;
+    const isExpired = !token || this.authService.isTokenExpired(token);
+
+    // Si está en raíz '/'
+    if (isRootRoute) {
+      if (!isExpired) {
         this.router.navigate(['/dashboard']);
-        return false;
+      } else {
+        this.router.navigate(['/login']);
       }
-      
-      // Permite el acceso a otras rutas protegidas
-      return true;
-    } else {
-      // Si no hay authResponse y no está en login, redirigir a login
+      return false; // Siempre bloquear, para que no cargue nada visual
+    }
+
+    // Si token expirado
+    if (isExpired) {
       if (!isLoginRoute) {
         this.router.navigate(['/login']);
         return false;
       }
-      
-      // Permite el acceso a login si no está autenticado
-      return true;
+      return true; // Permite acceder al login
     }
+
+    // Token válido
+    if (isLoginRoute) {
+      this.router.navigate(['/dashboard']);
+      return false;
+    }
+
+    return true; // Permite acceso normal
   });
 }
+
 }

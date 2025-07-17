@@ -6,7 +6,6 @@ import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { SidebarComponent } from "./shared/components/sidebar/sidebar.component";
 import { NavbarComponent } from "./shared/components/navbar/navbar.component";
-import { RouterModule } from '@angular/router';
 import { LayoutComponent } from "./shared/components/layout/layout.component";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MessageService } from 'primeng/api';

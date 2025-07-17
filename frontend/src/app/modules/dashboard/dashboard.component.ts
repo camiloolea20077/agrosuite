@@ -30,7 +30,6 @@ export class DashboardComponent implements OnInit {
     loadDashboardData(): void {
         this.dashboardService.getBirthsData().subscribe(
             (response: ResponseModel<DashboardData>) => {
-                console.log('Response:', response);
                 if (response && response.data) {
                     const data = response.data
                     this.birthData = data.births

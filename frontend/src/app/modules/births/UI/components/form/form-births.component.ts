@@ -67,7 +67,6 @@ export class FormBirthsComponent {
         this.loadForm();
         this.getMaleCattle();
         if (this.slug === 'edit') {
-            console.log('entra?')
             this.loadBirthById(this.id);
         }
     }

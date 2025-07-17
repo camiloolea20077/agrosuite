@@ -16,6 +16,7 @@ export class NavbarComponent implements OnInit{
   userName: string = '';
   roleName : string = '';
   farmsNames : string = '';
+  isSidebarVisible = true;
   constructor(private router: Router) {}
 
   ngOnInit(): void {
@@ -31,13 +32,13 @@ export class NavbarComponent implements OnInit{
   }
 
   logout() {
-    // Limpiar los datos de IndexedDB
     localForage.removeItem('authResponse').then(() => {
-      console.log('User logged out, authResponse removed from IndexedDB');
-      // Redirigir al login
       this.router.navigate(['/login']);
     }).catch((err) => {
       console.error('Error during logout', err);
     });
   }
+  toggleSidebar() {
+  this.isSidebarVisible = !this.isSidebarVisible;
+}
 }
