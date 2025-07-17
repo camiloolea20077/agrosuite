@@ -16,7 +16,7 @@ import { ResponseTableModel } from "src/app/shared/utils/models/response-table.m
 })
 export class EmployeesService {
 
-    private apiUrl = environment.cattleUrl;
+    private apiUrl = environment.employeesUrl;
 
     constructor(private http: HttpClient) { }
 
