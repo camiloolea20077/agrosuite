@@ -16,21 +16,18 @@ public interface RolesMapper {
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "created_at", ignore = true),
             @Mapping(target = "updated_at", ignore = true),
-            @Mapping(target = "name", source = "dto.name"),
-            @Mapping(target = "description", source = "dto.description"),
+            @Mapping(target = "nombre", source = "dto.name"),
     })
     RoleEntity createToEntity(CreateRoleDto dto);
     @Mappings({ @Mapping(target = "id", source = "dto.id"), @Mapping(target = "created_at", ignore = true),
 			@Mapping(target = "updated_at", ignore = true), @Mapping(target = "deleted_at", ignore = true),
-			@Mapping(target = "name", source = "dto.name"),
-			@Mapping(target = "description", source = "dto.description"),
+			@Mapping(target = "nombre", source = "dto.name"),
 			})
 	void updateEntityFromDto(UpdateRoleDto dto, @MappingTarget RoleEntity entity);
 
     @Mappings({
             @Mapping(target = "id", source = "entity.id"),
-            @Mapping(target = "name", source = "entity.name"),
-            @Mapping(target = "description", source = "entity.description"),
+            @Mapping(target = "name", source = "entity.nombre"),
     })
     RoleDto toDto(RoleEntity entity);
 }
