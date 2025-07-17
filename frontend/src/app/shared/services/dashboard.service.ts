@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { DashboardData } from "../dto/dashboard.dto";
 import { ResponseModel } from "../utils/models/responde.models";
-import { environment } from "src/app/environments/environment";
+import { environment } from "src/environments/environment";
 
 @Injectable({
   providedIn: 'root',

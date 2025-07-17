@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { environment } from "src/app/environments/environment";
+import { environment } from "src/environments/environment";
 import { CreateBirthsDto } from "src/app/modules/births/domain/dto/create-births.dto";
 import { UpdateBirthsDto } from "src/app/modules/births/domain/dto/update-births.dto";
 import { IBirthsFilterTable } from "src/app/modules/births/domain/models/births-filter-table.model";

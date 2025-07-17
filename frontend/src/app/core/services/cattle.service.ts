@@ -9,7 +9,7 @@ import { ResponseModel } from 'src/app/shared/utils/models/responde.models';
 import { CreateCattleDto } from '../models/cattle/create-cattle.dto';
 import { CattleModel } from '../models/cattle/cattle.models';
 import { UpdateCattleDto } from '../models/cattle/update-cattle.dto';
-import { environment } from 'src/app/environments/environment';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
     providedIn: 'root',
