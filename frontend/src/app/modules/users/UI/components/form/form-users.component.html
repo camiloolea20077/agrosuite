@@ -1,0 +1,114 @@
+<p-toast></p-toast>
+<div class="card">
+  <div class="grid flex flex-wrap align-items-center">
+    <div class="col-12 lg:col-10 md:col-9 sm:col-6">
+      <h1 class="m-0">{{ slug === 'edit' ? 'Editar Usuario' : 'Nuevo Usuario' }}</h1>
+    </div>
+  </div>
+  <hr />
+  <div class="grid formgrid p-fluid">
+    <form [formGroup]="frm" name="frm" id="frm" class="col-12 sm:col-12 md:col-12 lg:col-12"
+      (ngSubmit)="buildSaveUsers()">
+      <div class="grid mt-1 p-2">
+        <div class="col-12 sm:col-12 md:col-12 lg:col-12 mt-2">
+          <div class="grid mt-2">
+            <div class="grid">
+              <!-- Activo -->
+              <div class="col-12 mt-3">
+                <div class="field-checkbox">
+                  <p-inputSwitch formControlName="active"></p-inputSwitch>
+                  <label class="ml-2">Activo</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Nombre / Email -->
+          <div class="grid lg:mt-4 sm:mt-1">
+            <div class="col-12 md:col-6 lg:col-6">
+              <span class="p-float-label">
+                <input pInputText id="name" formControlName="name" />
+                <label for="name">Nombre</label>
+              </span>
+              <small class="p-error" *ngIf="frm.get('name')?.invalid && frm.get('name')?.touched">Campo obligatorio</small>
+            </div>
+
+            <div class="col-12 md:col-6 lg:col-6">
+              <span class="p-float-label">
+                <input pInputText id="email" formControlName="email" />
+                <label for="email">Email</label>
+              </span>
+              <small class="p-error" *ngIf="frm.get('email')?.invalid && frm.get('email')?.touched">Campo obligatorio</small>
+            </div>
+          </div>
+
+          <!-- Contraseña -->
+          <div class="grid lg:mt-4 sm:mt-1">
+            <div class="col-12 md:col-6 lg:col-6">
+              <span class="p-float-label">
+                <input pInputText type="password" id="password" formControlName="password" />
+                <label for="password">Contraseña</label>
+              </span>
+              <small class="p-error" *ngIf="frm.get('password')?.invalid && frm.get('password')?.touched">Campo obligatorio</small>
+            </div>
+            <!--UserName) -->
+            <div class="col-12 md:col-6 lg:col-6">
+              <span class="p-float-label">
+                <input pInputText id="username" formControlName="username" />
+                <label for="username">Username</label>
+              </span>
+              <small class="p-error" *ngIf="frm.get('username')?.invalid && frm.get('username')?.touched">Campo obligatorio</small>
+            </div>
+          </div>
+
+          <!-- Rol / Finca -->
+          <div class="grid lg:mt-4 sm:mt-1">
+            <div class="col-12 md:col-6 lg:col-6">
+              <span class="p-float-label">
+                <p-dropdown
+                  [options]="rolesModels"
+                  optionLabel="nombre"
+                  optionValue="id"
+                  formControlName="role_id"
+                  placeholder="Seleccione un rol"
+                ></p-dropdown>
+                <label for="role_id">Rol</label>
+              </span>
+              <small class="p-error" *ngIf="frm.get('role_id')?.invalid && frm.get('role_id')?.touched">Campo obligatorio</small>
+            </div>
+
+            <div class="col-12 md:col-6 lg:col-6">
+              <span class="p-float-label">
+                <p-dropdown
+                  [options]="farmsModels"
+                  optionLabel="nombre"
+                  optionValue="id"
+                  formControlName="farmId"
+                  placeholder="Seleccione una finca"
+                ></p-dropdown>
+                <label for="farmId">Finca</label>
+              </span>
+              <small class="p-error" *ngIf="frm.get('farmId')?.invalid && frm.get('farmId')?.touched">Campo obligatorio</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="grid col-12 p-0 mt-3 justify-end">
+          <div class="col-12 md:col-3">
+            <button pButton type="submit" label="Guardar" icon="pi pi-save"
+              class="p-button-success w-full p-button-rounded"></button>
+          </div>
+          <div class="col-12 md:col-3">
+            <button pButton type="button" label="Limpiar" icon="pi pi-trash"
+              class="p-button-warning w-full p-button-rounded"></button>
+          </div>
+          <div class="col-12 md:col-3">
+            <button pButton type="button" label="Volver" icon="pi pi-arrow-left"
+              class="p-button-secondary w-full p-button-rounded" routerLink="/users"></button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

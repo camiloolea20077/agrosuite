@@ -28,7 +28,7 @@ export class EmployeesService {
         return this.http.post<ResponseModel<EmployeesModel>>(`${this.apiUrl}/create`, employees);
     }
 
-    updateEmployees(id: number, employees: UpdateEmployeesDto): Observable<ResponseModel<UpdateEmployeesDto>> {
+    updateEmployees(id: number, employees: CreateEmployeesDto): Observable<ResponseModel<UpdateEmployeesDto>> {
         const updateEmployeesDto: UpdateEmployeesDto = { ...employees, id };
         return this.http.put<ResponseModel<UpdateEmployeesDto>>(
             `${this.apiUrl}/update`, 

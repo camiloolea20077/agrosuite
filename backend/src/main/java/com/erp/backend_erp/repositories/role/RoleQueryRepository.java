@@ -1,14 +1,18 @@
 package com.erp.backend_erp.repositories.role;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.erp.backend_erp.dto.listElements.RolesElementsDto;
 import com.erp.backend_erp.entity.role.Role;
 
 @Repository
@@ -31,5 +35,19 @@ public class RoleQueryRepository {
 
         Long count = namedParameterJdbcTemplate.queryForObject(sql, params, Long.class);
         return count != null && count > 0;
+    }
+    public List<RolesElementsDto> getRoles() {
+        String sql = "SELECT id, nombre FROM roles";
+
+        // Usamos un RowMapper para mapear los resultados a FarmsElementsDto
+        return namedParameterJdbcTemplate.query(sql, new MapSqlParameterSource(), new RowMapper<RolesElementsDto>() {
+            @Override
+            public RolesElementsDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                RolesElementsDto dto = new RolesElementsDto();
+                dto.setId(rs.getLong("id"));
+                dto.setNombre(rs.getString("nombre"));
+                return dto;
+            }
+        });
     }
 }

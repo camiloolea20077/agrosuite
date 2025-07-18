@@ -33,4 +33,9 @@ export class ListElementService {
             `${this.apiUrl}/list-farms`
         )
     }
+    forListByRoles(): Observable<ResponseModel<ListElementFarmsModes[]>> {
+        return this.http.get<ResponseModel<ListElementFarmsModes[]>>(
+            `${this.apiUrl}/list-roles`
+        )
+    }
 }
