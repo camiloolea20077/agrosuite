@@ -9,7 +9,7 @@ export interface AuthResponse {
         id: number;
         name: string;
         email: string;
-        farms: number;
+        farm: number;
         role: string;
         farm_name: string;
     };

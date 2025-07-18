@@ -14,11 +14,13 @@
   <div
     [routerLink]="item.route"
     routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: true }"
     class="menu-item"
   >
     <i class="{{ item.icon }}"></i>
     <span>{{ item.label }}</span>
-  </div>
+</div>
+
 </ng-container>
 
 
@@ -30,7 +32,7 @@
         </div>
         <ul class="submenu-list" *ngIf="showAdminChildren">
           <li *ngFor="let child of item.children">
-            <a [routerLink]="child.route" routerLinkActive="active" class="submenu-item no-link-style">
+            <a [routerLink]="child.route" routerLinkActive="active" routerLinkActive="active" class="submenu-item no-link-style">
               <i class="{{ child.icon }}"></i>
               <span>{{ child.label }}</span>
             </a>

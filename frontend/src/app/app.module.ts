@@ -3,13 +3,14 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { SidebarComponent } from "./shared/components/sidebar/sidebar.component";
 import { NavbarComponent } from "./shared/components/navbar/navbar.component";
 import { LayoutComponent } from "./shared/components/layout/layout.component";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from "primeng/toast";
+import { GlobalInterceptor } from './modules/auth/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,7 @@ import { ToastModule } from "primeng/toast";
     LayoutComponent,
     ToastModule
 ],
-  providers: [MessageService],
+  providers: [{ provide: HTTP_INTERCEPTORS, useClass: GlobalInterceptor, multi: true },MessageService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

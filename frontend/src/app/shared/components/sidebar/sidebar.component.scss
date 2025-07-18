@@ -22,6 +22,12 @@
     color: #333;
   }
 }
+.menu-item.active {
+  background-color: #cce4f7;
+  border-left: 4px solid #007ad9;
+  color: #007ad9;
+  font-weight: bold;
+}
 
 .menu-list {
   list-style: none;
@@ -60,6 +66,11 @@
   margin: 0;
   margin-top: 0.25rem;
 }
+.submenu-item.active {
+  color: #007ad9;
+  font-weight: bold;
+}
+
 .submenu-item {
   display: flex;
   align-items: center;

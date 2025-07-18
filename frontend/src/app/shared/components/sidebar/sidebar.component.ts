@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterModule } from '@angular/router';
 import { ToastModule } from 'primeng/toast';
 import { MenuItem } from '../../dto/menu-interface';
 
@@ -9,7 +9,7 @@ import { MenuItem } from '../../dto/menu-interface';
   standalone: true,
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
-  imports: [RouterLink, CommonModule, ToastModule],
+  imports: [RouterLink, CommonModule, ToastModule,RouterModule],
 })
 export class SidebarComponent {
   isVisible = true;
