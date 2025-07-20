@@ -24,6 +24,7 @@ public interface  BirthsMapper {
         @Mapping(target = "sexo", source = "dto.sexo"),
         @Mapping(target = "color_cria", source = "dto.color_cria"),
         @Mapping(target = "observaciones", source = "dto.observaciones"),
+        @Mapping(target = "farmId", source = "dto.farmId"),
     })
     BirthsEntity createToEntity(CreateBirthsDto dto);
 
@@ -36,6 +37,7 @@ public interface  BirthsMapper {
         @Mapping(target = "sexo", source = "entity.sexo"),
         @Mapping(target = "color_cria", source = "entity.color_cria"),
         @Mapping(target = "observaciones", source = "entity.observaciones"),
+        @Mapping(target = "farmId", source = "entity.farmId"),
     })
     BirthsDto toDto(BirthsEntity entity);
 

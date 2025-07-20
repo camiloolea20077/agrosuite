@@ -6,7 +6,7 @@ import org.mapstruct.Mappings;
 import org.mapstruct.Named;
 
 import com.erp.backend_erp.dto.sales.SaleProductDto;
-import com.erp.backend_erp.entity.produts.ProductEntity;
+import com.erp.backend_erp.entity.inventory.InventoryEntity;
 import com.erp.backend_erp.entity.sales.SaleProductEntity;
 @Mapper(componentModel = "spring")
 public interface SaleProductMapper {
@@ -30,8 +30,8 @@ public interface SaleProductMapper {
     SaleProductDto toDto(SaleProductEntity entity);
 
     @Named("mapProduct")
-    default ProductEntity mapProduct(Long id) {
-        ProductEntity product = new ProductEntity();
+    default InventoryEntity mapProduct(Long id) {
+        InventoryEntity product = new InventoryEntity();
         product.setId(id);
         return product;
     }

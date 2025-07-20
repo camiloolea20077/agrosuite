@@ -13,4 +13,5 @@ public class CreateBirthsDto {
     private String sexo;
     private String color_cria;
     private String observaciones;
+    private Long farmId;
 }

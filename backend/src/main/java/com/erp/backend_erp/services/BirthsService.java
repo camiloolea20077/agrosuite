@@ -14,6 +14,6 @@ public interface BirthsService {
     Boolean update(UpdateBirthsDto updateBirthsDto);
     Boolean delete(Long id);
     PageImpl<BirthsTableDto> pageGanado(PageableDto<Object> birthsTableDto);
-    BirthsDto findById(Long id);
+    BirthsDto findById(Long id, Long farmId);
     DashboardData getDashboardData();
 }

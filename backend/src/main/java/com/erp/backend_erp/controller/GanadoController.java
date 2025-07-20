@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,22 +36,26 @@ public class GanadoController {
 
     @PostMapping("/create")
     public ResponseEntity<ApiResponse<Object>> createCattle(
-        @Valid @RequestBody CreateGanadoDto createCattleDto) throws Exception {
+            @RequestHeader("farmid") Long farmId,
+            @Valid @RequestBody CreateGanadoDto createCattleDto) throws Exception {
         try {
-            GanadoDto savedUser = ganadoService
-                .create(createCattleDto);
+            createCattleDto.setFarmId(farmId);
+            GanadoDto savedUser = ganadoService.create(createCattleDto);
             ApiResponse<Object> response = new ApiResponse<>(HttpStatus.CREATED.value(),
-                "Registro creado exitosamente", false, savedUser);
+                    "Registro creado exitosamente", false, savedUser);
             return ResponseEntity.ok(response);
         } catch (Exception ex) {
             throw ex;
         }
     }
+
     @PostMapping("/page")
     public ResponseEntity<ApiResponse<Object>> listConventions(
+            @RequestHeader("farmid") Long farmId,
             @Valid @RequestBody PageableDto<Object> pageableDto) {
         try {
-            Page<GanadoTableDto> convention = this.ganadoService.pageGanado(pageableDto);
+            pageableDto.setFarmId(farmId);
+            Page<GanadoTableDto> convention = ganadoService.pageGanado(pageableDto);
             if (convention.isEmpty())
                 throw new GlobalException(HttpStatus.PARTIAL_CONTENT, "No se encontraron registros");
             ApiResponse<Object> response = new ApiResponse<>(HttpStatus.OK.value(), "", false, convention);
@@ -59,40 +64,41 @@ public class GanadoController {
             throw ex;
         }
     }
+
     @PutMapping("/update")
-	public ResponseEntity<ApiResponse<Object>> update(@Valid @RequestBody UpdateGanadoDto updateGanadoDto)
-			throws Exception {
-		try {
-			Boolean isUpdated = ganadoService.update(updateGanadoDto);
-			ApiResponse<Object> response = new ApiResponse<>(HttpStatus.OK.value(),
-					"Registro actualizado correctamente", false, isUpdated);
-			return ResponseEntity.ok(response);
-		}
-		catch (Exception ex) {
-			throw ex;
-		}
-	}
+    public ResponseEntity<ApiResponse<Object>> update(
+            @RequestHeader("farmid") Long farmId,
+            @Valid @RequestBody UpdateGanadoDto updateGanadoDto) throws Exception {
+        try {
+            Boolean isUpdated = ganadoService.update(updateGanadoDto);
+            ApiResponse<Object> response = new ApiResponse<>(HttpStatus.OK.value(),
+                    "Registro actualizado correctamente", false, isUpdated);
+            return ResponseEntity.ok(response);
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
+
     @DeleteMapping("/{id}")
-	public ResponseEntity<ApiResponse<Object>> delete(@PathVariable("id") Long id) throws Exception {
-		try {
-			Boolean isDeleted = ganadoService.delete(id);
-			ApiResponse<Object> response = new ApiResponse<>(HttpStatus.OK.value(), "Registro eliminado correctamente",
-					false, isDeleted);
-			return ResponseEntity.ok(response);
-		}
-		catch (Exception ex) {
-			throw ex;
-		}
-	}
+    public ResponseEntity<ApiResponse<Object>> delete(
+            @PathVariable("id") Long id,
+            @RequestHeader("farmid") Long farmId) throws Exception {
+        try {
+            Boolean isDeleted = ganadoService.delete(id);
+            ApiResponse<Object> response = new ApiResponse<>(HttpStatus.OK.value(),
+                    "Registro eliminado correctamente", false, isDeleted);
+            return ResponseEntity.ok(response);
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
+
     @GetMapping("/{id}")
-	public ResponseEntity<ApiResponse<Object>> findById(@PathVariable("id") Long id) {
-		try {
-			GanadoDto object = this.ganadoService.findById(id);
-			ApiResponse<Object> response = new ApiResponse<>(HttpStatus.OK.value(), "Registro Encontrado", false, object);
-			return ResponseEntity.ok(response);
-		}
-		catch (Exception ex) {
-			throw ex;
-		}
-	}
+    public ResponseEntity<ApiResponse<GanadoDto>> findById(
+            @PathVariable Long id,
+            @RequestHeader("farmId") Long farmId) {
+        GanadoDto inventory = ganadoService.findById(id, farmId);
+        return ResponseEntity.ok(
+                new ApiResponse<>(HttpStatus.OK.value(), "Elemento encontrado", false, inventory));
+    }
 }

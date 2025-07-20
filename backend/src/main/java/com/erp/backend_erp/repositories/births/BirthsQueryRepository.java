@@ -50,9 +50,10 @@ public class BirthsQueryRepository {
                     LEFT JOIN cattle vaca ON vaca.id = b.id_vaca
                     LEFT JOIN cattle toro ON toro.id = b.id_toro
                     WHERE b.deleted_at IS NULL
+                    AND b.farm_id = :farmId
                 """;
         MapSqlParameterSource params = new MapSqlParameterSource();
-
+        params.addValue("farmId", pageableDto.getFarmId());
         if (search != null && !search.isEmpty()) {
             sql += "AND (LOWER((vaca.numero_ganado)) ILIKE (:search) " +
                     "OR LOWER((toro.numero_ganado)) ILIKE (:search) " +

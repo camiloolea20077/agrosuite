@@ -24,7 +24,8 @@ public interface GanadoMapper {
         @Mapping(target = "fecha_nacimiento", source = "dto.fecha_nacimiento"),
         @Mapping(target = "lote_ganado", source = "dto.lote_ganado"),
         @Mapping(target = "observaciones", source = "dto.observaciones"),
-        @Mapping(target = "activo", source = "dto.activo")
+        @Mapping(target = "activo", source = "dto.activo"),
+        @Mapping(target = "farmId", source = "dto.farmId"),
     })
     GanadoEntity createToEntity(CreateGanadoDto dto);
 
@@ -39,7 +40,8 @@ public interface GanadoMapper {
         @Mapping(target = "fecha_nacimiento", source = "entity.fecha_nacimiento"),
         @Mapping(target = "lote_ganado", source = "entity.lote_ganado"),
         @Mapping(target = "observaciones", source = "entity.observaciones"),
-        @Mapping(target = "activo", source = "entity.activo")
+        @Mapping(target = "activo", source = "entity.activo"),
+        @Mapping(target = "farmId", source = "entity.farmId")
     })
     GanadoDto toDto(GanadoEntity entity);
 
@@ -56,7 +58,7 @@ public interface GanadoMapper {
         @Mapping(target = "fecha_nacimiento", source = "dto.fecha_nacimiento"),
         @Mapping(target = "lote_ganado", source = "dto.lote_ganado"),
         @Mapping(target = "observaciones", source = "dto.observaciones"),
-        @Mapping(target = "activo", source = "dto.activo")
+        @Mapping(target = "activo", source = "dto.activo"),
     })
     void updateEntityFromDto(UpdateGanadoDto dto, @MappingTarget GanadoEntity entity);
 }

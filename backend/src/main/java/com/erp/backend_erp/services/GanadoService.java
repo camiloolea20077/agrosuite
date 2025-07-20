@@ -13,5 +13,5 @@ public interface  GanadoService {
     Boolean update(UpdateGanadoDto updateGanadoDto);
     Boolean delete(Long id);
     PageImpl<GanadoTableDto> pageGanado(PageableDto<Object> pageableDto);
-    GanadoDto findById(Long id);
+    GanadoDto findById(Long id, Long farmId);
 }

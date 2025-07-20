@@ -2,7 +2,7 @@ package com.erp.backend_erp.entity.sales;
 
 import java.math.BigDecimal;
 
-import com.erp.backend_erp.entity.produts.ProductEntity;
+import com.erp.backend_erp.entity.inventory.InventoryEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -34,7 +34,7 @@ public class SaleProductEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
-    private ProductEntity product;
+    private InventoryEntity product;
 
     @Column(nullable = false)
     private Integer quantity;

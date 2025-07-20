@@ -41,6 +41,10 @@ public class EmployeesEntity {
 
     private Long activo;
 
+    @Column(name = "farm_id")
+    private Long farmId;
+
+
     @Column(name = "created_at", nullable = false, updatable = false)
 	private LocalDateTime created_at;
 

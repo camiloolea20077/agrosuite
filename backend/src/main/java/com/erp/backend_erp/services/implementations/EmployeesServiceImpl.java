@@ -38,6 +38,7 @@ public class EmployeesServiceImpl implements EmployeesService {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "El Numero de identificacion ya se encuentra registrado");
         try{
             EmployeesEntity ganadoEntity = employeesMapper.createToEntity(createEmployeesDto);
+            ganadoEntity.setFarmId(createEmployeesDto.getFarmId());
             EmployeesEntity saveGanadoEntity = employeesJPARepository.save(ganadoEntity);
             return employeesMapper.toDto(saveGanadoEntity);
         } catch (Exception e) {
@@ -73,8 +74,8 @@ public class EmployeesServiceImpl implements EmployeesService {
 		return true;
 	}
     @Override
-	public EmployeesDto findById(Long id) {
-		EmployeesEntity employeesEntity =employeesJPARepository.findById(id)
+	public EmployeesDto findById(Long id, Long farmId) {
+		EmployeesEntity employeesEntity =employeesJPARepository.findByIdAndFarmId(id, farmId)
 				.orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "Elemento no encontrado"));
 		EmployeesDto employeesDto = employeesMapper.toDto(employeesEntity);
 		return employeesDto;

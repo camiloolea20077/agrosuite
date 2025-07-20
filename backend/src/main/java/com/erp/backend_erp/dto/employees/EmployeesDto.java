@@ -12,4 +12,5 @@ public class EmployeesDto {
     private String cargo;
     private String fecha_ingreso;
     private Long activo;
+    private Long farmId;
 }

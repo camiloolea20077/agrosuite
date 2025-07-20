@@ -1,6 +1,5 @@
-package com.erp.backend_erp.entity.produts;
+package com.erp.backend_erp.entity.inventory;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.Filter;
@@ -19,35 +18,27 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "products")
+@Table(name = "inventory")
 @Getter
 @Setter
 @Filter(name = "deletedIRolesFilter", condition = "deleted_at IS NULL")
-@SQLDelete(sql = "UPDATE products SET deleted_at = NOW() WHERE id=?")
-public class ProductEntity {
+@SQLDelete(sql = "UPDATE inventory SET deleted_at = NOW() WHERE id=?")
+public class InventoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "company_id", nullable = false)
-    private Long company_id;
+    @Column(name = "nombre_insumo", nullable = false)
+    private String nombreInsumo;
 
-    @Column(nullable = false)
-    private String name;
+    private String unidad;
 
-    private String sku;
+    private Integer cantidad_total;
 
-    private BigDecimal price;
+    private String descripcion;
 
-    private BigDecimal quantity;
-
-    private String code;
-
-    private String description;
-
-    private LocalDateTime entry_date;
-
-    private Long supplier_id;
+    @Column(name = "farm_id")
+    private Long farmId;
 
     @Column(name = "created_at", nullable = false, updatable = false)
 	private LocalDateTime created_at;

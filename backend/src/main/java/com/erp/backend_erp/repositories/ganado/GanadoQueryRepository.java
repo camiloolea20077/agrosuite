@@ -55,9 +55,10 @@ public class GanadoQueryRepository {
                     cattle o
                 WHERE 
                     o.deleted_at IS NULL
+                    AND o.farm_id = :farmId
                 """;
         MapSqlParameterSource params = new MapSqlParameterSource();
-
+        params.addValue("farmId", pageableDto.getFarmId());
         if (search != null && !search.isEmpty()) {
             sql += "AND (LOWER((o.tipo_ganado)) ILIKE (:search) " +
                     "OR LOWER((o.numero_ganado)) ILIKE (:search) " +

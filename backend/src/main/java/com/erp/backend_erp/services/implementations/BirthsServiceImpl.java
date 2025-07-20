@@ -40,6 +40,7 @@ public class BirthsServiceImpl  implements BirthsService {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "El Numero de cria ya se encuentra registrado");
         try{
             BirthsEntity ganadoEntity = birthsMapper.createToEntity(createBirthsDto);
+            ganadoEntity.setFarmId(createBirthsDto.getFarmId());
             BirthsEntity saveGanadoEntity = birthsJPARepository.save(ganadoEntity);
             return birthsMapper.toDto(saveGanadoEntity);
         } catch (Exception e) {
@@ -68,8 +69,8 @@ public class BirthsServiceImpl  implements BirthsService {
         return true;
     }
     @Override
-    public BirthsDto findById(Long id) {
-        BirthsEntity entity = birthsJPARepository.findById(id)
+    public BirthsDto findById(Long id, Long farmId) {
+        BirthsEntity entity = birthsJPARepository.findByIdAndFarmId(id, farmId)
             .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "Elemento no encontrado"));
         return birthsMapper.toDto(entity);
     }

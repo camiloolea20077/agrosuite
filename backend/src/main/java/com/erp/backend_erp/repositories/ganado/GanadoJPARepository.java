@@ -8,4 +8,5 @@ import com.erp.backend_erp.entity.ganado.GanadoEntity;
 
 public interface GanadoJPARepository extends JpaRepository<GanadoEntity, Long> {
     public Optional<GanadoEntity> findById(Long id);
+    Optional<GanadoEntity> findByIdAndFarmId(Long id, Long farmId);
 }

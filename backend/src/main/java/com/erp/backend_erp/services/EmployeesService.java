@@ -12,6 +12,6 @@ public interface EmployeesService {
     EmployeesDto create(CreateEmployeesDto createEmployeesDto);
     Boolean delete(Long id);
     Boolean update(UpdateEmployeesDto updateEmployeesDto);
-    EmployeesDto findById(Long id);
+    EmployeesDto findById(Long id, Long farmId);
     PageImpl<EmployeesTableDto> pageEmployees(PageableDto<Object> pageableDto);
 }

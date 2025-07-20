@@ -18,7 +18,8 @@ public interface EmployeesMapper {
         @Mapping(target = "identificacion", source = "dto.identificacion"),
         @Mapping(target = "cargo", source = "dto.cargo"),
         @Mapping(target = "fecha_ingreso", source = "dto.fecha_ingreso"),
-        @Mapping(target = "activo", source = "dto.activo")
+        @Mapping(target = "activo", source = "dto.activo"),
+        @Mapping(target = "farmId", source = "dto.farmId")
     })
     EmployeesEntity createToEntity(CreateEmployeesDto dto);
     @Mappings({
@@ -27,7 +28,8 @@ public interface EmployeesMapper {
         @Mapping(target = "identificacion", source = "entity.identificacion"),
         @Mapping(target = "cargo", source = "entity.cargo"),
         @Mapping(target = "fecha_ingreso", source = "entity.fecha_ingreso"),
-        @Mapping(target = "activo", source = "entity.activo")
+        @Mapping(target = "activo", source = "entity.activo"),
+        @Mapping(target = "farmId", source = "entity.farmId")
     })
     EmployeesDto toDto(EmployeesEntity entity);
 

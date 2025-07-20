@@ -8,4 +8,5 @@ import com.erp.backend_erp.entity.employees.EmployeesEntity;
 
 public interface EmployeesJPARepository extends JpaRepository<EmployeesEntity, Long> {
     public Optional<EmployeesEntity> findByIdentificacion(String identificacion);
+    Optional<EmployeesEntity> findByIdAndFarmId(Long id, Long farmId);
 }

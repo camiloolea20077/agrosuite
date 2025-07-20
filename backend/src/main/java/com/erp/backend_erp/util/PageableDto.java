@@ -26,4 +26,5 @@ public class PageableDto<T> {
 
 	private T params;
 
+	private Long farmId;
 }

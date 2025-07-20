@@ -36,6 +36,7 @@ public class GanadoServiceImpl implements GanadoService {
             throw new GlobalException(HttpStatus.BAD_REQUEST, "El Numero de ganado ya se encuentra registrado");
         try{
             GanadoEntity ganadoEntity = ganadoMapper.createToEntity(createGanadoDto);
+            ganadoEntity.setFarmId(createGanadoDto.getFarmId());
             GanadoEntity saveGanadoEntity = ganadoJPARepository.save(ganadoEntity);
             return ganadoMapper.toDto(saveGanadoEntity);
         } catch (Exception e) {
@@ -69,8 +70,8 @@ public class GanadoServiceImpl implements GanadoService {
 		return true;
 	}
     @Override
-	public GanadoDto findById(Long id) {
-		GanadoEntity ganadoEntity =ganadoJPARepository.findById(id)
+	public GanadoDto findById(Long id , Long farmId) {
+		GanadoEntity ganadoEntity =ganadoJPARepository.findByIdAndFarmId(id , farmId)
 				.orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "Elemento no encontrado"));
 		GanadoDto ganadoDto = ganadoMapper.toDto(ganadoEntity);
 		return ganadoDto;

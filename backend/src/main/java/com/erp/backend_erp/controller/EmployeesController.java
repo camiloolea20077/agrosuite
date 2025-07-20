@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,8 +36,10 @@ public class EmployeesController {
 
     @PostMapping("/create")
     public ResponseEntity<ApiResponse<Object>> createEmployees(
+		@RequestHeader("farmid") Long farmId,
         @Valid @RequestBody CreateEmployeesDto createEmployeesDto) throws Exception {
         try {
+			createEmployeesDto.setFarmId(farmId);
             EmployeesDto savedUser = employeesService
                 .create(createEmployeesDto);
             ApiResponse<Object> response = new ApiResponse<>(HttpStatus.CREATED.value(),
@@ -60,21 +63,24 @@ public class EmployeesController {
 		}
 	}
     @DeleteMapping("/{id}")
-	public ResponseEntity<ApiResponse<Object>> delete(@PathVariable("id") Long id) throws Exception {
-		try {
-			Boolean isDeleted = employeesService.delete(id);
-			ApiResponse<Object> response = new ApiResponse<>(HttpStatus.OK.value(), "Registro eliminado correctamente",
-					false, isDeleted);
-			return ResponseEntity.ok(response);
-		}
-		catch (Exception ex) {
-			throw ex;
-		}
-	}
+    public ResponseEntity<ApiResponse<Object>> delete(
+            @PathVariable("id") Long id,
+            @RequestHeader("farmid") Long farmId) throws Exception {
+        try {
+            Boolean isDeleted = employeesService.delete(id);
+            ApiResponse<Object> response = new ApiResponse<>(HttpStatus.OK.value(),
+                    "Registro eliminado correctamente", false, isDeleted);
+            return ResponseEntity.ok(response);
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
+
     @GetMapping("/{id}")
-	public ResponseEntity<ApiResponse<Object>> findById(@PathVariable("id") Long id) {
+	public ResponseEntity<ApiResponse<Object>> findById(@PathVariable("id") Long id,
+		@RequestHeader("farmId") Long farmId) {
 		try {
-			EmployeesDto object = this.employeesService.findById(id);
+			EmployeesDto object = this.employeesService.findById(id, farmId);
 			ApiResponse<Object> response = new ApiResponse<>(HttpStatus.OK.value(), "Registro Encontrado", false, object);
 			return ResponseEntity.ok(response);
 		}
@@ -84,8 +90,10 @@ public class EmployeesController {
 	}
     @PostMapping("/page")
     public ResponseEntity<ApiResponse<Object>> pageEmployees(
+		@RequestHeader("farmid") Long farmId,
             @Valid @RequestBody PageableDto<Object> pageableDto) {
         try {
+			pageableDto.setFarmId(farmId);
             Page<EmployeesTableDto> employees = this.employeesService.pageEmployees(pageableDto);
             if (employees.isEmpty())
                 throw new GlobalException(HttpStatus.PARTIAL_CONTENT, "No se encontraron registros");

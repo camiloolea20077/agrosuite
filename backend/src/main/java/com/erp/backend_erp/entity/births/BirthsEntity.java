@@ -36,9 +36,15 @@ public class BirthsEntity {
 
     @Column(name = "numero_cria")
     private String numeroCria;
+
     private String sexo;
+
     private String color_cria;
+
     private String observaciones;
+
+    @Column(name = "farm_id")
+    private Long farmId;
 
     @Column(name = "created_at", nullable = false, updatable = false)
 	private LocalDateTime created_at;

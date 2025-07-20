@@ -15,5 +15,6 @@ public class GanadoDto {
     private String fecha_nacimiento;
     private String lote_ganado;
     private String observaciones;
+    private Long farmId;
     private Long activo;
 }
