@@ -7,5 +7,6 @@ export const environment = {
     cattleUrl: 'https://agrosuite-production.up.railway.app/cattle',
     employeesUrl: 'https://agrosuite-production.up.railway.app/employees',
     listElementUrl: 'https://agrosuite-production.up.railway.app/list-elements',
-    dashboardUrl: 'https://agrosuite-production.up.railway.app/dashboard'
+    dashboardUrl: 'https://agrosuite-production.up.railway.app/dashboard',
+    inventoryUrl: 'https://agrosuite-production.up.railway.app/inventory'
 };

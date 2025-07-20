@@ -68,6 +68,14 @@ const routes: Routes = [
             (m) => m.UsersModule
           ),
           canActivate: [AuthGuard],
+      },
+            {
+        path: 'inventory',
+        loadChildren: () =>
+          import('./modules/inventory/inventory.module').then(
+            (m) => m.InventoryModule
+          ),
+          canActivate: [AuthGuard],
       }
     ],
   },

@@ -18,7 +18,7 @@ export class SidebarComponent {
   items: MenuItem[] = [
     { label: 'Dashboard', icon: 'pi pi-home', route: '/dashboard' },
     { label: 'Ganado', icon: 'pi pi-users', route: '/cattle' },
-    { label: 'Inventario', icon: 'pi pi-database', route: '/inventario' },
+    { label: 'Inventario', icon: 'pi pi-database', route: '/inventory' },
     { label: 'Nacimientos', icon: 'pi pi-heart-fill', route: '/births' },
     { label: 'Empleados', icon: 'pi pi-users', route: '/employees' },
     { label: 'Contabilidad', icon: 'pi pi-chart-line', route: '/contabilidad' },

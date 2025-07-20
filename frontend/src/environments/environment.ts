@@ -7,5 +7,6 @@ export const environment = {
     cattleUrl: 'http://localhost:9001/cattle',
     employeesUrl: 'http://localhost:9001/employees',
     listElementUrl: 'http://localhost:9001/list-elements',
-    dashboardUrl: 'http://localhost:9001/dashboard'
+    dashboardUrl: 'http://localhost:9001/dashboard',
+    inventoryUrl: 'http://localhost:9001/inventory'
 };
