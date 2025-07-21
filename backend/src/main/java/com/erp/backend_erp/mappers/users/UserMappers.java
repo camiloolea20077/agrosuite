@@ -19,7 +19,8 @@ public interface UserMappers {
             @Mapping(target = "password", source = "dto.password"),
             @Mapping(target = "username", source = "dto.username"),
             @Mapping(target = "activo", source = "dto.active"),
-            @Mapping(target = "farm_id", source = "dto.farmId")
+            @Mapping(target = "farm_id", source = "dto.farmId"),
+            @Mapping(target = "permisos", source = "dto.permisos")
     })
     UserEntity createToEntity(CreateUserDto dto);
     @Mappings({
@@ -30,7 +31,8 @@ public interface UserMappers {
             @Mapping(target = "role_id", source = "entity.role_id"),
             @Mapping(target = "active", source = "entity.activo"),
             @Mapping(target = "username", source = "entity.username"),
-            @Mapping(target = "farm_id", source = "entity.farm_id")
+            @Mapping(target = "farm_id", source = "entity.farm_id"),
+            @Mapping(target = "permisos", source = "entity.permisos")
     })
     UserDto toDto(UserEntity entity);
 }

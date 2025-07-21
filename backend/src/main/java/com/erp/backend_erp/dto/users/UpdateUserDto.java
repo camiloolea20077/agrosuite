@@ -1,5 +1,7 @@
 package com.erp.backend_erp.dto.users;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,4 +15,5 @@ public class UpdateUserDto {
     private String password;
     private Integer role;
     private Integer farmId;
+    private List<String> permisos;
 }

@@ -1,5 +1,7 @@
 package com.erp.backend_erp.dto.users;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,4 +16,5 @@ public class UserDto {
     private Long role_id;
     private Long farm_id;
     private Long active;
+    private List<String> permisos;
 }

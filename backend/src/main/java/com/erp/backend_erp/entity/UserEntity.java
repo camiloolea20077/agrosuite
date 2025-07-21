@@ -2,6 +2,8 @@ package com.erp.backend_erp.entity;
 
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -38,16 +40,12 @@ public class UserEntity {
     @Column(nullable=false)
     private Long activo;
 
-    // @ManyToOne
-    // @JoinColumn(name = "farm_id")
-    // private FarmEntity farm;
+    @Column(name = "permisos", columnDefinition = "text[]")
+    private List<String> permisos = new ArrayList<>();
+
 
     @Column(nullable=false)
     private Long farm_id;
-    
-    // @ManyToOne
-    // @JoinColumn(name = "role_id", nullable = true)
-    // private Role role;
 
     private Long role_id;
 

@@ -1,5 +1,6 @@
 package com.erp.backend_erp.repositories.auth;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,8 @@ public class AuthQueryRepository {
                 u.nombre_completo AS name,
                 r.nombre AS role,
                 f.id as farm,
-                f.nombre as farm_name
+                f.nombre as farm_name,
+                string_to_array(array_to_string(u.permisos, ','), ',') as permisos
             FROM public.users u
             LEFT JOIN public.roles r ON r.id = u.role_id
             LEFT JOIN public.farms f on f.id = u.farm_id
@@ -38,7 +40,14 @@ public class AuthQueryRepository {
             """;
             // Ejecutar la consulta SQL
             Map<String, Object> result = jdbcTemplate.queryForMap(sql, email);
-
+            Object rawPermisos = result.get("permisos");
+            if (rawPermisos instanceof java.sql.Array arraySql) {
+                result.put("permisos", List.of((String[]) arraySql.getArray()));
+            } else if (rawPermisos instanceof String str) {
+                result.put("permisos", List.of(str.split(",")));
+            } else if (rawPermisos == null) {
+                result.put("permisos", List.of());
+            }
             // Convertir el resultado a DTO
             return mapperRepository.mapToDto(result, UserDetailDto.class);
 
