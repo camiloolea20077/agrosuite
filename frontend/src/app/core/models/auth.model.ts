@@ -12,6 +12,7 @@ export interface AuthResponse {
         farm: number;
         role: string;
         farm_name: string;
+        permisos: string[];
     };
     token: string;
 }
