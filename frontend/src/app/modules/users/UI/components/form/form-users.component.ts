@@ -78,7 +78,8 @@ export class FormUsersComponent {
     }
     getRoles():void{
         this.listElementService.forListByRoles().subscribe((response) => {
-            this.rolesModels = response.data;
+          const ignoreId = 1
+            this.rolesModels = response.data.filter((role) => role.id !== ignoreId);
         });
     }
   loadForm() {

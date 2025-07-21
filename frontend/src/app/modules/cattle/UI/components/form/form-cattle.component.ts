@@ -42,7 +42,6 @@ import { ConfirmDialogModule } from "primeng/confirmdialog";
     ToastModule,
     ConfirmDialogModule
 ],
-    providers: [MessageService,ConfirmationService],
 })
 export class FormCattleComponent implements OnInit {
     id!: number
@@ -146,8 +145,7 @@ export class FormCattleComponent implements OnInit {
                 life: 5000,
             });
             if (response?.status === 201) {
-                const cattle = response.data as CattleModel;
-                this._router.navigate(['/cattle/edit', cattle.id]);
+                this._router.navigate(['/cattle']);
             }
         }
     }

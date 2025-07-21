@@ -131,7 +131,7 @@ export class FormBirthsComponent {
     }
     private handleResponse(response: ResponseModel<BirthsModel | boolean>): void {
         if (response?.status === 200 || response?.status === 201) {
-            const message = response.data
+            const message = this.slug === 'create'
                 ? 'Ganado creado correctamente'
                 : 'Ganado actualizado correctamente';
             this.messageService.add({
@@ -141,8 +141,7 @@ export class FormBirthsComponent {
                 life: 5000,
             });
             if (response?.status === 201) {
-                const cattle = response.data as BirthsModel;
-                this._router.navigate(['/births/edit', cattle.id]);
+                this._router.navigate(['/births']);
             }
         }
     }

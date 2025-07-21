@@ -110,8 +110,7 @@ export class FormEmployeesComponent {
                 life: 5000,
             });
             if (response?.status === 201) {
-                const employees = response.data as EmployeesModel;
-                this._router.navigate(['/employees/edit', employees.id]);
+                this._router.navigate(['/employees']);
             }
         }
     }
