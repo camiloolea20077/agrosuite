@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.erp.backend_erp.dto.auth.AuthDto;
 import com.erp.backend_erp.dto.auth.LoginDto;
-import com.erp.backend_erp.dto.auth.RegisterRequestDto;
 import com.erp.backend_erp.services.AuthService;
 import com.erp.backend_erp.util.ApiResponse;
 
@@ -39,11 +38,11 @@ public class AuthenticationController {
             throw ex;
         }
     }
-    @PostMapping("/register")
-    public ResponseEntity<ApiResponse<Object>> register(@RequestBody RegisterRequestDto dto) {
-        AuthDto response = authService.register(dto);
-        return ResponseEntity.ok(
-            new ApiResponse<>(HttpStatus.CREATED.value(), "Empresa y usuario administrador registrados correctamente", false, response)
-        );
-    }
+    // @PostMapping("/register")
+    // public ResponseEntity<ApiResponse<Object>> register(@RequestBody RegisterRequestDto dto) {
+    //     AuthDto response = authService.register(dto);
+    //     return ResponseEntity.ok(
+    //         new ApiResponse<>(HttpStatus.CREATED.value(), "Empresa y usuario administrador registrados correctamente", false, response)
+    //     );
+    // }
 }

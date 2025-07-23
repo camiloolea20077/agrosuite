@@ -1,7 +1,5 @@
 package com.erp.backend_erp.services.implementations;
 
-import java.time.LocalDateTime;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,18 +12,9 @@ import org.springframework.stereotype.Service;
 
 import com.erp.backend_erp.dto.auth.AuthDto;
 import com.erp.backend_erp.dto.auth.LoginDto;
-import com.erp.backend_erp.dto.auth.RegisterRequestDto;
 import com.erp.backend_erp.dto.auth.UserDetailDto;
-import com.erp.backend_erp.dto.users.CreateUserDto;
-import com.erp.backend_erp.entity.UserEntity;
-import com.erp.backend_erp.entity.farm.FarmEntity;
-import com.erp.backend_erp.entity.role.Role;
-import com.erp.backend_erp.mappers.company.CompanyMapper;
-import com.erp.backend_erp.mappers.register.RegisterMapper;
 import com.erp.backend_erp.mappers.users.UserMappers;
 import com.erp.backend_erp.repositories.auth.AuthQueryRepository;
-import com.erp.backend_erp.repositories.companies.CompaniesJPARepository;
-import com.erp.backend_erp.repositories.companies.CompaniesQueryRepository;
 import com.erp.backend_erp.repositories.farms.FarmsJPARepository;
 import com.erp.backend_erp.repositories.farms.FarmsQueryRepository;
 import com.erp.backend_erp.repositories.role.RoleQueryRepository;
@@ -37,8 +26,6 @@ import com.erp.backend_erp.services.UserService;
 import com.erp.backend_erp.util.AESencryptUtil;
 import com.erp.backend_erp.util.GlobalException;
 import com.erp.backend_erp.util.MapperRepository;
-
-import jakarta.transaction.Transactional;
 
 @Service
 public class AuthServiceImple implements AuthService {
@@ -63,22 +50,17 @@ public class AuthServiceImple implements AuthService {
 
     private final UserService _userService;
 
-    private final CompaniesQueryRepository companiesQueryRepository;
-    private final CompaniesJPARepository companiesJPARepository;
-    private final CompanyMapper companyMapper;
     private final UserQueryRepository userQueryRepository;
     private final FarmsQueryRepository farmsQueryRepository;
     private final FarmsJPARepository farmsJPARepository;
     private final UserJPARepository userJPARepository;
     private final UserMappers userMappers;
     private final RoleQueryRepository roleQueryRepository;
-    private final RegisterMapper registerMapper;
     private final PasswordEncoder passwordEncoder;
 
     public AuthServiceImple(AuthenticationManager authenticationManager, UserService userService, JwtTokenProvider jwtTokenProvider,
-            CompaniesQueryRepository companiesQueryRepository, CompaniesJPARepository companiesJPARepository, CompanyMapper companyMapper,
             UserQueryRepository userQueryRepository, UserJPARepository userJPARepository, UserMappers userMappers, PasswordEncoder passwordEncoder,
-            RegisterMapper registerMapper, RoleQueryRepository roleQueryRepository,
+            RoleQueryRepository roleQueryRepository,
             FarmsJPARepository farmsJPARepository,
             FarmsQueryRepository farmsQueryRepository
             ) {
@@ -89,11 +71,7 @@ public class AuthServiceImple implements AuthService {
         this.farmsQueryRepository = farmsQueryRepository;
         this.farmsJPARepository = farmsJPARepository;
         this.roleQueryRepository = roleQueryRepository;
-        this.registerMapper = registerMapper;
         this.passwordEncoder = passwordEncoder;
-        this.companiesQueryRepository = companiesQueryRepository;
-        this.companiesJPARepository = companiesJPARepository;
-        this.companyMapper = companyMapper;
         _authenticationManager = authenticationManager;
         _userService = userService;
     }
@@ -147,47 +125,45 @@ public class AuthServiceImple implements AuthService {
     }
 
 
-@Override
-@Transactional
-public AuthDto register(RegisterRequestDto dto) {
+// @Override
+// @Transactional
+// public AuthDto register(RegisterRequestDto dto) {
     
-    if (dto.getFarm_id() == null) {
-        throw new GlobalException(HttpStatus.BAD_REQUEST, "El ID de finca es requerido");
-    }
-    try {
-        Role role = roleQueryRepository.findByName("ADMIN")
-                .orElseThrow(() -> new GlobalException(HttpStatus.BAD_REQUEST, "Rol ADMIN no encontrado"));
+//     if (dto.getFarm_id() == null) {
+//         throw new GlobalException(HttpStatus.BAD_REQUEST, "El ID de finca es requerido");
+//     }
+//     try {
+//         Role role = roleQueryRepository.findByName("ADMIN")
+//                 .orElseThrow(() -> new GlobalException(HttpStatus.BAD_REQUEST, "Rol ADMIN no encontrado"));
 
-        FarmEntity farm = farmsJPARepository.findById(dto.getFarm_id())
-                .orElseThrow(() -> new GlobalException(HttpStatus.BAD_REQUEST, "Finca no encontrada"));
+//         FarmEntity farm = farmsJPARepository.findById(dto.getFarm_id())
+//                 .orElseThrow(() -> new GlobalException(HttpStatus.BAD_REQUEST, "Finca no encontrada"));
+//         UserEntity userEntity = userMappers.createToEntity(userDto);
+//         userEntity.setUsername(dto.getAdmin_email());
+//         userEntity.setEmail(dto.getAdmin_email());
+//         userEntity.setPassword(passwordEncoder.encode(dto.getPassword()));
+//         userEntity.setActivo(1L);
+//         userEntity.setCreated_at(LocalDateTime.now());
+//         userEntity.setUpdated_at(LocalDateTime.now());
 
-        CreateUserDto userDto = registerMapper.toCreateUserDto(dto);
-        UserEntity userEntity = userMappers.createToEntity(userDto);
-        userEntity.setUsername(dto.getAdmin_email());
-        userEntity.setEmail(dto.getAdmin_email());
-        userEntity.setPassword(passwordEncoder.encode(dto.getPassword()));
-        userEntity.setActivo(1L);
-        userEntity.setCreated_at(LocalDateTime.now());
-        userEntity.setUpdated_at(LocalDateTime.now());
+//         // Guardar solo una vez
+//         userJPARepository.save(userEntity);
 
-        // Guardar solo una vez
-        userJPARepository.save(userEntity);
+//         Authentication auth = new UsernamePasswordAuthenticationToken(dto.getAdmin_email(), dto.getPassword());
+//         String token = _jwtTokenProvider.generateToken(auth, dto.getAdmin_email());
 
-        Authentication auth = new UsernamePasswordAuthenticationToken(dto.getAdmin_email(), dto.getPassword());
-        String token = _jwtTokenProvider.generateToken(auth, dto.getAdmin_email());
+//         UserDetailDto userDetail = authQueryRepository.findByUserLogin(dto.getAdmin_email());
+//         AuthDto authDto = new AuthDto();
+//         authDto.setUser(userDetail);
+//         authDto.setToken(token);
 
-        UserDetailDto userDetail = authQueryRepository.findByUserLogin(dto.getAdmin_email());
-        AuthDto authDto = new AuthDto();
-        authDto.setUser(userDetail);
-        authDto.setToken(token);
+//         return authDto;
 
-        return authDto;
-
-    } catch (Exception e) {
-        System.err.println("Error en el registro: " + e.getMessage());
-        throw new GlobalException(HttpStatus.CONFLICT, "Error al registrar el usuario: " + e.getMessage());
-    }
-}
+//     } catch (Exception e) {
+//         System.err.println("Error en el registro: " + e.getMessage());
+//         throw new GlobalException(HttpStatus.CONFLICT, "Error al registrar el usuario: " + e.getMessage());
+//     }
+// }
 
 
 
