@@ -4,3 +4,18 @@
 p-toast {
     z-index: 9999;
 }
+.p-datepicker .p-datepicker-today > span {
+    top: 0px !important;
+}
+::ng-deep .p-datepicker {
+  top: 0px !important;
+  z-index: 1002 !important;
+  transform: none !important;
+}
+.p-datepicker {
+    z-index: 1;
+    width: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+}

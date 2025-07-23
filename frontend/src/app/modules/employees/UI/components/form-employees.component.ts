@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
+import { Component, ViewEncapsulation } from "@angular/core";
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { MessageService } from "primeng/api";
@@ -36,6 +36,7 @@ import { lastValueFrom } from "rxjs";
         ToastModule,
         ConfirmDialogModule
     ],
+    encapsulation: ViewEncapsulation.None,
 })
 export class FormEmployeesComponent {
     public frm!: FormGroup;
