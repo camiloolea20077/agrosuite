@@ -53,13 +53,14 @@ export class IndexEmployeesComponent implements OnInit  {
             header: 'Fecha de ingreso',
             type: 'string',
             nameClass: 'text-center',
+            minWidth: 'min-width: 180px;',
         },
         {
             field: 'cargo',
             header: 'Cargo',
             type: 'string',
             nameClass: 'text-center',
-            minWidth: 'min-width: 250px;',
+            minWidth: 'min-width: 200px;',
         },
         {
             field: 'activo',

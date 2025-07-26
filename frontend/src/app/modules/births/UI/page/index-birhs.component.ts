@@ -42,16 +42,17 @@ export class IndexBirthsComponent {
     cols: ColsModel[] = [
         {
             field: 'numero_toro',
-            header: 'Numero Del Toro',
+            header: '# De Toro',
             type: 'string',
             nameClass: 'text-center',
+            minWidth: 'min-width: 150px;',
         },
         {
             field: 'numero_ganado',
-            header: 'Numeracion Vaca',
+            header: '# De Vaca',
             type: 'string',
             nameClass: 'text-center',
-            minWidth: 'min-width: 180px;',
+            minWidth: 'min-width: 150px;',
         },
         {
             field: 'sexo',

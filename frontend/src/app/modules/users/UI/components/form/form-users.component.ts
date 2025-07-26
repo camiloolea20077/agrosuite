@@ -25,6 +25,8 @@ import { UsersModels } from '../../../domain/models/users.model';
 import { lastValueFrom } from 'rxjs';
 import { ListElementService } from 'src/app/core/services/list-element.service';
 import { ListElementFarmsModes } from 'src/app/shared/utils/models/list-element-farms.model';
+import { customEmailValidator } from 'src/app/shared/utils/pipes/custom-email.validator';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @Component({
   selector: 'app-form-users',
@@ -43,6 +45,7 @@ import { ListElementFarmsModes } from 'src/app/shared/utils/models/list-element-
     InputTextModule,
     ToastModule,
     ConfirmDialogModule,
+    MultiSelectModule,
   ],
 })
 export class FormUsersComponent {
@@ -51,6 +54,15 @@ export class FormUsersComponent {
   slug: string | null = 'create';
   farmsModels: ListElementFarmsModes[] = [];
   rolesModels: ListElementFarmsModes[] = [];
+  permissionOptions = [
+    { label: 'Acceso a Administración', value: 'ADMIN_ACCESS' },
+    { label: 'Visualizar Inventario', value: 'INVENTORY_VIEW' },
+    { label: 'Crear Ganado', value: 'CATTLE_CREATE' },
+    { label: 'Acceso a Nómina', value: 'NOMINA_ACCESS' },
+    { label: 'Acceso Secretaría', value: 'SECRETARY_ACCESS' },
+    // ...otros permisos
+  ];
+
   constructor(
     private readonly usersService: UsersService,
     private readonly _router: Router,
@@ -67,9 +79,6 @@ export class FormUsersComponent {
     this.getRoles();
     this.getFarms();
     this.loadForm();
-    // if (this.slug === 'edit') {
-    //   this.loadEmployeesById(this.id);
-    // }
   }
     getFarms():void{
         this.listElementService.forListByFarms().subscribe((response) => {
@@ -86,16 +95,18 @@ export class FormUsersComponent {
     this.frm = this.formBuilder.group({
       active: [true],
       name: [null, Validators.required],
-      email: [null, Validators.required],
+      email: [null, [Validators.required, customEmailValidator]],
       password: [null, Validators.required],
       role_id: [null, Validators.required],
       farmId: [null, Validators.required],
       username: [null, Validators.required],
+      permissions: [[], Validators.required],
     });
   }
 
   async buildDataUsers(): Promise<CreateUsersDto | UpdateUsersDto> {
     const formValue = this.frm.value;
+    console.log('🚀 Permisos seleccionados:', this.frm.controls['permissions'].value);
     return {
         username: this.frm.controls['username'].value,
       active: formValue.active ? 1 : 2,
@@ -104,6 +115,7 @@ export class FormUsersComponent {
       password: this.frm.controls['password'].value,
       role_id: this.frm.controls['role_id'].value,
       farmId: this.frm.controls['farmId'].value,
+      permisos: this.frm.controls['permissions'].value
     };
   }
   async buildSaveUsers(): Promise<void> {

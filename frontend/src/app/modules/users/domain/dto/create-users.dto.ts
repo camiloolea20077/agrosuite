@@ -6,4 +6,5 @@ export interface CreateUsersDto {
     role_id: number;
     farmId: number;
     active: number;
+    permisos: string[];
 }

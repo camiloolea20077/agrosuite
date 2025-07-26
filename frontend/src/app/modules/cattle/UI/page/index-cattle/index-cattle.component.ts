@@ -43,7 +43,7 @@ export class IndexCattleComponent {
         },
         {
             field: 'numero_ganado',
-            header: 'Numero Ganado',
+            header: '#Ganado',
             type: 'string',
             nameClass: 'text-center',
             minWidth: 'min-width: 180px;',
