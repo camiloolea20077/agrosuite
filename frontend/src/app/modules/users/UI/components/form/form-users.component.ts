@@ -106,7 +106,6 @@ export class FormUsersComponent {
 
   async buildDataUsers(): Promise<CreateUsersDto | UpdateUsersDto> {
     const formValue = this.frm.value;
-    console.log('🚀 Permisos seleccionados:', this.frm.controls['permissions'].value);
     return {
         username: this.frm.controls['username'].value,
       active: formValue.active ? 1 : 2,

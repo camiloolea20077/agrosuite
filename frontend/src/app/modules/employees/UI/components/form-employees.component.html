@@ -1,90 +1,140 @@
 <p-toast></p-toast>
 <div class="card">
-    <div class="grid flex flex-wrap align-items-center">
-        <div class="col-12 lg:col-10 md:col-9 sm:col-6">
-            <h1 class="m-0">{{ slug === 'edit' ? 'Editar Empleado' : 'Nuevo Empleado' }}</h1>
-        </div>
+  <div class="grid flex flex-wrap align-items-center">
+    <div class="col-12 lg:col-10 md:col-9 sm:col-6">
+      <h1 class="m-0">
+        {{ slug === "edit" ? "Editar Empleado" : "Nuevo Empleado" }}
+      </h1>
     </div>
-    <hr />
-    <div class="grid formgrid p-fluid">
-        <form [formGroup]="frm" name="frm" id="frm" class="col-12 sm:col-12 md:col-12 lg:col-12"
-            (ngSubmit)="buildSaveEmployees()">
-            <div class="grid mt-1 p-2">
-                <div class="col-12 sm:col-12 md:col-12 lg:col-12 mt-2">
-                    <div class="grid mt-2">
-                        <div class="grid">
-                            <!-- Activo -->
-                            <div class="col-12 mt-3">
-                                <div class="field-checkbox">
-                                    <p-inputSwitch formControlName="activo"></p-inputSwitch>
-                                    <label class="ml-2">Activo</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="grid lg:mt-4 sm:mt-1">
-                        <!-- Nombre -->
-                        <div class="col-12 md:col-6 lg:col-6">
-                            <span class="p-float-label">
-                                <input pInputText id="nombre" formControlName="nombre" />
-                                <label for="nombre">Nombre</label>
-                            </span>
-                            <small class="p-error"
-                                *ngIf="frm.get('nombre')?.invalid && frm.get('nombre')?.touched">Campo
-                                obligatorio</small>
-                        </div>
-
-                        <!-- Identificación -->
-                        <div class="col-12 md:col-6 lg:col-6">
-                            <span class="p-float-label">
-                                <input pInputText id="identificacion" formControlName="identificacion" />
-                                <label for="identificacion">Identificación</label>
-                            </span>
-                            <small class="p-error"
-                                *ngIf="frm.get('identificacion')?.invalid && frm.get('identificacion')?.touched">Campo
-                                obligatorio</small>
-                        </div>
-                    </div>
-                    <div class="grid lg:mt-4 sm:mt-1">
-                        <!-- Cargo -->
-                        <div class="col-12 md:col-6 lg:col-6">
-                            <span class="p-float-label">
-                                <input pInputText id="cargo" formControlName="cargo" />
-                                <label for="cargo">Cargo</label>
-                            </span>
-                            <small class="p-error" *ngIf="frm.get('cargo')?.invalid && frm.get('cargo')?.touched">Campo
-                                obligatorio</small>
-                        </div>
-
-                        <!-- Fecha de ingreso -->
-                        <div class="col-12 md:col-6 lg:col-6">
-                            <div class="p-float-label">
-                                <p-calendar formControlName="fecha_ingreso" [showIcon]="true" inputId="icondisplay" />
-
-                                <label for="fecha_ingreso">Fecha de ingreso</label>
-                            </div>
-                            <small class="p-error"
-                                *ngIf="frm.get('fecha_ingreso')?.invalid && frm.get('fecha_ingreso')?.touched">Campo
-                                obligatorio</small>
-                        </div>
-                    </div>
+  </div>
+  <hr />
+  <div class="grid formgrid p-fluid">
+    <form
+      [formGroup]="frm"
+      name="frm"
+      id="frm"
+      class="col-12 sm:col-12 md:col-12 lg:col-12"
+      (ngSubmit)="buildSaveEmployees()"
+    >
+      <div class="grid mt-1 p-2">
+        <div class="col-12 sm:col-12 md:col-12 lg:col-12 mt-2">
+          <div class="grid mt-2">
+            <div class="grid">
+              <!-- Activo -->
+              <div class="col-12 mt-3">
+                <div class="field-checkbox">
+                  <p-inputSwitch formControlName="activo"></p-inputSwitch>
+                  <label class="ml-2">Activo</label>
                 </div>
-                <!-- Botones -->
-                <div class="grid col-12 p-0 mt-3 justify-end">
-                    <div class="col-12 md:col-3">
-                        <button pButton type="submit" label="Guardar" icon="pi pi-save"
-                            class="p-button-success w-full p-button-rounded"></button>
-                    </div>
-                    <div class="col-12 md:col-3">
-                        <button pButton type="button" label="Limpiar" icon="pi pi-trash"
-                            class="p-button-warning w-full p-button-rounded" (click)="resetForm()"></button>
-                    </div>
-                    <div class="col-12 md:col-3">
-                        <button pButton type="button" label="Volver" icon="pi pi-arrow-left"
-                            class="p-button-secondary w-full p-button-rounded" routerLink="/employees"></button>
-                    </div>
-                </div>
+              </div>
             </div>
-        </form>
-    </div>
+          </div>
+          <div class="grid lg:mt-4 sm:mt-1">
+            <!-- Nombre -->
+            <div class="col-12 md:col-6 lg:col-6">
+              <span class="p-float-label">
+                <input pInputText id="nombre" formControlName="nombre" />
+                <label for="nombre">Nombre</label>
+              </span>
+              <small
+                class="p-error"
+                *ngIf="frm.get('nombre')?.invalid && frm.get('nombre')?.touched"
+                >Campo obligatorio</small
+              >
+            </div>
+
+            <!-- Identificación -->
+            <div class="col-12 md:col-6 lg:col-6">
+              <span class="p-float-label">
+                <input
+                  pInputText
+                  id="identificacion"
+                  formControlName="identificacion"
+                />
+                <label for="identificacion">Identificación</label>
+              </span>
+              <small
+                class="p-error"
+                *ngIf="
+                  frm.get('identificacion')?.invalid &&
+                  frm.get('identificacion')?.touched
+                "
+                >Campo obligatorio</small
+              >
+            </div>
+          </div>
+          <div class="grid lg:mt-4 sm:mt-1">
+            <!-- Cargo -->
+            <div class="col-12 md:col-6 lg:col-6">
+              <span class="p-float-label">
+                <input pInputText id="cargo" formControlName="cargo" />
+                <label for="cargo">Cargo</label>
+              </span>
+              <small
+                class="p-error"
+                *ngIf="frm.get('cargo')?.invalid && frm.get('cargo')?.touched"
+                >Campo obligatorio</small
+              >
+            </div>
+
+            <!-- Fecha de ingreso -->
+            <div class="col-12 md:col-6 lg:col-6">
+              <div class="p-float-label">
+                <p-calendar
+                formControlName="fecha_nacimiento"
+                [appendTo]="'body'"
+                [showIcon]="true"
+                dateFormat="dd/mm/yy"
+                [monthNavigator]="true"
+                [yearNavigator]="true"
+                yearRange="1900:2100"
+                ></p-calendar>
+                <label for="fecha_ingreso">Fecha de ingreso</label>
+              </div>
+              <small
+                class="p-error"
+                *ngIf="
+                  frm.get('fecha_ingreso')?.invalid &&
+                  frm.get('fecha_ingreso')?.touched
+                "
+                >Campo obligatorio</small
+              >
+            </div>
+          </div>
+        </div>
+        <!-- Botones -->
+        <div class="grid col-12 p-0 mt-3 justify-end">
+          <div class="col-12 md:col-3">
+            <button
+              pButton
+              type="submit"
+              label="Guardar"
+              icon="pi pi-save"
+              class="p-button-success w-full p-button-rounded"
+            ></button>
+          </div>
+          <div class="col-12 md:col-3">
+            <button
+              pButton
+              type="button"
+              label="Limpiar"
+              icon="pi pi-trash"
+              class="p-button-warning w-full p-button-rounded"
+              (click)="resetForm()"
+            ></button>
+          </div>
+          <div class="col-12 md:col-3">
+            <button
+              pButton
+              type="button"
+              label="Volver"
+              icon="pi pi-arrow-left"
+              class="p-button-secondary w-full p-button-rounded"
+              routerLink="/employees"
+            ></button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
