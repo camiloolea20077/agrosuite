@@ -15,5 +15,5 @@ public interface BirthsService {
     Boolean delete(Long id);
     PageImpl<BirthsTableDto> pageGanado(PageableDto<Object> birthsTableDto);
     BirthsDto findById(Long id, Long farmId);
-    DashboardData getDashboardData();
+    DashboardData getDashboardData(Long farmId);
 }

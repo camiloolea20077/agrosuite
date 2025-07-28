@@ -1,0 +1,144 @@
+<p-toast></p-toast>
+
+<div class="card">
+    <div class="grid flex flex-wrap align-items-center">
+        <div class="col-12 lg:col-10 md:col-9 sm:col-6">
+            <h1 class="m-0">Nueva Venta de Ganado</h1>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="grid formgrid p-fluid">
+        <form [formGroup]="frm" id="frm" class="col-12" (ngSubmit)="submitForm()">
+            <div class="grid mt-1 p-2">
+                <div class="col-12 sm:col-12 md:col-12 lg:col-12 mt-2">
+                    <div class="grid lg:mt-4 sm:mt-1">
+                        <!-- Fecha de Venta -->
+                        <div class="col-12 md:col-6">
+                            <div class="p-float-label">
+                                <p-calendar formControlName="fechaVenta" [appendTo]="'body'" [showIcon]="true"
+                                    dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true"
+                                    yearRange="2000:2100"></p-calendar>
+                                <label for="fechaVenta">Fecha de venta</label>
+                            </div>
+                            <small class="p-error" *ngIf="
+                  frm.get('fechaVenta')?.invalid &&
+                  frm.get('fechaVenta')?.touched
+                ">Campo obligatorio</small>
+                        </div>
+
+                        <!-- Destino -->
+                        <div class="col-12 md:col-6">
+                            <span class="p-float-label">
+                                <input pInputText formControlName="destino" />
+                                <label for="destino">Destino</label>
+                            </span>
+                            <small class="p-error" *ngIf="
+                  frm.get('destino')?.invalid && frm.get('destino')?.touched
+                ">Campo obligatorio</small>
+                        </div>
+                    </div>
+                    <div class="grid lg:mt-4 sm:mt-1">
+                        <!-- Comprador -->
+                        <div class="col-12 md:col-6">
+                            <span class="p-float-label">
+                                <input pInputText formControlName="comprador" />
+                                <label for="comprador">Comprador</label>
+                            </span>
+                            <small class="p-error" *ngIf="
+                  frm.get('comprador')?.invalid && frm.get('comprador')?.touched
+                ">Campo obligatorio</small>
+                        </div>
+
+                        <!-- Precio por kilo -->
+                        <div class="col-12 md:col-6">
+                            <span class="p-float-label">
+                                <input pInputText type="number" formControlName="precioKilo" />
+                                <label for="precioKilo">Precio por kilo</label>
+                            </span>
+                            <small class="p-error" *ngIf="
+                  frm.get('precioKilo')?.invalid &&
+                  frm.get('precioKilo')?.touched
+                ">Campo obligatorio</small>
+                        </div>
+                    </div>
+                    <div class="grid lg:mt-4 sm:mt-1">
+                        <!-- Peso total -->
+                        <div class="col-12 md:col-6">
+                            <span class="p-float-label">
+                                <input pInputText formControlName="pesoTotal" type="number" [readonly]="true" />
+                                <label for="pesoTotal">Peso total (kg)</label>
+                            </span>
+                            <small class="p-error" *ngIf="
+      frm.get('pesoTotal')?.invalid && frm.get('pesoTotal')?.touched
+    ">Campo obligatorio</small>
+                        </div>
+
+                        <!-- Precio total -->
+                        <div class="col-12 md:col-6">
+                            <span class="p-float-label">
+                                <input pInputText formControlName="precioTotal" type="number" [readonly]="true" />
+                                <label for="precioTotal">Precio total ($)</label>
+                            </span>
+                            <small class="p-error" *ngIf="
+      frm.get('precioTotal')?.invalid && frm.get('precioTotal')?.touched
+    ">Campo obligatorio</small>
+                        </div>
+
+                    </div>
+                    <!-- Animales seleccionados -->
+                    <div class="col-12 mt-3">
+                        <button pButton type="button" label="Seleccionar Animales" icon="pi pi-search"
+                            (click)="openModal()" class="p-button-info p-button-rounded"></button>
+                        <div class="mt-3">
+                            <p-table [value]="selectedItems" [loading]="loadingTable">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th>Tipo</th>
+                                        <th>Peso</th>
+                                        <th>Precio Kilo</th>
+                                        <th>Precio Total</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-animal>
+                                    <tr>
+                                        <td>{{ animal.tipoOrigen }}</td>
+                                        <td>{{ animal.pesoVenta }}</td>
+                                        <td>{{ animal.precioKilo }}</td>
+                                        <td>{{ animal.precioTotal }}</td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="emptymessage">
+                                    <tr>
+                                        <td colspan="4" class="text-center">
+                                            No hay animales seleccionados
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                    </div>
+                </div>
+                <!-- Botones -->
+                <div class="grid col-12 p-0 mt-3 justify-end">
+                    <div class="col-12 md:col-3">
+                        <button pButton type="submit" label="Guardar" icon="pi pi-save"
+                            class="p-button-success w-full p-button-rounded"
+                            [disabled]="frm.invalid || selectedItems.length === 0"></button>
+                    </div>
+                    <div class="col-12 md:col-3">
+                        <button pButton type="button" label="Limpiar" icon="pi pi-trash"
+                            class="p-button-warning w-full p-button-rounded"></button>
+                    </div>
+                    <div class="col-12 md:col-3">
+                        <button pButton type="button" label="Volver" icon="pi pi-arrow-left"
+                            class="p-button-secondary w-full p-button-rounded" routerLink="/cattle-sales"></button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<app-select-cattle-modal [visible]="modalVisible" (onClose)="modalVisible = false"
+    (onSelect)="handleSelected($event)"></app-select-cattle-modal>

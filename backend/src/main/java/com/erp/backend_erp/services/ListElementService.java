@@ -7,8 +7,8 @@ import com.erp.backend_erp.dto.listElements.FarmsElementsDto;
 import com.erp.backend_erp.dto.listElements.RolesElementsDto;
 
 public interface ListElementService {
-    List<CattleElementsDto> findListForId();
-    List<CattleElementsDto> findListForIdFemale();
+    List<CattleElementsDto> findListForId(Long farmId);
+    List<CattleElementsDto> findListForIdFemale(Long farmId);
     List<FarmsElementsDto> getFarms();
     List<RolesElementsDto> getRoles();
 }

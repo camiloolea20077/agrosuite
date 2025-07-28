@@ -84,67 +84,54 @@ public class BirthsQueryRepository {
         PageRequest pageable = PageRequest.of(pageNumber, pageSize);
         return new PageImpl<>(result, pageable, count);
     }
-    public List<DashboardBirthDto> getBirthsByMonth() {
+    public List<DashboardBirthDto> getBirthsByMonth(Long farmId) {
         String sql = """
             SELECT 
                 EXTRACT(MONTH FROM TO_DATE(b.fecha_nacimiento, 'YYYY-MM-DD')) AS month, 
                 SUM(CASE WHEN b.sexo = 'Macho' THEN 1 ELSE 0 END) AS maleCount, 
                 SUM(CASE WHEN b.sexo = 'Hembra' THEN 1 ELSE 0 END) AS femaleCount
             FROM births b
-            WHERE b.deleted_at IS NULL
+            WHERE b.deleted_at IS NULL AND b.farm_id = :farmId
             GROUP BY EXTRACT(MONTH FROM TO_DATE(b.fecha_nacimiento, 'YYYY-MM-DD'))
             ORDER BY month
         """;
 
-        List<Map<String, Object>> resultList = namedParameterJdbcTemplate.query(sql, new MapSqlParameterSource(), new ColumnMapRowMapper());
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("farmId", farmId);
 
-        List<DashboardBirthDto> birthDataList = resultList.stream()
-                .map(row -> {
-                    // Manejar el mes
-                    Number monthNumber = (Number) row.get("month");
-                    Integer month = monthNumber != null ? monthNumber.intValue() : null;
-                    
-                    // Manejar los conteos como Long
-                    Number maleCountNumber = (Number) row.get("maleCount");
-                    Long maleCount = maleCountNumber != null ? maleCountNumber.longValue() : 0L;
-                    
-                    Number femaleCountNumber = (Number) row.get("femaleCount");
-                    Long femaleCount = femaleCountNumber != null ? femaleCountNumber.longValue() : 0L;
+        List<Map<String, Object>> resultList = namedParameterJdbcTemplate.query(sql, params, new ColumnMapRowMapper());
 
-                    return new DashboardBirthDto(month, maleCount, femaleCount);
-                })
-                .collect(Collectors.toList());
-
-        return birthDataList;
+        return resultList.stream()
+            .map(row -> {
+                Integer month = ((Number) row.get("month")).intValue();
+                Long maleCount = ((Number) row.get("maleCount")).longValue();
+                Long femaleCount = ((Number) row.get("femaleCount")).longValue();
+                return new DashboardBirthDto(month, maleCount, femaleCount);
+            }).collect(Collectors.toList());
     }
 
-    public long getTotalCattleCount() {
-        String sql = "SELECT COUNT(*) FROM cattle WHERE deleted_at IS NULL AND activo = 1";
-        return namedParameterJdbcTemplate.queryForObject(sql, new MapSqlParameterSource(), Long.class);
+
+    public long getTotalCattleCount(Long farmId) {
+        String sql = "SELECT COUNT(*) FROM cattle WHERE deleted_at IS NULL AND activo = 1 AND farm_id = :farmId";
+            MapSqlParameterSource params = new MapSqlParameterSource("farmId", farmId);
+            return namedParameterJdbcTemplate.queryForObject(sql, params, Long.class);
     }
-    public long getTotalBirths() {
+    public long getTotalBirths(Long farmId) {
+        String sql = "SELECT COUNT(*) FROM births WHERE deleted_at IS NULL AND farm_id = :farmId";
+        MapSqlParameterSource params = new MapSqlParameterSource("farmId", farmId);
+        return namedParameterJdbcTemplate.queryForObject(sql, params, Long.class);
+    }
+
+    public long getTotalEmployees(Long farmId) {
         String sql = """
-            SELECT 
-                CAST(COUNT(*) AS INTEGER) AS totalBirths
-            FROM births b
-            WHERE b.deleted_at IS NULL;
+            SELECT COUNT(*) 
+            FROM employees 
+            WHERE deleted_at IS NULL 
+            AND activo = 1 
+            AND farm_id = :farmId
         """;
-
-        Integer totalBirths = namedParameterJdbcTemplate.queryForObject(sql, new MapSqlParameterSource(), Integer.class);
-
-        return totalBirths != null ? totalBirths : 0;
+        MapSqlParameterSource params = new MapSqlParameterSource("farmId", farmId);
+        return namedParameterJdbcTemplate.queryForObject(sql, params, Long.class);
     }
-    public long getTotalEmployees() {
-        String sql = """
-            SELECT 
-                CAST(COUNT(*) AS INTEGER) AS totalBirths
-            FROM employees b
-            WHERE b.deleted_at IS NULL
-            AND b.activo = 1
-        """;
 
-        Integer totalEmployees = namedParameterJdbcTemplate.queryForObject(sql, new MapSqlParameterSource(), Integer.class);
-
-        return totalEmployees != null ? totalEmployees : 0;
-    }
 }

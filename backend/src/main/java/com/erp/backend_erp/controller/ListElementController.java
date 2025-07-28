@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,9 +24,9 @@ public class ListElementController {
     ListElementService listElementService;
 
     @GetMapping("/list-for-cattle-male")
-    public ResponseEntity<ApiResponse<Object>> findListForId() {
+    public ResponseEntity<ApiResponse<Object>> findListForId(@RequestHeader("farmId") Long farmId) {
         try {
-            List<CattleElementsDto> list = this.listElementService.findListForId();
+            List<CattleElementsDto> list = this.listElementService.findListForId(farmId);
             ApiResponse<Object> response = new ApiResponse<>(HttpStatus.OK.value(), "", false, list);
             return ResponseEntity.ok(response);
         } catch (Exception ex) {
@@ -33,9 +34,9 @@ public class ListElementController {
         }
     }
     @GetMapping("/list-for-cattle-female")
-    public ResponseEntity<ApiResponse<Object>> findListForIdFemale() {
+    public ResponseEntity<ApiResponse<Object>> findListForIdFemale(@RequestHeader("farmId") Long farmId) {
         try {
-            List<CattleElementsDto> list = this.listElementService.findListForIdFemale();
+            List<CattleElementsDto> list = this.listElementService.findListForIdFemale(farmId);
             ApiResponse<Object> response = new ApiResponse<>(HttpStatus.OK.value(), "", false, list);
             return ResponseEntity.ok(response);
         } catch (Exception ex) {

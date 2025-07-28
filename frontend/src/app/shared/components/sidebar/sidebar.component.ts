@@ -17,7 +17,9 @@ import { AuthService } from 'src/app/core/services/auth.service';
 export class SidebarComponent implements OnInit{
   isVisible = true;
   showAdminChildren = false;
+  showOperationsChildren = false;
   items: MenuItem[] = [];
+  expandedItems: Record<string, boolean> = {}
 
   constructor(
     private authService: AuthService,
@@ -38,7 +40,27 @@ export class SidebarComponent implements OnInit{
         { label: 'Contabilidad', icon: 'pi pi-chart-line', route: '/contabilidad' },
         { label: 'Nómina', icon: 'pi pi-wallet', route: '/nomina' },
       ];
-
+      if (
+        this.permissionService.hasPermission(AppPermissions.ADMIN_ACCESS) ||
+        this.permissionService.hasPermission(AppPermissions.SECRETARY_ACCESS)
+      ) {
+        this.items.push({
+          label: 'Operaciones de Ganado',
+          icon: 'pi pi-briefcase',
+          children: [
+            {
+              label: 'Traslado de Ganado',
+              icon: 'pi pi-directions',
+              route: '/traslados',
+            },
+            {
+              label: 'Venta de Ganado',
+              icon: 'pi pi-shopping-cart',
+              route: '/ventas',
+            },
+          ],
+        });
+      }
       // Solo si tiene permisos reales se muestra Administración
       if (
         this.permissionService.hasPermission(AppPermissions.ADMIN_ACCESS) ||
@@ -63,5 +85,15 @@ export class SidebarComponent implements OnInit{
 
   toggleAdminChildren() {
     this.showAdminChildren = !this.showAdminChildren;
+  }
+  toggleOperationsChildren() {
+    this.showOperationsChildren = !this.showOperationsChildren;
+  }
+  toggleItem(label: string) {
+    this.expandedItems[label] = !this.expandedItems[label];
+  }
+
+  isExpanded(label: string): boolean {
+    return this.expandedItems[label];
   }
 }

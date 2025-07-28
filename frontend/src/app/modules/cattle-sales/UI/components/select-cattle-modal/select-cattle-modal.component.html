@@ -1,0 +1,79 @@
+<p-dialog
+  header="Seleccionar animales"
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{ width: '80vw' }"
+  [resizable]="false"
+  (onHide)="handleClose()"
+>
+  <div class="p-fluid">
+    <p-table
+        #dt
+      [value]="cattles"
+      [(selection)]="selected"
+      dataKey="id"
+      [lazy]="true"
+      [loading]="loading"
+      (onLazyLoad)="loadTable($event)"
+      [paginator]="true"
+      [rows]="rowSize"
+      [totalRecords]="totalRecords"
+      [globalFilterFields]="['numero_ganado', 'tipo_ganado', 'sexo', 'peso']"
+      selectionMode="multiple"
+      responsiveLayout="scroll"
+      [rowsPerPageOptions]="[10, 20, 50]"
+    >
+      <ng-template pTemplate="caption">
+        <div class="flex justify-content-end">
+          <span class="p-input-icon-left">
+            <i class="pi pi-search"></i>
+            <input
+              pInputText
+              type="text"
+              (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+              placeholder="Buscar"
+              #globalFilter
+            />
+          </span>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 3rem">
+            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+          </th>
+          <th># Ganado</th>
+          <th>Tipo</th>
+          <th>Sexo</th>
+          <th>Peso</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-animal>
+        <tr [pSelectableRow]="animal">
+          <td>
+            <p-tableCheckbox [value]="animal"></p-tableCheckbox>
+          </td>
+          <td>{{ animal.numero_ganado }}</td>
+          <td>{{ animal.tipo_ganado }}</td>
+          <td>{{ animal.sexo }}</td>
+          <td>{{ animal.peso }}</td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="5">No se encontraron registros.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end gap-2">
+        <button pButton type="button" label="Cancelar" icon="pi pi-times" (click)="handleClose()" class="p-button-text"></button>
+        <button pButton type="button" label="Seleccionar" icon="pi pi-check" (click)="handleAccept()" [disabled]="selected.length === 0"></button>
+    </div>
+  </ng-template>
+</p-dialog>

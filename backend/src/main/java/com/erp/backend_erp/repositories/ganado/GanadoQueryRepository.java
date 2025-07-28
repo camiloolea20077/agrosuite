@@ -89,32 +89,45 @@ public class GanadoQueryRepository {
         return new PageImpl<>(result, pageable, count);
     }
 
-	public List<CattleElementsDto> findListForId() {
+	public List<CattleElementsDto> findListForId(Long farmId) {
 
 		String sql = """
                 SELECT id, numero_ganado 
                     FROM cattle 
                     WHERE sexo = 'Macho' 
                     AND deleted_at IS NULL
-                    AND activo = 1;
-                """;;
-
-		List<Map<String, Object>> resultList = jdbcTemplate.queryForList(sql);
+                    AND activo = 1
+                    AND farm_id = ?;
+                """;
+		List<Map<String, Object>> resultList = jdbcTemplate.queryForList(sql, farmId);
 		List<CattleElementsDto> list = MapperRepository.mapListToDtoList(resultList, CattleElementsDto.class);
 		return list;
 	}
 
-	public List<CattleElementsDto> findListForIdFemale() {
+	public List<CattleElementsDto> findListForIdFemale(Long farmId) {
 
 		String sql = """
                 SELECT id, numero_ganado 
                     FROM cattle 
                     WHERE sexo = 'Hembra' 
-                    AND deleted_at IS NULL;
-                """;;
+                    AND deleted_at IS NULL
+                    AND farm_id = ?;
+                """;
 
-		List<Map<String, Object>> resultList = jdbcTemplate.queryForList(sql);
+		List<Map<String, Object>> resultList = jdbcTemplate.queryForList(sql, farmId);
 		List<CattleElementsDto> list = MapperRepository.mapListToDtoList(resultList, CattleElementsDto.class);
 		return list;
 	}
+    public void marcarGanadoComoVendido(List<Long> cattleIds) {
+        String sql = """
+            UPDATE cattle
+            SET activo = 0,
+                deleted_at = CURRENT_TIMESTAMP
+            WHERE id IN (:ids)
+        """;
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("ids", cattleIds);
+        namedParameterJdbcTemplate.update(sql, params);
+    }
+
 }

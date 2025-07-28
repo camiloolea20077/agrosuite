@@ -81,14 +81,14 @@ public class BirthsServiceImpl  implements BirthsService {
     }
 
     @Override
-    public DashboardData getDashboardData() {
+    public DashboardData getDashboardData(Long farmId) {
         // Obtener los datos de nacimientos por mes (machos y hembras)
-        List<DashboardBirthDto> birthData = birthsQueryRepository.getBirthsByMonth();
+        List<DashboardBirthDto> birthData = birthsQueryRepository.getBirthsByMonth(farmId);
 
         // Obtener el total de ganado
-        long totalCattle = birthsQueryRepository.getTotalCattleCount();
-        Long totalBirths = birthsQueryRepository.getTotalBirths();
-        Long totalEmployees = birthsQueryRepository.getTotalEmployees();
+        long totalCattle = birthsQueryRepository.getTotalCattleCount(farmId);
+        Long totalBirths = birthsQueryRepository.getTotalBirths(farmId);
+        Long totalEmployees = birthsQueryRepository.getTotalEmployees(farmId);
         // Crear el objeto DashboardData con los datos obtenidos
         return new DashboardData(birthData, totalCattle, totalBirths, totalEmployees);
     }

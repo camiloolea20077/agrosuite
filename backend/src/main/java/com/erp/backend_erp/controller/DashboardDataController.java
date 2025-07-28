@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,9 +20,9 @@ public class DashboardDataController {
     BirthsService birthsService;
 
 @GetMapping("/data")
-public ResponseEntity<ApiResponse<Object>> findListForId() {
+public ResponseEntity<ApiResponse<Object>> findListForId(@RequestHeader("farmId") Long farmId) {
     try {
-        DashboardData dashboardData = this.birthsService.getDashboardData();
+        DashboardData dashboardData = this.birthsService.getDashboardData(farmId);
         ApiResponse<Object> response = new ApiResponse<>(HttpStatus.OK.value(), "", false, dashboardData);
         return ResponseEntity.ok(response);
     } catch (Exception ex) {

@@ -76,6 +76,14 @@ const routes: Routes = [
             (m) => m.InventoryModule
           ),
           canActivate: [AuthGuard],
+      },
+      {
+        path: 'ventas',
+        loadChildren: () =>
+          import('./modules/cattle-sales/cattle-sales.module').then(
+            (m) => m.CattleSalesModule
+          ),
+          canActivate: [AuthGuard],
       }
     ],
   },

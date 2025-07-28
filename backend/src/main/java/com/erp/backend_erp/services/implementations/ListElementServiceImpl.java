@@ -27,16 +27,16 @@ public class ListElementServiceImpl implements ListElementService {
 		this.roleQueryRepository = roleQueryRepository;
     }
     @Override
-	public List<CattleElementsDto> findListForId() {
-		List<CattleElementsDto> elements = ganadoQueryRepository.findListForId();
+	public List<CattleElementsDto> findListForId(Long farmId) {
+		List<CattleElementsDto> elements = ganadoQueryRepository.findListForId(farmId);
 		if (elements.isEmpty())
 			throw new GlobalException(HttpStatus.OK, "No se encontraron registros");
 		return elements;
 	}
     
     @Override
-	public List<CattleElementsDto> findListForIdFemale() {
-		List<CattleElementsDto> elements = ganadoQueryRepository.findListForIdFemale();
+	public List<CattleElementsDto> findListForIdFemale(Long farmId) {
+		List<CattleElementsDto> elements = ganadoQueryRepository.findListForIdFemale(farmId);
 		if (elements.isEmpty())
 			throw new GlobalException(HttpStatus.OK, "No se encontraron registros");
 		return elements;
