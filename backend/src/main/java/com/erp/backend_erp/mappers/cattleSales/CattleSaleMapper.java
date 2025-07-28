@@ -1,5 +1,7 @@
 package com.erp.backend_erp.mappers.cattleSales;
 
+import java.util.List;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -7,6 +9,7 @@ import org.mapstruct.Mappings;
 import com.erp.backend_erp.dto.cattleSales.CattleSaleDto;
 import com.erp.backend_erp.dto.cattleSales.CreateCattleSaleDto;
 import com.erp.backend_erp.dto.cattleSales.CreateCattleSaleItemDto;
+import com.erp.backend_erp.dto.cattleSales.ViewCattleSaleDto;
 import com.erp.backend_erp.entity.cattleSales.CattleSaleEntity;
 import com.erp.backend_erp.entity.cattleSales.CattleSaleItemEntity;
 
@@ -41,4 +44,13 @@ public interface  CattleSaleMapper {
         @Mapping(target = "deleted_at", ignore = true)
     })
     CattleSaleItemEntity toEntityItem(CreateCattleSaleItemDto dto);
+
+    @Mappings({
+    @Mapping(target = "items", source = "items")
+    })
+    ViewCattleSaleDto toViewDto(CattleSaleEntity entity, List<CattleSaleItemEntity> items);
+
+    CreateCattleSaleItemDto toViewItemDto(CattleSaleItemEntity entity);
+    List<CreateCattleSaleItemDto> toViewItemDtoList(List<CattleSaleItemEntity> items);
+
 }

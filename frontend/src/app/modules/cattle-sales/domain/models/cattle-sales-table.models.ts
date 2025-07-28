@@ -3,6 +3,7 @@ export class CattleSalesTableModel {
     tipo_venta: string;
     fecha_venta: string;
     comprador: string;
+    tipo_origen: string;
     observaciones: string;
     total_animales: number;
     peso_total: number;
@@ -11,6 +12,7 @@ export class CattleSalesTableModel {
 
     constructor(
         id: number,
+        tipo_origen: string,
         tipo_venta: string,
         fecha_venta: string,
         comprador: string,
@@ -21,6 +23,7 @@ export class CattleSalesTableModel {
         precio_promedio: number
     ) {
         this.id = id;
+        this.tipo_origen = tipo_origen;
         this.tipo_venta = tipo_venta;
         this.fecha_venta = fecha_venta;
         this.comprador = comprador;

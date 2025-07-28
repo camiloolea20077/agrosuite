@@ -9,6 +9,7 @@ import { ICattleSalesFilterTable } from "../domain/models/cattle-sales-filter-ta
 import { CreateCattleSaleDto } from "../domain/dto/create-cattle-sale.dto";
 import { ResponseModel } from "src/app/shared/utils/models/responde.models";
 import { CattleSaleModel } from "../domain/models/cattle-sales-models";
+import { CattleSaleDto } from "../domain/dto/CattleSaleDto";
 
 @Injectable({ providedIn: 'root' })
 export class SalesService {
@@ -26,4 +27,9 @@ export class SalesService {
   createCattleSale(sale: CreateCattleSaleDto): Observable<ResponseModel<CattleSaleModel>> {
     return this.http.post<ResponseModel<CattleSaleModel>>(`${this.apiUrl}/create`, sale);
   }
+    getCattleSaleById(id: number): Observable<ResponseModel<CattleSaleDto>> {
+    return this.http.get<ResponseModel<CattleSaleDto>>(`${this.apiUrl}/${id}`);
+    }
+
+
 }

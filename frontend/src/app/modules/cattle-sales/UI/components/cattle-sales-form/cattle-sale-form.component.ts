@@ -24,6 +24,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { SalesService } from '../../../infraestructure/sales.service';
 import { SelectCattleModalComponent } from '../select-cattle-modal/select-cattle-modal.component';
 import { CattleSalesModule } from '../../../cattle-sales.module';
+import { HelpersService } from 'src/app/shared/utils/pipes/helper.service';
 
 @Component({
   selector: 'app-cattle-sale-form',
@@ -58,6 +59,7 @@ export class CattleSaleFormComponent {
   constructor(
     private readonly fb: FormBuilder,
     private readonly _router: Router,
+    readonly _helperService: HelpersService,
     private readonly messageService: MessageService,
     private readonly _alertService: AlertService,
     private readonly cattleSaleService: SalesService,
@@ -65,6 +67,14 @@ export class CattleSaleFormComponent {
   ) {}
   async ngOnInit() {
     this.loadForm();
+            this._activatedRoute.params.subscribe(async (params) => {
+            const id = params['id'];
+            if (id) {
+                this.slug = 'view';
+                await this.loadSaleById(+id);
+                this.frm.disable();
+            }
+            });
     this.frm.statusChanges.subscribe(() => {
       this.updateTableLoadingState();
     });
@@ -76,13 +86,8 @@ export class CattleSaleFormComponent {
     this.frm = this.fb.group({
       fechaVenta: [null, Validators.required],
       precioKilo: [null, [Validators.required, Validators.min(1)]],
-      pesoTotal: [null,
-        [Validators.required, Validators.min(1)],
-      ],
-      precioTotal: [
-        null,
-        [Validators.required, Validators.min(1)],
-      ],
+      pesoTotal: [null, [Validators.required, Validators.min(1)]],
+      precioTotal: [null, [Validators.required, Validators.min(1)]],
       destino: [null, Validators.required],
       comprador: [null, Validators.required],
       observaciones: [null, Validators.required],
@@ -163,7 +168,7 @@ export class CattleSaleFormComponent {
       const precioTotal = precioKilo * peso;
 
       return {
-        tipoOrigen: 'GANADO',
+        tipoOrigen: animal.tipoOrigen,
         idOrigen: animal.idOrigen,
         pesoVenta: peso,
         precioKilo,
@@ -172,11 +177,11 @@ export class CattleSaleFormComponent {
     });
 
     // Calcular totales
-    const pesoTotal = items.reduce((sum, item) => sum + item.pesoVenta, 0)
-    const precioTotal = items.reduce((sum, item) => sum + item.precioTotal, 0)
+    const pesoTotal = items.reduce((sum, item) => sum + item.pesoVenta, 0);
+    const precioTotal = items.reduce((sum, item) => sum + item.precioTotal, 0);
     // Asignar a tabla
-    this.selectedItems = items as CreateCattleSaleItemDto[]
-    this.selectedCattleIds = items.map(item => item.idOrigen)
+    this.selectedItems = items as CreateCattleSaleItemDto[];
+    this.selectedCattleIds = items.map((item) => item.idOrigen);
     this.loadingTable = false;
     this.frm.patchValue({
       pesoTotal,
@@ -208,5 +213,32 @@ export class CattleSaleFormComponent {
       pesoTotal,
       precioTotal,
     });
+  }
+  async loadSaleById(id: number) {
+    try {
+      const response = await lastValueFrom(
+        this.cattleSaleService.getCattleSaleById(id)
+      );
+      const data = response.data;
+
+      // Carga el formulario
+      this.frm.patchValue({
+        comprador: data.comprador,
+        destino: data.destino,
+        fechaVenta: new Date(data.fechaVenta),
+        observaciones: data.observaciones,
+        precioKilo: data.precioKilo,
+        pesoTotal: data.pesoTotal,
+        precioTotal: data.precioTotal,
+      });
+
+      this.selectedItems = data.items;
+      this.selectedCattleIds = data.items.map((item: any) => item.idOrigen);
+    } catch (error) {
+      this._alertService.showError(
+        'Error al cargar la venta',
+        (error as { message: string }).message || ''
+      );
+    }
   }
 }

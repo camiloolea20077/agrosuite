@@ -43,6 +43,7 @@ public class BirthsQueryRepository {
                         b.fecha_nacimiento as fecha_nacimiento,
                         b.numero_cria as numero_cria,
                         b.sexo as sexo,
+                        b.peso_cria as peso_cria,
                         b.color_cria as color_cria,
                         b.observaciones as observaciones,
                         COUNT(*) OVER() AS total_rows
@@ -132,6 +133,18 @@ public class BirthsQueryRepository {
         """;
         MapSqlParameterSource params = new MapSqlParameterSource("farmId", farmId);
         return namedParameterJdbcTemplate.queryForObject(sql, params, Long.class);
+    }
+
+    public void marcarNacimientosComoVendidos(List<Long> cattleIds) {
+        String sql = """
+            UPDATE births
+            SET activo = 0,
+                deleted_at = CURRENT_TIMESTAMP
+            WHERE id IN (:ids)
+        """;
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("ids", cattleIds);
+        namedParameterJdbcTemplate.update(sql, params);
     }
 
 }

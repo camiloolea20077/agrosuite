@@ -33,7 +33,7 @@ import { BirthsService } from 'src/app/core/services/births.service';
 })
 export class SelectCattleModalComponent {
   @ViewChild('dtBirths') dtBirths!: Table;
-  origenSeleccionado: 'GANADO' | 'NACIMIENTO' = 'GANADO';
+  origenSeleccionado: 'GANADO' | 'TERNERO' = 'GANADO';
   @Input() visible: boolean = false;
   @Output() onClose = new EventEmitter<void>();
   @Output() onSelect = new EventEmitter<CreateCattleSaleItemDto[]>();
@@ -41,11 +41,14 @@ export class SelectCattleModalComponent {
   cattles: CattleTableModel[] = [];
   selected: CattleTableModel[] = [];
   births: BirthsTableModel[] = []
+  selectedGanado: CattleTableModel[] = [];
+  selectedNacimiento: BirthsTableModel[] = [];
+
   filtersTable!: IFilterTable<IBirthsFilterTable>
   rowSize = 10;
   totalRecords = 0;
   loadingTable = false;
-origenes = ['GANADO', 'NACIMIENTO'];
+origenes = ['GANADO', 'TERNERO'];
 
 
   constructor(private cattleService: CattleService,
@@ -100,11 +103,24 @@ origenes = ['GANADO', 'NACIMIENTO'];
         }
     }
   handleAccept() {
-    const mapped = this.selected.map((c) => this.mapToCreateDto(c));
+    let mapped: CreateCattleSaleItemDto[] = [];
+
+    if (this.origenSeleccionado === 'GANADO') {
+      mapped = this.selectedGanado.map((animal: CattleTableModel) =>
+        this.mapGanadoToCreateDto(animal)
+      );
+    } else {
+      mapped = this.selectedNacimiento.map((animal: BirthsTableModel) =>
+        this.mapNacimientoToCreateDto(animal)
+      );
+    }
+
     this.onSelect.emit(mapped);
-    this.selected = [];
+    this.selectedGanado = [];
+    this.selectedNacimiento = [];
     this.handleClose();
   }
+
 
   handleClose() {
     this.onClose.emit();
@@ -117,17 +133,28 @@ origenes = ['GANADO', 'NACIMIENTO'];
   close() {
     this.display = false;
   }
-  private mapToCreateDto(cattle: CattleTableModel): CreateCattleSaleItemDto {
-    return {
-      tipoOrigen: 'GANADO',
-      idOrigen: cattle.id,
-      pesoVenta: parseInt(cattle.peso, 10),
-      precioKilo: 0,
-      precioTotal: 0,
-    };
-  }
+private mapGanadoToCreateDto(cattle: CattleTableModel): CreateCattleSaleItemDto {
+  return {
+    tipoOrigen: 'GANADO',
+    idOrigen: cattle.id,
+    pesoVenta: parseInt(cattle.peso, 10),
+    precioKilo: 0,
+    precioTotal: 0,
+  };
+}
+
+private mapNacimientoToCreateDto(birth: BirthsTableModel): CreateCattleSaleItemDto {
+  return {
+    tipoOrigen: 'TERNERO',
+    idOrigen: birth.id,
+    pesoVenta: parseInt(birth.peso_cria, 10),
+    precioKilo: 0,
+    precioTotal: 0,
+  };
+}
+
+
   onOrigenChange(): void {
-    console.log('Cambio de origen a:', this.origenSeleccionado); // ✅
     this.selected = [];
     this.totalRecords = 0;
 
@@ -140,11 +167,9 @@ origenes = ['GANADO', 'NACIMIENTO'];
     };
     if (this.origenSeleccionado === 'GANADO') {
       this.loadTable(defaultEvent);
-    } else if (this.origenSeleccionado === 'NACIMIENTO') {
-      // Esperar a que Angular dibuje la tabla de nacimiento
+    } else if (this.origenSeleccionado === 'TERNERO') {
       this.cd.detectChanges();
       setTimeout(() => {
-        console.log('Cargando nacimientos...');
         this.loadTableBirth(defaultEvent);
       }, 0);
     }

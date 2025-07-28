@@ -10,6 +10,7 @@ public class SalesTableDto {
     private String tipo_venta;
     private String fecha_venta;
     private String comprador;
+    private String tipo_origen;
     private String observaciones;
     private Long total_animales;
     private Long peso_total;

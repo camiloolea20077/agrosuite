@@ -12,8 +12,12 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.erp.backend_erp.dto.cattleSales.SalesTableDto;
+import com.erp.backend_erp.entity.cattleSales.CattleSaleItemEntity;
 import com.erp.backend_erp.util.MapperRepository;
 import com.erp.backend_erp.util.PageableDto;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 @Repository
 public class CattleSalesQueryRepository {
@@ -22,6 +26,8 @@ public class CattleSalesQueryRepository {
     @Autowired
     private NamedParameterJdbcTemplate jdbc;
 
+    @PersistenceContext
+    private EntityManager entityManager;
     public boolean existsByOrigen(String tipoOrigen, Long idOrigen, Long farmId) {
         String sql = "";
         if ("GANADO".equalsIgnoreCase(tipoOrigen)) {
@@ -50,6 +56,7 @@ public class CattleSalesQueryRepository {
                     s.comprador AS comprador,
                     s.observaciones AS observaciones,
                     COUNT(si.id) AS total_animales,
+                    si.tipo_origen as tipo_origen,
                     SUM(si.peso_venta) AS peso_total,
                     ROUND(AVG(si.precio_kilo), 2) AS precio_promedio,
                     SUM(si.precio_total) AS total_venta,
@@ -62,7 +69,7 @@ public class CattleSalesQueryRepository {
                     s.deleted_at IS NULL
                     AND s.farm_id = :farmId
                 GROUP BY 
-                    s.id, s.tipo_venta, s.fecha_venta, s.comprador, s.observaciones
+                    s.id, s.tipo_venta, s.fecha_venta, s.comprador, s.observaciones, si.tipo_origen
             """;
 
         MapSqlParameterSource params = new MapSqlParameterSource();
@@ -97,5 +104,12 @@ public class CattleSalesQueryRepository {
         PageRequest pageable = PageRequest.of(pageNumber, pageSize);
         return new PageImpl<>(result, pageable, count);
     }
+    public List<CattleSaleItemEntity> findItemsBySaleId(Long saleId) {
+        String jpql = "SELECT i FROM CattleSaleItemEntity i WHERE i.sale.id = :saleId";
+        return entityManager.createQuery(jpql, CattleSaleItemEntity.class)
+            .setParameter("saleId", saleId)
+            .getResultList();
+    }
+
 
 }

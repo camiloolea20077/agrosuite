@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
-import { Router, RouterModule } from "@angular/router";
+import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { ButtonModule } from "primeng/button";
 import { ConfirmDialogModule } from "primeng/confirmdialog";
@@ -16,6 +16,8 @@ import { SalesService } from "../../../infraestructure/sales.service";
 import { lastValueFrom } from "rxjs";
 import { InventoryModule } from "../../../../inventory/inventory.module";
 import { CattleSalesModule } from "../../../cattle-sales.module";
+import { AlertService } from "src/app/shared/utils/pipes/alert.service";
+import { CreateCattleSaleItemDto } from "../../../domain/dto/create-cattle-sale-item.dto";
 
 @Component({
     selector: "app-index-cattle-sales",
@@ -38,17 +40,27 @@ import { CattleSalesModule } from "../../../cattle-sales.module";
 export class IndexCattleSalesComponent {
     public rowSize = 10
     public totalRecords = 0
+    public slug: string | null = 'create';
     public loadingTable = true
     sales: CattleSalesTableModel[] = []
+      public selectedItems: CreateCattleSaleItemDto[] = [];
+      public selectedCattleIds: number[] = [];
     filtersTable!: IFilterTable<ICattleSalesFilterTable>
     cols: ColsModel[] = [
-        // {
-        //     field: 'tipo_venta',
-        //     header: 'Tipo Venta',
-        //     type: 'string',
-        //     nameClass: 'text-center',
-        //     minWidth: 'min-width: 280px;',
-        // },
+        {
+            field: 'id',
+            header: '# Venta',
+            type: 'number',
+            nameClass: 'text-center',
+            minWidth: 'min-width: 70px;',
+        },
+        {
+            field: 'tipo_origen',
+            header: 'Tipo Animal',
+            type: 'number',
+            nameClass: 'text-center',
+            minWidth: 'min-width: 70px;',
+        },
         {
             field: 'fecha_venta',
             header: 'Fecha Venta',
@@ -94,10 +106,14 @@ export class IndexCattleSalesComponent {
         private readonly _confirmationService: ConfirmationService,
         private readonly salesService: SalesService,
         private router: Router,
+        private readonly _alertService: AlertService,
+        private readonly cattleSaleService: SalesService,
+        private readonly _activatedRoute: ActivatedRoute,
         private messageService: MessageService
     ) { }
     ngOnInit(): void {
         this.loadTable
+            this.loadColumnActions();
     }
     async loadTable(lazyTable: TableLazyLoadEvent): Promise<void> {
         this.loadingTable = true
@@ -131,4 +147,10 @@ export class IndexCattleSalesComponent {
             order_by: lazyTable.sortField ?? 'id',
         }
     }
+  async loadColumnActions(): Promise<void> {
+    const columnAction = await this._helperService.showActionsTable();
+    if (columnAction) {
+      this.cols.push(columnAction);
+    }
+  }
 }

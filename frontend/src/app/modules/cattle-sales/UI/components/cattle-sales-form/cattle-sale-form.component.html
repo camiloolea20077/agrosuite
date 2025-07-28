@@ -3,7 +3,7 @@
 <div class="card">
   <div class="grid flex flex-wrap align-items-center">
     <div class="col-12 lg:col-10 md:col-9 sm:col-6">
-      <h1 class="m-0">Nueva Venta de Ganado</h1>
+      <h1 class="m-0">{{slug === 'create' ? 'Nueva venta' : 'Visualizar venta'}}</h1>
     </div>
   </div>
 
@@ -143,6 +143,7 @@
             <button
               pButton
               type="button"
+              [disabled]="slug === 'view'"
               label="Seleccionar Animales"
               icon="pi pi-search"
               (click)="openModal()"
@@ -179,7 +180,7 @@
         </div>
         <!-- Botones -->
         <div class="grid col-12 p-0 mt-3 justify-end">
-          <div class="col-12 md:col-3">
+          <div class="col-12 md:col-3" *ngIf="slug !== 'view'">
             <button
               pButton
               type="submit"
@@ -189,7 +190,7 @@
               [disabled]="frm.invalid || selectedItems.length === 0"
             ></button>
           </div>
-          <div class="col-12 md:col-3">
+          <div class="col-12 md:col-3" *ngIf="slug !== 'view'">
             <button
               pButton
               type="button"
@@ -205,7 +206,7 @@
               label="Volver"
               icon="pi pi-arrow-left"
               class="p-button-secondary w-full p-button-rounded"
-              routerLink="/cattle-sales"
+              routerLink="/sales"
             ></button>
           </div>
         </div>

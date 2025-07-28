@@ -15,6 +15,13 @@ const routes: Routes = [
       import('./UI/components/cattle-sales-form/cattle-sale-form.component').then(
         (m) => m.CattleSaleFormComponent
       ),
+  },
+  {
+    path: 'view/:id',
+    loadComponent: () =>
+      import('./UI/components/cattle-sales-form/cattle-sale-form.component').then(
+        (m) => m.CattleSaleFormComponent
+      ),
   }
 ]
 @NgModule({

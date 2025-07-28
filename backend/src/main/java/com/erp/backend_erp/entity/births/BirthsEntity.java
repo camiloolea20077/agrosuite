@@ -39,6 +39,8 @@ public class BirthsEntity {
 
     private String sexo;
 
+    private String peso_cria;
+    
     private String color_cria;
 
     private String observaciones;

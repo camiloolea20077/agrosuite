@@ -12,6 +12,7 @@ public class BirthsTableDto {
     private String fecha_nacimiento;
     private String numero_cria;
     private String sexo;
+    private String peso_cria;
     private String color_cria;
     private String observaciones;
 }

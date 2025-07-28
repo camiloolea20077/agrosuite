@@ -68,6 +68,13 @@ export class IndexBirthsComponent {
             minWidth: 'min-width: 40px;',
         },
         {
+            field: 'peso_cria',
+            header: 'Peso Cria',
+            type: 'string',
+            nameClass: 'text-left',
+            minWidth: 'min-width: 40px;',
+        },
+        {
             field: 'numero_cria',
             header: 'Numero Cria',
             type: 'string',
