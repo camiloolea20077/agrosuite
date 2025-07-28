@@ -10,6 +10,7 @@ import lombok.Setter;
 public class CreateCattleSaleDto {
     private String fechaVenta;
     private Double pesoTotal;
+    private String tipoVenta;
     private Double precioKilo;
     private String destino;
     private Long farmId;

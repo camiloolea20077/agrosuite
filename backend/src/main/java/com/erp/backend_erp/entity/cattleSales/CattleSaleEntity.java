@@ -34,7 +34,9 @@ public class CattleSaleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(name = "tipo_venta")
+    private String tipoVenta;
+    
     @Column(name = "fecha_venta")
     private String fechaVenta;
 
@@ -53,7 +55,7 @@ public class CattleSaleEntity {
     private Long farmId;
 
     private String observaciones;
-    
+
     private String comprador;
 
     @ElementCollection
