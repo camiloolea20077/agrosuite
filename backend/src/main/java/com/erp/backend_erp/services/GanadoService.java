@@ -1,5 +1,7 @@
 package com.erp.backend_erp.services;
 
+import java.util.List;
+
 import org.springframework.data.domain.PageImpl;
 
 import com.erp.backend_erp.dto.ganado.CreateGanadoDto;
@@ -13,5 +15,6 @@ public interface  GanadoService {
     Boolean update(UpdateGanadoDto updateGanadoDto);
     Boolean delete(Long id);
     PageImpl<GanadoTableDto> pageGanado(PageableDto<Object> pageableDto);
+    List<GanadoDto> createAll(List<CreateGanadoDto> dtoList);
     GanadoDto findById(Long id, Long farmId);
 }

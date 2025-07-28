@@ -1,5 +1,8 @@
 package com.erp.backend_erp.services.implementations;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -43,6 +46,24 @@ public class GanadoServiceImpl implements GanadoService {
             throw new GlobalException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
+    @Override
+    public List<GanadoDto> createAll(List<CreateGanadoDto> dtoList) {
+        List<GanadoDto> result = new ArrayList<>();
+
+        for (CreateGanadoDto dto : dtoList) {
+            try {
+                GanadoDto saved = this.create(dto); // Usa el método individual
+                result.add(saved);
+            } catch (Exception e) {
+                // Si quieres ignorar duplicados y continuar con el resto:
+                // Logueas y sigues con los demás
+                System.out.println("No se pudo guardar GND " + dto.getNumero_ganado() + ": " + e.getMessage());
+            }
+        }
+
+        return result;
+    }
+
     @Override
     public PageImpl<GanadoTableDto> pageGanado(PageableDto<Object> pageableDto) {
         return ganadoQueryRepository.listCattle(pageableDto);

@@ -1,5 +1,7 @@
 package com.erp.backend_erp.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +50,31 @@ public class GanadoController {
             throw ex;
         }
     }
+@PostMapping("/create/batch")
+public ResponseEntity<ApiResponse<Object>> createMultipleCattle(
+        @RequestHeader("farmid") Long farmId,
+        @Valid @RequestBody List<CreateGanadoDto> createCattleList) throws Exception {
+    try {
+        // Asignar el farmId a cada uno
+        for (CreateGanadoDto dto : createCattleList) {
+            dto.setFarmId(farmId);
+        }
+
+        // Guardar todos los registros
+        List<GanadoDto> savedCattle = ganadoService.createAll(createCattleList);
+
+        ApiResponse<Object> response = new ApiResponse<>(
+                HttpStatus.CREATED.value(),
+                "Registros creados exitosamente",
+                false,
+                savedCattle
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    } catch (Exception ex) {
+        throw ex;
+    }
+}
 
     @PostMapping("/page")
     public ResponseEntity<ApiResponse<Object>> listConventions(
