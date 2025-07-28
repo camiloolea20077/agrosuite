@@ -56,7 +56,7 @@ export class SidebarComponent implements OnInit{
             {
               label: 'Venta de Ganado',
               icon: 'pi pi-shopping-cart',
-              route: '/ventas',
+              route: '/sales',
             },
           ],
         });

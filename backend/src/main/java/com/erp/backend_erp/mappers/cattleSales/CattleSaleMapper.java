@@ -21,7 +21,8 @@ public interface  CattleSaleMapper {
         @Mapping(target = "destino", source = "dto.destino"),
         @Mapping(target = "farmId", source = "dto.farmId"),
         @Mapping(target = "comprador", source = "dto.comprador"),
-        @Mapping(target = "cattleIds", source = "dto.cattleIds")
+        @Mapping(target = "cattleIds", source = "dto.cattleIds"),
+        @Mapping(target = "observaciones", source = "dto.observaciones"),
     })
     CattleSaleEntity toEntity(CreateCattleSaleDto dto);
 

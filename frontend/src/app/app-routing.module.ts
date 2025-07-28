@@ -78,7 +78,7 @@ const routes: Routes = [
           canActivate: [AuthGuard],
       },
       {
-        path: 'ventas',
+        path: 'sales',
         loadChildren: () =>
           import('./modules/cattle-sales/cattle-sales.module').then(
             (m) => m.CattleSalesModule

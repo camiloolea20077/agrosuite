@@ -18,6 +18,7 @@ import { ConfirmDialogModule } from "primeng/confirmdialog";
 import { SalesService } from "../../../infraestructure/sales.service";
 import { SelectCattleModalComponent } from "../select-cattle-modal/select-cattle-modal.component";
 import { CattleTableModel } from "src/app/core/models/cattle/cattle-table.model";
+import { CattleSalesModule } from "../../../cattle-sales.module";
 
 @Component({
     selector: 'app-cattle-sale-form',
@@ -25,19 +26,20 @@ import { CattleTableModel } from "src/app/core/models/cattle/cattle-table.model"
     styleUrls: ['./cattle-sale-form.component.scss'],
     standalone: true,
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        FormsModule,
-        InputTextModule,
-        CalendarModule,
-        InputNumberModule,
-        InputTextareaModule,
-        RouterModule,
-        ToastModule,
-        ConfirmDialogModule,
-        TableModule,
-        SelectCattleModalComponent
-    ],
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    InputTextModule,
+    CalendarModule,
+    InputNumberModule,
+    InputTextareaModule,
+    RouterModule,
+    ToastModule,
+    ConfirmDialogModule,
+    TableModule,
+    SelectCattleModalComponent,
+    CattleSalesModule
+],
     encapsulation: ViewEncapsulation.None,
 })
 export class CattleSaleFormComponent {
@@ -74,11 +76,13 @@ export class CattleSaleFormComponent {
             precioTotal: [{ value: null, disabled: true }, [Validators.required, Validators.min(1)]],
             destino: [null, Validators.required],
             comprador: [null, Validators.required],
+            observaciones: [null, Validators.required],
         });
     }
     async buildData(): Promise<CreateCattleSaleDto> {
         const value = this.frm.value;
         return {
+            observaciones: value.observaciones || '',
             fechaVenta: this.formatDateToYYYYMMDD(value.fechaVenta),
             pesoTotal: value.pesoTotal,
             precioKilo: value.precioKilo,
@@ -111,7 +115,7 @@ export class CattleSaleFormComponent {
                     detail: 'Venta registrada correctamente',
                     life: 5000,
                 });
-                this._router.navigate(['/ventas']);
+                this._router.navigate(['/sales']);
             }
         } catch (error: any) {
             this._alertService.showError('Alerta del sistema', error?.message ?? 'Error al registrar la venta');

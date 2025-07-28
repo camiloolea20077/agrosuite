@@ -8,5 +8,6 @@ export interface CreateCattleSaleDto {
   cattleIds: number[];
   precioTotal: number;
   comprador: string;
+  observaciones: string;
   items: CreateCattleSaleItemDto[];
 }

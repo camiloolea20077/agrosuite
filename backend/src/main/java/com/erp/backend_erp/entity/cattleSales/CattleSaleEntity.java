@@ -52,6 +52,8 @@ public class CattleSaleEntity {
     @Column(name = "farm_id")
     private Long farmId;
 
+    private String observaciones;
+    
     private String comprador;
 
     @ElementCollection

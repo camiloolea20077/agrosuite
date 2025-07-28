@@ -16,5 +16,6 @@ public class CreateCattleSaleDto {
     private List<Long> cattleIds;
     private Double precioTotal; 
     private String comprador;
+    private String observaciones;
     private List<CreateCattleSaleItemDto> items; 
 }

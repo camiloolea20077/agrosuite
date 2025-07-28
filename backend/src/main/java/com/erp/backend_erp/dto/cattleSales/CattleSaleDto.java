@@ -15,6 +15,7 @@ public class CattleSaleDto {
     private Double precioKilo;
     private Double precioTotal;
     private String destino;
+    private String observaciones;
     private Long farmId;
     private List<Long> cattleIds;
     private String comprador;
