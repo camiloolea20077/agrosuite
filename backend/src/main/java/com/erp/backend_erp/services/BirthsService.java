@@ -1,5 +1,7 @@
 package com.erp.backend_erp.services;
 
+import java.util.List;
+
 import org.springframework.data.domain.PageImpl;
 
 import com.erp.backend_erp.dto.births.BirthsDto;
@@ -11,6 +13,7 @@ import com.erp.backend_erp.util.PageableDto;
 
 public interface BirthsService {
     BirthsDto create(CreateBirthsDto createBirthsDto);
+    List<BirthsDto> createAll(List<CreateBirthsDto> dtoList);
     Boolean update(UpdateBirthsDto updateBirthsDto);
     Boolean delete(Long id);
     PageImpl<BirthsTableDto> pageGanado(PageableDto<Object> birthsTableDto);

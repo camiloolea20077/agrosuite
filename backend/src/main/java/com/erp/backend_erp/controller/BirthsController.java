@@ -1,5 +1,7 @@
 package com.erp.backend_erp.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,6 @@ import com.erp.backend_erp.dto.births.BirthsDto;
 import com.erp.backend_erp.dto.births.BirthsTableDto;
 import com.erp.backend_erp.dto.births.CreateBirthsDto;
 import com.erp.backend_erp.dto.births.UpdateBirthsDto;
-import com.erp.backend_erp.dto.ganado.GanadoDto;
 import com.erp.backend_erp.services.BirthsService;
 import com.erp.backend_erp.util.ApiResponse;
 import com.erp.backend_erp.util.GlobalException;
@@ -44,6 +45,31 @@ public class BirthsController {
             ApiResponse<Object> response = new ApiResponse<>(HttpStatus.CREATED.value(),
                 "Registro creado exitosamente", false, savedUser);
             return ResponseEntity.ok(response);
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
+    @PostMapping("/create/batch")
+    public ResponseEntity<ApiResponse<Object>> createMultipleCattle(
+            @RequestHeader("farmid") Long farmId,
+            @Valid @RequestBody List<CreateBirthsDto> createCattleList) throws Exception {
+        try {
+            // Asignar el farmId a cada uno
+            for (CreateBirthsDto dto : createCattleList) {
+                dto.setFarmId(farmId);
+            }
+
+            // Guardar todos los registros
+            List<BirthsDto> savedCattle = birthsService.createAll(createCattleList);
+
+            ApiResponse<Object> response = new ApiResponse<>(
+                    HttpStatus.CREATED.value(),
+                    "Registros creados exitosamente",
+                    false,
+                    savedCattle
+            );
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception ex) {
             throw ex;
         }

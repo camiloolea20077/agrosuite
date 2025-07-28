@@ -1,5 +1,6 @@
 package com.erp.backend_erp.services.implementations;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.PageImpl;
@@ -47,6 +48,24 @@ public class BirthsServiceImpl  implements BirthsService {
             throw new GlobalException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
+    @Override
+    public List<BirthsDto> createAll(List<CreateBirthsDto> dtoList) {
+        List<BirthsDto> result = new ArrayList<>();
+
+        for (CreateBirthsDto dto : dtoList) {
+            try {
+                BirthsDto saved = this.create(dto); // Usa el método individual
+                result.add(saved);
+            } catch (Exception e) {
+                // Si quieres ignorar duplicados y continuar con el resto:
+                // Logueas y sigues con los demás
+                System.out.println("No se pudo guardar GND " + dto.getNumero_cria() + ": " + e.getMessage());
+            }
+        }
+
+        return result;
+    }
+
     @Override
     public Boolean update(UpdateBirthsDto updateBirthsDto) {
         BirthsEntity ganadoEntity = birthsJPARepository.findById(updateBirthsDto.getId())
