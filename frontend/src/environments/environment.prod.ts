@@ -10,4 +10,5 @@ export const environment = {
     dashboardUrl: 'https://agrosuite-production.up.railway.app/dashboard',
     inventoryUrl: 'https://agrosuite-production.up.railway.app/inventory',
     salesUrl: 'https://agrosuite-production.up.railway.app/cattle-sale',
+    tercerosUrl: 'https://agrosuite-production.up.railway.app/terceros',
 };

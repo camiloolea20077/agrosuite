@@ -46,61 +46,87 @@ export class IndexCattleSalesComponent {
       public selectedItems: CreateCattleSaleItemDto[] = [];
       public selectedCattleIds: number[] = [];
     filtersTable!: IFilterTable<ICattleSalesFilterTable>
-    cols: ColsModel[] = [
-        {
-            field: 'id',
-            header: '# Venta',
-            type: 'number',
-            nameClass: 'text-center',
-            minWidth: 'min-width: 70px;',
-        },
-        {
-            field: 'tipo_origen',
-            header: 'Tipo Animal',
-            type: 'number',
-            nameClass: 'text-center',
-            minWidth: 'min-width: 70px;',
-        },
-        {
-            field: 'fecha_venta',
-            header: 'Fecha Venta',
-            type: 'string',
-            nameClass: 'text-center',
-            minWidth: 'min-width: 180px;',
-        },
-        {
-            field: 'comprador',
-            header: 'Comprador',
-            type: 'string',
-            nameClass: 'text-center',
-            minWidth: 'min-width: 180px;',
-        },
-        {
-            field: 'observaciones',
-            header: 'Observaciones',
-            type: 'string',
-            nameClass: 'text-center',
-            minWidth: 'min-width: 180px;',
-        },
-        {
-            field: 'total_animales',
-            header: 'Total Animales',
-            type: 'number',
-            nameClass: 'text-center',
-        },
-        {
-            field: 'peso_total',
-            header: 'Peso Total (kg)',
-            type: 'number',
-            nameClass: 'text-center',
-        },
-        {
-            field: 'total_venta',
-            header: 'Total Venta ($)',
-            type: 'number',
-            nameClass: 'text-center',
-        }
-    ]
+cols: ColsModel[] = [
+    {
+        field: 'id',
+        header: '# Venta',
+        type: 'number',
+        nameClass: 'text-center',
+        minWidth: 'min-width: 70px;',
+    },
+    {
+        field: 'tipo_venta',
+        header: 'Tipo Venta',
+        type: 'string',
+        nameClass: 'text-center',
+        minWidth: 'min-width: 120px;',
+    },
+    {
+        field: 'tipo_origen',
+        header: 'Tipo Animal',
+        type: 'string',
+        nameClass: 'text-center',
+        minWidth: 'min-width: 120px;',
+    },
+    {
+        field: 'fecha_venta',
+        header: 'Fecha Venta',
+        type: 'string',
+        nameClass: 'text-center',
+        minWidth: 'min-width: 150px;',
+    },
+    {
+        field: 'destino',
+        header: 'Comprador',
+        type: 'string',
+        nameClass: 'text-center',
+        minWidth: 'min-width: 150px;',
+    },
+    {
+        field: 'observaciones',
+        header: 'Observaciones',
+        type: 'string',
+        nameClass: 'text-center',
+        minWidth: 'min-width: 180px;',
+    },
+    {
+        field: 'total_animales',
+        header: 'Animales',
+        type: 'number',
+        nameClass: 'text-center',
+    },
+    {
+        field: 'precio_kilo',
+        header: 'Precio/Kilo ($)',
+        type: 'number',
+        nameClass: 'text-center',
+    },
+    {
+        field: 'peso_total',
+        header: 'Peso Total (kg)',
+        type: 'number',
+        nameClass: 'text-center',
+    },
+    {
+        field: 'subtotal',
+        header: 'Subtotal ($)',
+        type: 'number',
+        nameClass: 'text-center',
+    },
+    {
+        field: 'descuentos',
+        header: 'Descuentos ($)',
+        type: 'number',
+        nameClass: 'text-center',
+    },
+    {
+        field: 'total_venta',
+        header: 'Total Venta ($)',
+        type: 'number',
+        nameClass: 'text-center',
+    }
+];
+
     constructor(
         readonly _helperService: HelpersService,
         private readonly _confirmationService: ConfirmationService,

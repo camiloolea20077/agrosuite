@@ -14,31 +14,41 @@ import com.erp.backend_erp.entity.cattleSales.CattleSaleEntity;
 import com.erp.backend_erp.entity.cattleSales.CattleSaleItemEntity;
 
 @Mapper(componentModel = "spring")
-public interface  CattleSaleMapper {
+public interface CattleSaleMapper {
+
     @Mappings({
         @Mapping(target = "id", ignore = true),
-        @Mapping(target = "fechaVenta", source = "dto.fechaVenta"),
-        @Mapping(target = "pesoTotal", source = "dto.pesoTotal"),
-        @Mapping(target = "precioKilo", source = "dto.precioKilo"),
-        @Mapping(target = "precioTotal", source = "precioTotal"),
-        @Mapping(target = "destino", source = "dto.destino"),
-        @Mapping(target = "farmId", source = "dto.farmId"),
-        @Mapping(target = "comprador", source = "dto.comprador"),
-        @Mapping(target = "cattleIds", source = "dto.cattleIds"),
-        @Mapping(target = "observaciones", source = "dto.observaciones"),
-        @Mapping(target = "tipoVenta", source = "dto.tipoVenta"),
+        @Mapping(target = "tipoVenta", source = "tipoVenta"),
+        @Mapping(target = "fechaVenta", source = "fechaVenta"),
+        @Mapping(target = "horaEmision", source = "horaEmision"),
+        @Mapping(target = "numeroFactura", source = "numeroFactura"),
+        @Mapping(target = "precioKilo", source = "precioKilo"),
+        @Mapping(target = "pesoTotal", source = "pesoTotal"),
+        @Mapping(target = "subtotal", source = "subtotal"),
+        @Mapping(target = "iva", source = "iva"),
+        @Mapping(target = "descuentos", source = "descuentos"),
+        @Mapping(target = "total", source = "total"),
+        @Mapping(target = "moneda", source = "moneda"),
+        @Mapping(target = "formaPago", source = "formaPago"),
+        @Mapping(target = "destino", source = "destino"),
+        @Mapping(target = "observaciones", source = "observaciones"),
+        @Mapping(target = "farmId", source = "farmId"),
+        @Mapping(target = "terceroId", source = "terceroId"),
+        @Mapping(target = "cattleIds", source = "cattleIds"),
+        @Mapping(target = "items", ignore = true)
     })
     CattleSaleEntity toEntity(CreateCattleSaleDto dto);
 
     CattleSaleDto toDto(CattleSaleEntity entity);
+
     @Mappings({
         @Mapping(target = "id", ignore = true),
         @Mapping(target = "sale", ignore = true),
         @Mapping(target = "tipoOrigen", source = "tipoOrigen"),
         @Mapping(target = "idOrigen", source = "idOrigen"),
         @Mapping(target = "pesoVenta", source = "pesoVenta"),
-        // @Mapping(target = "precioKilo", ignore = true),   
-        // @Mapping(target = "precioTotal", ignore = true),  
+        @Mapping(target = "precioKilo", source = "precioKilo"),
+        @Mapping(target = "precioTotal", source = "precioTotal"),
         @Mapping(target = "created_at", ignore = true),
         @Mapping(target = "updated_at", ignore = true),
         @Mapping(target = "deleted_at", ignore = true)
@@ -46,11 +56,11 @@ public interface  CattleSaleMapper {
     CattleSaleItemEntity toEntityItem(CreateCattleSaleItemDto dto);
 
     @Mappings({
-    @Mapping(target = "items", source = "items")
+        @Mapping(target = "items", source = "items")
     })
     ViewCattleSaleDto toViewDto(CattleSaleEntity entity, List<CattleSaleItemEntity> items);
 
     CreateCattleSaleItemDto toViewItemDto(CattleSaleItemEntity entity);
     List<CreateCattleSaleItemDto> toViewItemDtoList(List<CattleSaleItemEntity> items);
-
 }
+

@@ -4,4 +4,6 @@ export interface CreateCattleSaleItemDto {
   pesoVenta: number;
   precioKilo: number;
   precioTotal: number;
+
+  numero_ganado?: string | number; // Opcional, solo si tipoOrigen es 'GANADO'
 }

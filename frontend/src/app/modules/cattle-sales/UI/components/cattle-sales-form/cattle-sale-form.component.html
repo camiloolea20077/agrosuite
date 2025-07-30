@@ -1,219 +1,228 @@
 <p-toast></p-toast>
-
 <div class="card">
-  <div class="grid flex flex-wrap align-items-center">
-    <div class="col-12 lg:col-10 md:col-9 sm:col-6">
-      <h1 class="m-0">{{slug === 'create' ? 'Nueva venta' : 'Visualizar venta'}}</h1>
-    </div>
-  </div>
-
+  <h1 class="m-0">{{ slug === 'create' ? 'Nueva Factura de Venta' : 'Visualizar Factura' }}</h1>
   <hr />
 
-  <div class="grid formgrid p-fluid">
-    <form [formGroup]="frm" id="frm" class="col-12" (ngSubmit)="submitForm()">
-      <div class="grid mt-1 p-2">
-        <div class="col-12 sm:col-12 md:col-12 lg:col-12 mt-2">
-          <div class="grid lg:mt-4 sm:mt-1">
-            <!-- Fecha de Venta -->
-            <div class="col-12 md:col-6">
-              <div class="p-float-label">
-                <p-calendar
-                  formControlName="fechaVenta"
-                  [appendTo]="'body'"
-                  [showIcon]="true"
-                  dateFormat="yy-mm-dd"
-                  [monthNavigator]="true"
-                  [yearNavigator]="true"
-                  yearRange="2000:2100"
-                ></p-calendar>
-                <label for="fechaVenta">Fecha de venta</label>
-              </div>
-              <small
-                class="p-error"
-                *ngIf="
-                  frm.get('fechaVenta')?.invalid &&
-                  frm.get('fechaVenta')?.touched
-                "
-                >Campo obligatorio</small
-              >
-            </div>
-
-            <!-- Destino -->
-            <div class="col-12 md:col-6">
-              <span class="p-float-label">
-                <input pInputText formControlName="destino" />
-                <label for="destino">Destino</label>
-              </span>
-              <small
-                class="p-error"
-                *ngIf="
-                  frm.get('destino')?.invalid && frm.get('destino')?.touched
-                "
-                >Campo obligatorio</small
-              >
-            </div>
-          </div>
-          <div class="grid lg:mt-4 sm:mt-1">
-            <!-- Comprador -->
-            <div class="col-12 md:col-6">
-              <span class="p-float-label">
-                <input pInputText formControlName="comprador" />
-                <label for="comprador">Comprador</label>
-              </span>
-              <small
-                class="p-error"
-                *ngIf="
-                  frm.get('comprador')?.invalid && frm.get('comprador')?.touched
-                "
-                >Campo obligatorio</small
-              >
-            </div>
-
-            <!-- Precio por kilo -->
-            <div class="col-12 md:col-6">
-              <span class="p-float-label">
-                <input pInputText type="number" formControlName="precioKilo" />
-                <label for="precioKilo">Precio por kilo</label>
-              </span>
-              <small
-                class="p-error"
-                *ngIf="
-                  frm.get('precioKilo')?.invalid &&
-                  frm.get('precioKilo')?.touched
-                "
-                >Campo obligatorio</small
-              >
-            </div>
-          </div>
-          <div class="grid lg:mt-4 sm:mt-1">
-            <!-- Peso total -->
-            <div class="col-12 md:col-6">
-              <span class="p-float-label">
-                <input
-                  pInputText
-                  formControlName="pesoTotal"
-                  type="number"
-                  [readonly]="true"
-                  [disabled]="true"
-                />
-                <label for="pesoTotal">Peso total (kg)</label>
-              </span>
-              <small
-                class="p-error"
-                *ngIf="
-                  frm.get('pesoTotal')?.invalid && frm.get('pesoTotal')?.touched
-                "
-                >Campo obligatorio</small
-              >
-            </div>
-
-            <!-- Precio total -->
-            <div class="col-12 md:col-6">
-              <span class="p-float-label">
-                <input
-                  pInputText
-                  [value]="frm.get('precioTotal')?.value | currencyCop"
-                  type="text"
-                  [readonly]="true"
-                  [disabled]="true"
-                />
-                <label for="precioTotal">Precio total ($)</label>
-              </span>
-              <small
-                class="p-error"
-                *ngIf="
-                  frm.get('precioTotal')?.invalid &&
-                  frm.get('precioTotal')?.touched
-                "
-                >Campo obligatorio</small
-              >
-            </div>
-          </div>
-          <div class="grid lg:mt-4 sm:mt-1">
-            <!-- Observaciones -->
-            <div class="col-12">
-              <span class="p-float-label">
-                <input pInputText formControlName="observaciones" />
-                <label for="observaciones">Observaciones</label>
-              </span>
-            </div>
-          </div>
-          <!-- Animales seleccionados -->
-          <div class="col-12 mt-3">
-            <button
-              pButton
-              type="button"
-              [disabled]="slug === 'view'"
-              label="Seleccionar Animales"
-              icon="pi pi-search"
-              (click)="openModal()"
-              class="p-button-info p-button-rounded"
-            ></button>
-            <div class="mt-3">
-              <p-table [value]="selectedItems" [loading]="loadingTable">
-                <ng-template pTemplate="header">
-                  <tr>
-                    <th>Tipo</th>
-                    <th>Peso</th>
-                    <th>Precio Kilo</th>
-                    <th>Precio Total</th>
-                  </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-animal>
-                  <tr>
-                    <td>{{ animal.tipoOrigen }}</td>
-                    <td>{{ animal.pesoVenta }}</td>
-                    <td>{{ animal.precioKilo | currencyCop }}</td>
-                    <td>{{ animal.precioTotal | currencyCop }}</td>
-                  </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                  <tr>
-                    <td colspan="4" class="text-center">
-                      No hay animales seleccionados
-                    </td>
-                  </tr>
-                </ng-template>
-              </p-table>
-            </div>
-          </div>
-        </div>
-        <!-- Botones -->
-        <div class="grid col-12 p-0 mt-3 justify-end">
-          <div class="col-12 md:col-3" *ngIf="slug !== 'view'">
-            <button
-              pButton
-              type="submit"
-              label="Guardar"
-              icon="pi pi-save"
-              class="p-button-success w-full p-button-rounded"
-              [disabled]="frm.invalid || selectedItems.length === 0"
-            ></button>
-          </div>
-          <div class="col-12 md:col-3" *ngIf="slug !== 'view'">
-            <button
-              pButton
-              type="button"
-              label="Limpiar"
-              icon="pi pi-trash"
-              class="p-button-warning w-full p-button-rounded"
-            ></button>
-          </div>
-          <div class="col-12 md:col-3">
-            <button
-              pButton
-              type="button"
-              label="Volver"
-              icon="pi pi-arrow-left"
-              class="p-button-secondary w-full p-button-rounded"
-              routerLink="/sales"
-            ></button>
-          </div>
-        </div>
+  <form [formGroup]="frm" (ngSubmit)="submitForm()" class="p-fluid">
+    <!-- Información de la Factura -->
+    <div class="grid mt-4">
+      <div class="col-12 md:col-4">
+        <span class="p-float-label">
+          <input pInputText formControlName="numeroFactura" />
+          <label>Número de Factura</label>
+        </span>
       </div>
-    </form>
+
+      <div class="col-12 md:col-4">
+        <p-calendar
+          formControlName="fechaVenta"
+          [showIcon]="true"
+          dateFormat="yy-mm-dd"
+          [monthNavigator]="true"
+          [yearNavigator]="true"
+          yearRange="2000:2100"
+        ></p-calendar>
+      </div>
+
+      <div class="col-12 md:col-4">
+        <span class="p-float-label">
+          <input pInputText formControlName="horaEmision" type="time" />
+          <label>Hora de Emisión</label>
+        </span>
+      </div>
+
+      <div class="col-12 md:col-4 lg:col-6 mt-3">
+        <span class="p-float-label">
+          <input pInputText formControlName="moneda" />
+          <label>Moneda</label>
+        </span>
+      </div>
+
+      <div class="col-12 md:col-4 lg:col-6 mt-3">
+        <span class="p-float-label">
+          <p-dropdown
+            formControlName="formaPago"
+            [options]="formasPago"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Seleccione"
+          ></p-dropdown>
+          <label>Forma de Pago</label>
+        </span>
+      </div>
+    </div>
+
+    <!-- Datos del Comprador -->
+    <h3 class="mt-4">Datos del Comprador</h3>
+    <div class="grid">
+      <div class="col-12 md:col-6 mt-3">
+        <span class="p-float-label">
+          <p-autoComplete
+            formControlName="terceroIdentificacion"
+            [suggestions]="tercerosSugeridos"
+            field="numeroIdentificacion"
+            (completeMethod)="searchTerceros($event)"
+            (onSelect)="seleccionarTercero($event)"
+          ></p-autoComplete>
+      <label>Número de Documento</label>
+    </span>
+      </div>
+
+      <div class="col-12 md:col-6 mt-3">
+        <span class="p-float-label">
+          <input pInputText formControlName="tipoIdentificacion" [disabled]="true" />
+          <label>Tipo de Documento</label>
+        </span>
+      </div>
+
+      <div class="col-12 md:col-6 mt-3">
+        <span class="p-float-label">
+          <input pInputText formControlName="nombreRazonSocial" [disabled]="true" />
+          <label>Nombre o Razón Social</label>
+        </span>
+      </div>
+
+      <div class="col-12 md:col-6 mt-3">
+        <span class="p-float-label">
+          <input pInputText formControlName="telefono" [disabled]="true" />
+          <label>Teléfono</label>
+        </span>
+      </div>
+
+      <div class="col-12 lg:col-6 mt-3">
+        <span class="p-float-label">
+          <input pInputText formControlName="direccion" [disabled]="true" />
+          <label>Dirección</label>
+        </span>
+      </div>
+    </div>
+
+    <!-- Selección de Animales -->
+    <div class="col-12 mt-4">
+      <button
+        pButton
+        type="button"
+        [disabled]="slug === 'view'"
+        label="Seleccionar Animales"
+        icon="pi pi-search"
+        (click)="openModal()"
+        class="p-button-info p-button-rounded"
+      ></button>
+
+      <div class="mt-3">
+        <p-table [value]="selectedItems" [loading]="loadingTable">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Identificación</th>
+              <th>Tipo</th>
+              <th>Peso (kg)</th>
+              <th>Precio por kilo</th>
+              <th>Subtotal</th>
+              <th>Total</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-animal>
+            <tr>
+              <td>{{ animal.numero_ganado || '—'}}</td>
+              <td>{{ animal.tipoOrigen }}</td>
+              <td>{{ animal.pesoVenta }}</td>
+              <td>{{ animal.precioKilo | currencyCop }}</td>
+              <td>{{ animal.precioKilo * animal.pesoVenta | currencyCop }}</td>
+              <td>{{ animal.precioTotal | currencyCop }}</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="6" class="text-center">No hay animales seleccionados</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+<!-- Totales -->
+<h3 class="mt-4">Totales Generales</h3>
+<div class="grid mt-4">
+  <!-- Primero: Precio por Kilo y Peso Total -->
+  <div class="col-12 md:col-3">
+    <span class="p-float-label">
+      <input pInputText formControlName="precioKilo" />
+      <label>Precio por kilo</label>
+    </span>
+  </div>
+
+  <div class="col-12 md:col-3">
+    <span class="p-float-label">
+      <input pInputText formControlName="pesoTotal" [disabled]="true" />
+      <label>Peso Total</label>
+    </span>
+  </div>
+
+  <!-- Luego: Subtotal, IVA, Descuentos y Total -->
+  <div class="col-12 md:col-3">
+    <span class="p-float-label">
+      <input pInputText formControlName="subtotal" [disabled]="true" />
+      <label>Subtotal sin IVA</label>
+    </span>
+  </div>
+
+  <div class="col-12 md:col-3">
+    <span class="p-float-label">
+      <input pInputText formControlName="iva" [disabled]="true" />
+      <label>IVA</label>
+    </span>
+  </div>
+  <div class="col-12 md:col-3 lg:col-6 mt-3">
+    <span class="p-float-label">
+      <input pInputText formControlName="descuentos" [disabled]="true" />
+      <label>Descuentos</label>
+    </span>
+  </div>
+
+  <div class="col-12 md:col-3 lg:col-6 mt-3">
+    <span class="p-float-label">
+      <input pInputText [value]="frm.get('precioTotal')?.value | currencyCop" [disabled]="true" />
+      <label>Total a pagar</label>
+    </span>
   </div>
 </div>
+
+    <!-- Observaciones -->
+    <div class="grid mt-3">
+      <div class="col-12">
+        <span class="p-float-label">
+          <input pInputText formControlName="observaciones" />
+          <label>Observaciones / Leyendas Fiscales</label>
+        </span>
+      </div>
+    </div>
+
+    <!-- Botones -->
+    <div class="grid justify-end mt-4">
+      <div class="col-12 md:col-3">
+        <button
+          pButton
+          type="submit"
+          label="Guardar y Facturar"
+          icon="pi pi-save"
+          class="p-button-success w-full p-button-rounded"
+          [disabled]="frm.invalid || selectedItems.length === 0"
+        ></button>
+      </div>
+
+      <div class="col-12 md:col-3">
+        <button
+          pButton
+          type="button"
+          label="Limpiar formulario"
+          icon="pi pi-trash"
+          class="p-button-warning w-full p-button-rounded"
+          (click)="frm.reset()"
+        ></button>
+      </div>
+    </div>
+  </form>
+</div>
+
 <app-select-cattle-modal
   [visible]="modalVisible"
   (onClose)="modalVisible = false"

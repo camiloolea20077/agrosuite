@@ -10,4 +10,5 @@ export const environment = {
     dashboardUrl: 'http://localhost:9001/dashboard',
     inventoryUrl: 'http://localhost:9001/inventory',
     salesUrl: 'http://localhost:9001/cattle-sale',
+    tercerosUrl: 'http://localhost:9001/terceros',
 };

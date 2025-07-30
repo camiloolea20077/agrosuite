@@ -53,13 +53,12 @@
                                 icon="pi false-icon pi-times-circle text-pink-500"
                                 class="p-button-rounded p-button-text p-button-danger"></button>
                         </span>
-                        <span *ngIf="col.type == 'number' && col.field === 'total_venta'">
+                        <span *ngIf="col.type === 'number' && ['total_venta', 'subtotal', 'iva', 'descuentos', 'precio_kilo'].includes(col.field)">
                             {{ item[col.field] | currencyCop }}
                         </span>
-                        <span *ngIf="col.type == 'number' && col.field !== 'total_venta'">
+                        <span *ngIf="col.type === 'number' && !['total_venta', 'subtotal', 'iva', 'descuentos', 'precio_kilo'].includes(col.field)">
                             {{ item[col.field] }}
                         </span>
-
                         <span *ngIf="col.type === 'string'">
                             {{ item[col.field] | uppercase }}
                         </span>

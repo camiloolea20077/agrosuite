@@ -48,7 +48,7 @@ export class SelectCattleModalComponent {
   rowSize = 10;
   totalRecords = 0;
   loadingTable = false;
-origenes = ['GANADO', 'TERNERO'];
+  origenes = ['GANADO', 'TERNERO'];
 
 
   constructor(private cattleService: CattleService,
@@ -71,7 +71,6 @@ origenes = ['GANADO', 'TERNERO'];
     this.loadingTable = false;
   }
     async loadTableBirth(lazyTable: TableLazyLoadEvent): Promise<void> {
-      console.log('Cargando tabla NACIMIENTO con event:', lazyTable); // Agrega esto
         this.loadingTable = true
         this.filtersTable = this.prepareTableParams(lazyTable)
         try {
@@ -140,6 +139,7 @@ private mapGanadoToCreateDto(cattle: CattleTableModel): CreateCattleSaleItemDto 
     pesoVenta: parseInt(cattle.peso, 10),
     precioKilo: 0,
     precioTotal: 0,
+    numero_ganado: cattle.numero_ganado,
   };
 }
 
@@ -150,6 +150,7 @@ private mapNacimientoToCreateDto(birth: BirthsTableModel): CreateCattleSaleItemD
     pesoVenta: parseInt(birth.peso_cria, 10),
     precioKilo: 0,
     precioTotal: 0,
+    numero_ganado: birth.numero_cria,
   };
 }
 

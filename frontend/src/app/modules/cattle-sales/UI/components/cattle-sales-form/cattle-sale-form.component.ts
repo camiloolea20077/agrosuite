@@ -25,7 +25,10 @@ import { SalesService } from '../../../infraestructure/sales.service';
 import { SelectCattleModalComponent } from '../select-cattle-modal/select-cattle-modal.component';
 import { CattleSalesModule } from '../../../cattle-sales.module';
 import { HelpersService } from 'src/app/shared/utils/pipes/helper.service';
-
+import { DropdownModule } from 'primeng/dropdown';
+import { TerceroService } from 'src/app/core/services/terceros.service';
+import { AutoCompleteModelDto, FilterTerceroDto, IAutoComplete } from 'src/app/shared/dto/autocomplete-terceros.model';
+import { AutoCompleteCompleteEvent, AutoCompleteModule, AutoCompleteOnSelectEvent } from 'primeng/autocomplete';
 @Component({
   selector: 'app-cattle-sale-form',
   templateUrl: './cattle-sale-form.component.html',
@@ -45,6 +48,8 @@ import { HelpersService } from 'src/app/shared/utils/pipes/helper.service';
     TableModule,
     SelectCattleModalComponent,
     CattleSalesModule,
+    DropdownModule,
+    AutoCompleteModule,
   ],
   encapsulation: ViewEncapsulation.None,
 })
@@ -55,11 +60,18 @@ export class CattleSaleFormComponent {
   public slug: string | null = 'create';
   public selectedItems: CreateCattleSaleItemDto[] = [];
   public selectedCattleIds: number[] = [];
-
+  formasPago = [
+  { label: 'Contado', value: 'Contado' },
+  { label: 'Crédito', value: 'Crédito' },
+  { label: 'Transferencia', value: 'Transferencia' },
+  { label: 'Efectivo', value: 'Efectivo' },
+];
+  tercerosSugeridos: AutoCompleteModelDto[] = [];
   constructor(
     private readonly fb: FormBuilder,
     private readonly _router: Router,
     readonly _helperService: HelpersService,
+    private terceroService: TerceroService,
     private readonly messageService: MessageService,
     private readonly _alertService: AlertService,
     private readonly cattleSaleService: SalesService,
@@ -82,31 +94,68 @@ export class CattleSaleFormComponent {
       this.recalcularTotales(nuevoPrecio);
     });
   }
+
   loadForm(): void {
+      const now = new Date();
+      const horaActual = now.toTimeString().substring(0, 5)
+      const fechaActual = now.toISOString().substring(0, 10)
+
     this.frm = this.fb.group({
-      fechaVenta: [null, Validators.required],
-      precioKilo: [null, [Validators.required, Validators.min(1)]],
-      pesoTotal: [null, [Validators.required, Validators.min(1)]],
-      precioTotal: [null, [Validators.required, Validators.min(1)]],
-      destino: [null, Validators.required],
-      comprador: [null, Validators.required],
-      observaciones: [null, Validators.required],
+      terceroId: [null],
+      numeroFactura: ['', Validators.required],
+      fechaVenta: [fechaActual, Validators.required],
+      horaEmision: [horaActual, Validators.required],
+      moneda: ['COP', Validators.required],
+      formaPago: ['', Validators.required],
+
+      // Datos del cliente (tercero)
+      terceroIdentificacion: ['', Validators.required],
+      tipoIdentificacion: [{ value: '', disabled: true }],
+      nombreRazonSocial: [{ value: '', disabled: true }],
+      telefono: [{ value: '', disabled: true }],
+      direccion: [{ value: '', disabled: true }],
+
+      // Totales (deshabilitados desde el inicio)
+      precioKilo: [null, Validators.required],
+      pesoTotal: [{ value: 0, disabled: true }],
+      subtotal: [{ value: 0, disabled: true }],
+      iva: [{ value: 0, disabled: true }],
+      descuentos: [{ value: 0, disabled: true }],
+      precioTotal: [{ value: 0, disabled: true }],
+
+      observaciones: ['']
     });
+
   }
-  async buildData(): Promise<CreateCattleSaleDto> {
-    const value = this.frm.value;
-    return {
-      observaciones: value.observaciones || '',
-      fechaVenta: this.formatDateToYYYYMMDD(value.fechaVenta),
-      pesoTotal: value.pesoTotal,
-      precioKilo: value.precioKilo,
-      precioTotal: value.precioTotal,
-      destino: value.destino,
-      comprador: value.comprador,
-      cattleIds: this.selectedCattleIds,
-      items: this.selectedItems,
-    };
-  }
+async buildData(): Promise<CreateCattleSaleDto> {
+  const value = this.frm.getRawValue();
+
+  const subtotal = value.precioTotal;
+  const iva = 0;
+  const descuentos = 0;
+  const total = subtotal + iva - descuentos;
+  const tipoVenta: 'INDIVIDUAL' | 'LOTE' = this.selectedCattleIds.length === 1 ? 'INDIVIDUAL' : 'LOTE';
+
+  return {
+    tipoVenta,
+    fechaVenta: this.formatDateToYYYYMMDD(value.fechaVenta),
+    horaEmision: value.horaEmision,
+    numeroFactura: value.numeroFactura,
+    precioKilo: value.precioKilo,
+    pesoTotal: value.pesoTotal,
+    subtotal,
+    iva,
+    descuentos,
+    total,
+    moneda: value.moneda,
+    formaPago: value.formaPago,
+    destino: value.destino,
+    observaciones: value.observaciones,
+    terceroId: value.terceroId ?? 0, 
+    cattleIds: this.selectedCattleIds,
+    items: this.selectedItems,
+  };
+}
 
   async submitForm(): Promise<void> {
     if (this.frm.invalid || this.selectedItems.length === 0) {
@@ -160,6 +209,7 @@ export class CattleSaleFormComponent {
     this.loadingTable = this.frm.invalid || this.selectedItems.length === 0;
   }
   handleSelected(selected: CreateCattleSaleItemDto[]) {
+    console.log('🐄 Animales seleccionados desde modal:', selected);
     const precioKilo = this.frm.get('precioKilo')?.value;
 
     // Calcular items
@@ -168,9 +218,7 @@ export class CattleSaleFormComponent {
       const precioTotal = precioKilo * peso;
 
       return {
-        tipoOrigen: animal.tipoOrigen,
-        idOrigen: animal.idOrigen,
-        pesoVenta: peso,
+        ...animal,
         precioKilo,
         precioTotal,
       };
@@ -188,6 +236,37 @@ export class CattleSaleFormComponent {
       precioTotal,
     });
   }
+  searchTerceros(event: AutoCompleteCompleteEvent): void {
+  const payload: IAutoComplete<FilterTerceroDto> = {
+    search: event.query,
+    params: undefined
+  };
+
+  this.terceroService.autoCompleteTerceros(payload).subscribe({
+    next: (res) => {
+      this.tercerosSugeridos = res.data;
+    },
+    error: (err) => {
+      console.error('Error en autocomplete de terceros', err);
+    }
+  });
+}
+seleccionarTercero(event: AutoCompleteOnSelectEvent): void {
+  const tercero = event.value as AutoCompleteModelDto;
+  if (!tercero) return;
+
+  this.frm.patchValue({
+    terceroId: tercero.id,
+    terceroIdentificacion: tercero.numeroIdentificacion,
+    tipoIdentificacion: tercero.tipoIdentificacion,
+    nombreRazonSocial: tercero.nombreRazonSocial,
+    telefono: tercero.telefono,
+    direccion: tercero.direccion,
+  });
+}
+
+
+
   openModal() {
     this.modalVisible = true;
   }
@@ -214,18 +293,50 @@ export class CattleSaleFormComponent {
       precioTotal,
     });
   }
-  async loadSaleById(id: number) {
+  async loadSaleById(id: number): Promise<void> {
     try {
-      const response = await lastValueFrom(
-        this.cattleSaleService.getCattleSaleById(id)
-      );
+      const response = await lastValueFrom(this.cattleSaleService.getCattleSaleById(id));
       const data = response.data;
+      // Validación de integridad
+    if (!data.terceroId) {
+      this._alertService.showError(
+        'Error de datos',
+        'La venta no tiene asociado un tercero válido'
+      );
+      return;
+    }
+      // Buscar tercero por número de identificación
+    const payload: IAutoComplete<FilterTerceroDto> = {
+      search: data.numeroIdentificacion,
+      params: undefined,
+    };
+      const terceroResponse = await lastValueFrom(
+        this.terceroService.autoCompleteTerceros(payload)
+      );
 
-      // Carga el formulario
+      const tercero = terceroResponse.data.find((t) => t.id === data.terceroId);
+
+      if (tercero) {
+        this.tercerosSugeridos = [tercero];
+
+        this.frm.patchValue({
+          terceroId: tercero.id,
+          terceroIdentificacion: tercero.numeroIdentificacion,
+          tipoIdentificacion: tercero.tipoIdentificacion,
+          nombreRazonSocial: tercero.nombreRazonSocial,
+          telefono: tercero.telefono,
+          direccion: tercero.direccion,
+        });
+      }
+
+      // Setear datos generales de la venta
       this.frm.patchValue({
-        comprador: data.comprador,
-        destino: data.destino,
+        numeroFactura: data.numeroFactura,
         fechaVenta: new Date(data.fechaVenta),
+        horaEmision: data.horaEmision,
+        moneda: data.moneda,
+        formaPago: data.formaPago,
+        destino: data.destino,
         observaciones: data.observaciones,
         precioKilo: data.precioKilo,
         pesoTotal: data.pesoTotal,
@@ -233,12 +344,11 @@ export class CattleSaleFormComponent {
       });
 
       this.selectedItems = data.items;
-      this.selectedCattleIds = data.items.map((item: any) => item.idOrigen);
-    } catch (error) {
-      this._alertService.showError(
-        'Error al cargar la venta',
-        (error as { message: string }).message || ''
-      );
+      this.selectedCattleIds = data.items.map((i: any) => i.idOrigen);
+    } catch (err) {
+      this._alertService.showError('Error al cargar la venta', (err as any).message ?? '');
     }
   }
+
+
 }

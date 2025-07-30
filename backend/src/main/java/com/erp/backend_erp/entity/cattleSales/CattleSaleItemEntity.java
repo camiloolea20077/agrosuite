@@ -35,7 +35,7 @@ public class CattleSaleItemEntity {
     private CattleSaleEntity sale;
 
     @Column(name = "tipo_origen", nullable = false)
-    private String tipoOrigen; // "GANADO" o "TERNERO"
+    private String tipoOrigen;
 
     @Column(name = "id_origen", nullable = false)
     private Long idOrigen;

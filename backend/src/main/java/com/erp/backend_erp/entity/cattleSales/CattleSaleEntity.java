@@ -28,64 +28,90 @@ import lombok.Setter;
 @Table(name = "cattle_sales")
 @Getter
 @Setter
-@SQLDelete(sql = "UPDATE employees SET deleted_at = NOW() WHERE id=?")
+@SQLDelete(sql = "UPDATE cattle_sales SET deleted_at = NOW() WHERE id=?")
 public class CattleSaleEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "tipo_venta")
     private String tipoVenta;
-    
+
     @Column(name = "fecha_venta")
     private String fechaVenta;
 
-    @Column(name = "peso_total")
-    private Double pesoTotal;
+    @Column(name = "hora_emision")
+    private String horaEmision;
+
+    @Column(name = "numero_factura")
+    private String numeroFactura;
 
     @Column(name = "precio_kilo")
     private Double precioKilo;
 
-    @Column(name = "precio_total")
-    private BigDecimal precioTotal;
+    @Column(name = "peso_total")
+    private Double pesoTotal;
+
+    @Column(name = "subtotal")
+    private BigDecimal subtotal;
+
+    @Column(name = "iva")
+    private BigDecimal iva;
+
+    @Column(name = "descuentos")
+    private BigDecimal descuentos;
+
+    @Column(name = "total")
+    private BigDecimal total;
+
+    @Column(name = "moneda")
+    private String moneda;
+
+    @Column(name = "forma_pago")
+    private String formaPago;
 
     private String destino;
+    private String observaciones;
+
+    @Column(name = "cufe_dian")
+    private String cufeDian;
 
     @Column(name = "farm_id")
     private Long farmId;
 
-    private String observaciones;
-
-    private String comprador;
+    @Column(name = "tercero_id")
+    private Long terceroId;
 
     @ElementCollection
     @CollectionTable(name = "cattle_sales_cattle_ids", joinColumns = @JoinColumn(name = "cattle_sale_id"))
     @Column(name = "cattle_id")
     private List<Long> cattleIds;
-    
+
     @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CattleSaleItemEntity> items = new ArrayList<>();
 
     @Column(name = "created_at", nullable = false, updatable = false)
-	private LocalDateTime created_at;
+    private LocalDateTime created_at;
 
-	@Column(name = "updated_at")
-	private LocalDateTime updated_at;
+    @Column(name = "updated_at")
+    private LocalDateTime updated_at;
 
     @Column(name = "deleted_at")
     private LocalDateTime deleted_at;
 
     @PrePersist
-	protected void onCreate() {
-		created_at = LocalDateTime.now();
-	}
+    protected void onCreate() {
+        created_at = LocalDateTime.now();
+    }
 
-	@PreUpdate
-	protected void onUpdate() {
-		updated_at = LocalDateTime.now();
-	}
+    @PreUpdate
+    protected void onUpdate() {
+        updated_at = LocalDateTime.now();
+    }
+
     @PreRemove
-	public void onDelete() {
-		this.deleted_at = LocalDateTime.now();
-	}
+    public void onDelete() {
+        this.deleted_at = LocalDateTime.now();
+    }
 }

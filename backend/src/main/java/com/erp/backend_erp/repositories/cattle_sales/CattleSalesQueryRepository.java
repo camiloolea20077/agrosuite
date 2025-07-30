@@ -49,27 +49,32 @@ public class CattleSalesQueryRepository {
         String search = pageableDto.getSearch() != null ? pageableDto.getSearch().trim() : null;
 
         String sql = """
-                SELECT 
-                    s.id AS id,
-                    s.tipo_venta AS tipo_venta,
-                    s.fecha_venta AS fecha_venta,
-                    s.comprador AS comprador,
-                    s.observaciones AS observaciones,
-                    COUNT(si.id) AS total_animales,
-                    si.tipo_origen as tipo_origen,
-                    SUM(si.peso_venta) AS peso_total,
-                    ROUND(AVG(si.precio_kilo), 2) AS precio_promedio,
-                    SUM(si.precio_total) AS total_venta,
-                    COUNT(*) OVER() AS total_rows
-                FROM 
-                    cattle_sales s
-                LEFT JOIN 
-                    cattle_sale_items si ON s.id = si.sale_id
-                WHERE 
-                    s.deleted_at IS NULL
-                    AND s.farm_id = :farmId
-                GROUP BY 
-                    s.id, s.tipo_venta, s.fecha_venta, s.comprador, s.observaciones, si.tipo_origen
+            SELECT 
+                s.id AS id,
+                s.tipo_venta,
+                s.fecha_venta,
+                s.observaciones,
+                s.destino,
+                s.precio_kilo,
+                s.peso_total,
+                s.subtotal,
+                s.iva,
+                s.descuentos,
+                s.total AS total_venta,
+                COUNT(si.id) AS total_animales,
+                si.tipo_origen,
+                COUNT(*) OVER() AS total_rows
+            FROM 
+                cattle_sales s
+            LEFT JOIN 
+                cattle_sale_items si ON s.id = si.sale_id
+            WHERE 
+                s.deleted_at IS NULL
+                AND s.farm_id = :farmId
+            GROUP BY 
+                s.id, s.tipo_venta, s.fecha_venta, s.observaciones, s.destino,
+                s.precio_kilo, s.peso_total, s.subtotal, s.iva, s.descuentos, s.total,
+                si.tipo_origen
             """;
 
         MapSqlParameterSource params = new MapSqlParameterSource();
