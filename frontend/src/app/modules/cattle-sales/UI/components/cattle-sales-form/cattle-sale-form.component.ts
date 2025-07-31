@@ -29,6 +29,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { TerceroService } from 'src/app/core/services/terceros.service';
 import { AutoCompleteModelDto, FilterTerceroDto, IAutoComplete } from 'src/app/shared/dto/autocomplete-terceros.model';
 import { AutoCompleteCompleteEvent, AutoCompleteModule, AutoCompleteOnSelectEvent } from 'primeng/autocomplete';
+import { CattleSalePdfService } from 'src/app/core/services/pdf.service';
 @Component({
   selector: 'app-cattle-sale-form',
   templateUrl: './cattle-sale-form.component.html',
@@ -70,6 +71,7 @@ export class CattleSaleFormComponent {
   constructor(
     private readonly fb: FormBuilder,
     private readonly _router: Router,
+    private readonly pdfService: CattleSalePdfService,
     readonly _helperService: HelpersService,
     private terceroService: TerceroService,
     private readonly messageService: MessageService,
@@ -349,6 +351,22 @@ seleccionarTercero(event: AutoCompleteOnSelectEvent): void {
       this._alertService.showError('Error al cargar la venta', (err as any).message ?? '');
     }
   }
+  exportarPdf(): void {
+  const value = this.frm.getRawValue();
+
+  this.pdfService.exportarFactura(
+    {
+      nombre: value.nombreRazonSocial,
+      direccion: value.direccion,
+      telefono: value.telefono,
+      fecha: this.formatDateToYYYYMMDD(value.fechaVenta),
+      formaPago: value.formaPago
+    },
+    value.precioKilo,
+    this.selectedItems,
+    value.precioTotal
+  );
+}
 
 
 }

@@ -208,7 +208,16 @@
           [disabled]="frm.invalid || selectedItems.length === 0"
         ></button>
       </div>
-
+      <div class="col-12 md:col-3" *ngIf="slug === 'view'">
+        <button
+          pButton
+          type="button"
+          label="Imprimir Factura"
+          icon="pi pi-print"
+          class="p-button-secondary w-full p-button-rounded"
+          (click)="exportarPdf()"
+        ></button>
+      </div>
       <div class="col-12 md:col-3">
         <button
           pButton
