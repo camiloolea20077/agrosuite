@@ -42,7 +42,10 @@ public class CattleSaleItemEntity {
 
     @Column(name = "farm_id", nullable = false)
     private Long farmId;
-    
+        
+    @Column(name = "numero_ganado", nullable = false)
+    private String numero_ganado;
+
     @Column(name = "peso_venta", nullable = false, precision = 10, scale = 2)
     private BigDecimal pesoVenta;
 

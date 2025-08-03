@@ -58,6 +58,7 @@ public class CattleSalesQueryRepository {
                 s.precio_kilo,
                 s.peso_total,
                 s.subtotal,
+                s.estado,
                 s.iva,
                 s.descuentos,
                 s.total AS total_venta,

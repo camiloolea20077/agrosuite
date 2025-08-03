@@ -12,4 +12,6 @@ public interface  CattleSaleService {
     CattleSaleDto create(CreateCattleSaleDto dto);
     PageImpl<SalesTableDto> pageSales(PageableDto<Object> pageableDto);
     ViewCattleSaleDto findById(Long id, Long farmId);
+    void confirmarVenta(Long ventaId, Long farmId);
+    void anularVenta(Long ventaId, Long farmId);
 }

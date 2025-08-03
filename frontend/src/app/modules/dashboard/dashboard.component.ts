@@ -22,6 +22,37 @@ export class DashboardComponent implements OnInit {
     totalCattle: number = 0
     totalBirths: number = 0
     totalEmployees: number = 0
+    chartOptions = {
+    plugins: {
+        legend: {
+        labels: {
+            color: '#495057',
+            font: {
+            size: 14,
+            },
+        },
+        },
+    },
+    scales: {
+        x: {
+        ticks: {
+            color: '#6c757d',
+        },
+        grid: {
+            color: '#f0f0f0',
+        },
+        },
+        y: {
+        ticks: {
+            color: '#6c757d',
+        },
+        grid: {
+            color: '#f0f0f0',
+        },
+        },
+    },
+    };
+
     constructor(private dashboardService: DashboardService) { }
     ngOnInit(): void {
         this.loadDashboardData();

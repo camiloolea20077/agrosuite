@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,6 +70,32 @@ public class CattleSaleController {
     ) {
         ViewCattleSaleDto dto = cattleSaleService.findById(id, farmId);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "", false, dto));
+    }
+    @PutMapping("/{id}/confirmar")
+    public ResponseEntity<ApiResponse<Object>> confirmarVenta(
+            @PathVariable Long id,
+            @RequestHeader("farmid") Long farmId) {
+        cattleSaleService.confirmarVenta(id, farmId);
+        ApiResponse<Object> response = new ApiResponse<>(
+            HttpStatus.OK.value(),
+            "Venta confirmada exitosamente",
+            false,
+            null
+        );
+        return ResponseEntity.ok(response);
+    }
+    @PutMapping("/{id}/anular")
+    public ResponseEntity<ApiResponse<Object>> anularVenta(
+            @PathVariable Long id,
+            @RequestHeader("farmid") Long farmId) {
+        cattleSaleService.anularVenta(id, farmId);
+        ApiResponse<Object> response = new ApiResponse<>(
+            HttpStatus.OK.value(),
+            "Venta anulada exitosamente",
+            false,
+            null
+        );
+        return ResponseEntity.ok(response);
     }
 
 }

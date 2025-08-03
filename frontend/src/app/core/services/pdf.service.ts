@@ -3,6 +3,8 @@ import * as pdfMake from 'pdfmake/build/pdfmake';
 import { CreateCattleSaleItemDto } from 'src/app/modules/cattle-sales/domain/dto/create-cattle-sale-item.dto';
 import { vfs } from 'pdfmake/build/vfs_fonts';
 import { IndexDBService } from './index-db.service';
+import { footer, headerFactura } from 'src/app/shared/utils/img';
+import { HeadersValues } from 'src/app/shared/utils/models/heades-clients';
 (pdfMake as any).vfs = vfs;
 
 @Injectable({
@@ -24,56 +26,78 @@ export class CattleSalePdfService {
   ): Promise<void> {
     const authData = await this.indexDB.loadDataAuthDB();
     const nombreFinca = authData?.user?.farm_name ?? 'GANADERÍA SIN NOMBRE';
-
     const total = subtotal;
+    const headerCell = {
+          text: '',
+          colSpan: 1,
+          alignment: 'center',
+          fontSize: 10,
+          bold: true,
+          color: '#FFFFFF',
+          fillColor: 'black',
+          margin: [0, 5],
+          borderColor: [
+            '#FFFFFF',
+            '#FFFFFF',
+            '#FFFFFF',
+            '#FFFFFF',
+          ],
+    }
+    const rowCell = {
+          text: '',
+          colSpan: 1,
+          alignment: 'center',
+          fontSize: 10,
+          margin: [0, 5],
+          borderColor: [
+            '#FFFFFF',
+            '#FFFFFF',
+            '#FFFFFF',
+            'black',
+          ],
+    }
+    const titles = ['Concepto', 'Cantidad', 'Peso kg', 'Precio/kg', 'Total']
+    
     const documento: any = {
       content: [
         {
-        canvas: [
-            // Fondo negro del encabezado
-            { type: 'rect', x: 0, y: 0, w: 595, h: 70, color: '#000000' },
-            
-            // Curva amarilla mejor posicionada
-            { type: 'ellipse', x: 500, y: 10, r1: 70, r2: 35, color: '#FFD700' }
-        ]
-        },
-        {
-          text: nombreFinca.toUpperCase(),
-          fontSize: 18,
-          bold: true,
-          color: 'white',
-          absolutePosition: { x: 30, y: 30 },
+          stack: [
+            {
+              width: 600,
+              image: headerFactura,
+              relativePosition: { x: -40, y: -40 },
+            },
+            {
+              text: nombreFinca.toUpperCase(),
+              fontSize: 18,
+              bold: true,
+              color: 'white',
+            }
+          ],
         },
         {
           text: 'DATOS DEL CLIENTE',
           style: 'sectionHeader',
           margin: [0, 90, 0, 5],
         },
-        {
-          columns: [
-            {
-              width: '*',
-              text: [
-                `Nombre: ${cliente.nombre}\n`,
-                `Dirección: ${cliente.direccion}\n`,
-                `Teléfono: ${cliente.telefono}\n`,
-                `Fecha: ${cliente.fecha}\n`,
-              ],
-            },
-          ],
-        },
+        createHeaderResume({
+          nombre: cliente.nombre,
+          direccion: cliente.direccion,
+          telefono: cliente.telefono,
+          fecha: cliente.fecha,
+        }),
         {
           style: 'tableStyle',
           table: {
             widths: ['*', 50, 60, 60, 70],
             body: [
-              ['Concepto', 'Cantidad', 'Peso kg', 'Precio/kg', 'Total'],
+              titles.map(title => ({ ...headerCell, text: title })),
               ...animales.map((a, i) => [
-                `Animal #${i + 1}`,
-                '1',
-                `${a.pesoVenta}`,
-                `$${precioKilo.toLocaleString()}`,
-                `$${(a.pesoVenta * precioKilo).toLocaleString()}`,
+                { ...rowCell, text: `Animal #${i + 1}` },
+                {...rowCell, text: '1', },
+                {...rowCell, text: `${a.pesoVenta}`, },
+                {...rowCell, text: `$${precioKilo.toLocaleString()}`, },
+                {...rowCell, text: `$${(a.pesoVenta * precioKilo).toLocaleString()}`, },
               ]),
             ],
           },
@@ -110,16 +134,12 @@ export class CattleSalePdfService {
           margin: [0, 5, 40, 0],
         },
         {
-          canvas: [
+          stack: [
             {
-              type: 'ellipse',
-              x: -60,
-              y: 740,
-              r1: 70,
-              r2: 40,
-              color: '#FFD700',
-            },
-            { type: 'rect', x: 0, y: 770, w: 595, h: 30, color: '#000000' },
+              width: 600,
+              image: footer,
+              absolutePosition: { x: 0, y: 680 },
+            }
           ],
         },
       ],
@@ -136,5 +156,73 @@ export class CattleSalePdfService {
     };
 
     pdfMake.createPdf(documento).open();
+  }
+}
+export const createHeaderResume = (value: HeadersValues): object => {
+  return {
+    table: {
+      fontSize: 8,
+      widths: [100, 20, 100, '*'],
+      body: [
+        [
+          {
+            text: 'Nombre:',
+            // fontSize: 10,
+            bold: true,
+            margin: [0, 1, 0, 0],
+          },
+          '',
+          {
+            text: `${value.nombre}`,
+            alignment: 'right',
+            margin: [0, 1, 0, 0],
+          },
+          '',
+        ],
+        [
+          {
+            text: 'Dirección:',
+            bold: true,
+            margin: [0, 1, 0, 0],
+          },
+          '',
+          {
+            text: `${value.direccion}`,
+            alignment: 'right',
+            margin: [0, 1, 0, 0],
+          },
+          '',
+        ],
+        [
+          {
+            text: 'Telefono:',
+            bold: true,
+            margin: [0, 1, 0, 0],
+          },
+          '',
+          {
+            text: `${value.telefono}`,
+            alignment: 'right',
+            margin: [0, 1, 0, 0],
+          },
+          '',
+        ],
+        [
+          {
+            text: 'Fecha:',
+            bold: true,
+            margin: [0, 1, 0, 0],
+          },
+          '',
+          {
+            text: `${value.fecha}`,
+            alignment: 'right',
+            margin: [0, 1, 0, 0],
+          },
+          '',
+        ],
+      ],
+    },
+    layout: 'noBorders',
   }
 }

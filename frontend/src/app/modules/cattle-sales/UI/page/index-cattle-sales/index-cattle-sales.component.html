@@ -1,4 +1,3 @@
-<p-toast position="top-right"></p-toast>
 <div class="card">
     <div class="grid flex flex-wrap align-items-center">
         <div class="col-12 lg:col-6 md:col-6">
@@ -53,20 +52,46 @@
                                 icon="pi false-icon pi-times-circle text-pink-500"
                                 class="p-button-rounded p-button-text p-button-danger"></button>
                         </span>
-                        <span *ngIf="col.type === 'number' && ['total_venta', 'subtotal', 'iva', 'descuentos', 'precio_kilo'].includes(col.field)">
+                        <span
+                            *ngIf="col.type === 'number' && ['total_venta', 'subtotal', 'iva', 'descuentos', 'precio_kilo'].includes(col.field)">
                             {{ item[col.field] | currencyCop }}
                         </span>
-                        <span *ngIf="col.type === 'number' && !['total_venta', 'subtotal', 'iva', 'descuentos', 'precio_kilo'].includes(col.field)">
+                        <span
+                            *ngIf="col.type === 'number' && !['total_venta', 'subtotal', 'iva', 'descuentos', 'precio_kilo'].includes(col.field)">
                             {{ item[col.field] }}
                         </span>
                         <span *ngIf="col.type === 'string'">
                             {{ item[col.field] | uppercase }}
                         </span>
+                        <span *ngIf="col.field === 'estado'"
+                            class="p-tag"
+                            [pTooltip]="getEstadoTooltip(item[col.field])"
+                            tooltipPosition="top"
+                            [ngClass]="{
+                                'p-tag-warning': item[col.field] === 'PENDIENTE',
+                                'p-tag-success': item[col.field] === 'CONFIRMADA',
+                                'p-tag-danger': item[col.field] === 'ANULADA'
+                            }">
+                        {{ item[col.field] }}
+                        </span>
+
+
                         <ng-container *ngIf="col.field == 'actions'">
                             <div style="text-align: center; width: 100%">
                                 <button pButton type="button" icon="pi pi-pencil"
+                                    pTooltip="Ver detalle de la venta"
                                     class="p-button-rounded p-button-outlined p-button-text"
                                     [routerLink]="'view/' + item.id"></button>
+                                <!-- Botón Confirmar -->
+                                <button *ngIf="item.estado === 'PENDIENTE'" pButton type="button" icon="pi pi-check"
+                                    class="p-button-rounded p-button-success p-button-outlined ml-2"
+                                    (click)="confirmarVenta(item.id)" pTooltip="Confirmar venta"
+                                    tooltipPosition="top"></button>
+                                <!-- Botón Anular -->
+                                <button *ngIf="item.estado === 'PENDIENTE'" pButton type="button" icon="pi pi-ban"
+                                    class="p-button-rounded p-button-warning p-button-outlined ml-2"
+                                    (click)="anularVenta(item.id)" pTooltip="Anular venta"
+                                    tooltipPosition="top"></button>
                             </div>
                         </ng-container>
                     </td>
@@ -82,10 +107,6 @@
         </p-table>
     </div>
 </div>
-<p-confirmDialog
-  [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
-  [style]="{ width: '30vw' }"
-  [baseZIndex]="10000"
-  rejectButtonStyleClass="p-button-danger"
->
+<p-confirmDialog [breakpoints]="{ '960px': '75vw', '640px': '100vw' }" [style]="{ width: '30vw' }" [baseZIndex]="10000"
+    rejectButtonStyleClass="p-button-danger">
 </p-confirmDialog>

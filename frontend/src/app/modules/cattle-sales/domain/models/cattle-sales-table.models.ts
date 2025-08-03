@@ -8,6 +8,7 @@ export class CattleSalesTableModel {
     total_animales: number;
     precio_kilo: number;
     peso_total: number;
+    estado: string; // PENDIENTE, CONFIRMADA, ANULADA
     subtotal: number;
     iva: number;
     descuentos: number;
@@ -19,6 +20,7 @@ export class CattleSalesTableModel {
         fecha_venta: string,
         destino: string,
         tipo_origen: string,
+        estado: string,
         observaciones: string,
         total_animales: number,
         precio_kilo: number,
@@ -32,6 +34,7 @@ export class CattleSalesTableModel {
         this.tipo_venta = tipo_venta;
         this.fecha_venta = fecha_venta;
         this.destino = destino;
+        this.estado = estado;
         this.tipo_origen = tipo_origen;
         this.observaciones = observaciones;
         this.total_animales = total_animales;

@@ -56,6 +56,9 @@ public class CattleSaleEntity {
     @Column(name = "subtotal")
     private BigDecimal subtotal;
 
+    @Column(name = "estado", nullable = false)
+    private String estado = "PENDIENTE"; 
+
     @Column(name = "iva")
     private BigDecimal iva;
 

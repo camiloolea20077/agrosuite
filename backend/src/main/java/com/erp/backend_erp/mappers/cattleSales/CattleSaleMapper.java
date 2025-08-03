@@ -49,6 +49,7 @@ public interface CattleSaleMapper {
         @Mapping(target = "pesoVenta", source = "pesoVenta"),
         @Mapping(target = "precioKilo", source = "precioKilo"),
         @Mapping(target = "precioTotal", source = "precioTotal"),
+        @Mapping(target = "numero_ganado", source = "numero_ganado"),
         @Mapping(target = "created_at", ignore = true),
         @Mapping(target = "updated_at", ignore = true),
         @Mapping(target = "deleted_at", ignore = true)

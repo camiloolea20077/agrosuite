@@ -60,42 +60,24 @@ public class CattleSaleServiceImpl implements CattleSaleService{
                     + " no existe o no pertenece a la finca");
             }
         }
-
         // 2. Mapear entidad principal
         CattleSaleEntity saleEntity = mapper.toEntity(dto);
+        saleEntity.setEstado("PENDIENTE"); // ← Nueva línea para definir estado inicial
 
         // 3. Mapear ítems con referencia a la entidad
         List<CattleSaleItemEntity> items = dto.getItems().stream().map(itemDto -> {
             CattleSaleItemEntity itemEntity = mapper.toEntityItem(itemDto);
-            itemEntity.setSale(saleEntity); // ← relación ManyToOne
-            itemEntity.setFarmId(dto.getFarmId()); // Asignar farmId a cada item
+            itemEntity.setSale(saleEntity);
+            itemEntity.setFarmId(dto.getFarmId());
             return itemEntity;
         }).collect(Collectors.toList());
-
-        saleEntity.setItems(items); // ← ahora sí, antes de guardar
-
+        saleEntity.setItems(items);
         // 4. Guardar venta con sus items
         CattleSaleEntity saved = salesRepository.save(saleEntity);
-
-        // 5. Marcar como vendidos los animales
-        List<Long> idsGanado = dto.getItems().stream()
-            .filter(i -> i.getTipoOrigen().equalsIgnoreCase("GANADO"))
-            .map(CreateCattleSaleItemDto::getIdOrigen)
-            .toList();
-        List<Long> idsNacimientos = dto.getItems().stream()
-            .filter(i -> i.getTipoOrigen().equalsIgnoreCase("NACIMIENTO"))
-            .map(CreateCattleSaleItemDto::getIdOrigen)
-            .toList();
-
-        if (!idsGanado.isEmpty()) {
-            ganadoQueryRepository.marcarGanadoComoVendido(idsGanado);
-        }
-        if (!idsNacimientos.isEmpty()) {
-            birthsQueryRepository.marcarNacimientosComoVendidos(idsNacimientos);
-}
-
+        // 5. (Ya NO se marca como vendido aquí)
         return mapper.toDto(saved);
     }
+
 
     @Override
     public PageImpl<SalesTableDto> pageSales(PageableDto<Object> pageableDto) {
@@ -111,6 +93,53 @@ public class CattleSaleServiceImpl implements CattleSaleService{
         List<CattleSaleItemEntity> items = salesQueryRepository.findItemsBySaleId(entity.getId());
 
         return mapper.toViewDto(entity, items);
+    }
+    @Override
+    @Transactional
+    public void confirmarVenta(Long ventaId, Long farmId) {
+        CattleSaleEntity venta = salesRepository.findByIdAndFarmId(ventaId, farmId)
+            .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "Venta no encontrada"));
+
+        if (!"PENDIENTE".equalsIgnoreCase(venta.getEstado())) {
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "La venta no está en estado PENDIENTE");
+        }
+
+        // Obtener ítems
+        List<CattleSaleItemEntity> items = salesQueryRepository.findItemsBySaleId(ventaId);
+
+        List<Long> idsGanado = items.stream()
+            .filter(i -> i.getTipoOrigen().equalsIgnoreCase("GANADO"))
+            .map(CattleSaleItemEntity::getIdOrigen)
+            .toList();
+        List<Long> idsNacimientos = items.stream()
+            .filter(i -> i.getTipoOrigen().equalsIgnoreCase("TERNERO"))
+            .map(CattleSaleItemEntity::getIdOrigen)
+            .toList();
+
+        if (!idsGanado.isEmpty()) {
+            ganadoQueryRepository.marcarGanadoComoVendido(idsGanado);
+        }
+
+        if (!idsNacimientos.isEmpty()) {
+            birthsQueryRepository.marcarNacimientosComoVendidos(idsNacimientos);
+        }
+
+        venta.setEstado("CONFIRMADA");
+        salesRepository.save(venta);
+    }
+    @Override
+    @Transactional
+    public void anularVenta(Long ventaId, Long farmId) {
+        CattleSaleEntity venta = salesRepository.findByIdAndFarmId(ventaId, farmId)
+            .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "Venta no encontrada"));
+        if ("ANULADA".equalsIgnoreCase(venta.getEstado())) {
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "La venta ya está anulada");
+        }
+        if ("CONFIRMADA".equalsIgnoreCase(venta.getEstado())) {
+            throw new GlobalException(HttpStatus.BAD_REQUEST, "No se puede anular una venta que ya ha sido confirmada");
+        }
+        venta.setEstado("ANULADA");
+        salesRepository.save(venta);
     }
 
 }

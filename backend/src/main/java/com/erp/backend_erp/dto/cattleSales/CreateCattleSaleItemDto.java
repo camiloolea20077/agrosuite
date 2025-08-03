@@ -8,7 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CreateCattleSaleItemDto {
-    private String tipoOrigen; // "GANADO" o "TERNERO"
+    private String numero_ganado;
+    private String tipoOrigen;
     private Long idOrigen;
     private BigDecimal pesoVenta;
     private BigDecimal precioKilo;

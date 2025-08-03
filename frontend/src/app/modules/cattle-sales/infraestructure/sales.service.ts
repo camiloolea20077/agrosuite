@@ -31,5 +31,11 @@ export class SalesService {
     return this.http.get<ResponseModel<CattleSaleDto>>(`${this.apiUrl}/${id}`);
     }
 
+  confirmarVenta(id: number): Observable<ResponseModel<void>> {
+    return this.http.put<ResponseModel<void>>(`${this.apiUrl}/${id}/confirmar`, null);
+  }
+  anularVenta(id: number): Observable<ResponseModel<void>> {
+    return this.http.put<ResponseModel<void>>(`${this.apiUrl}/${id}/anular`, null);
+  }
 
 }
