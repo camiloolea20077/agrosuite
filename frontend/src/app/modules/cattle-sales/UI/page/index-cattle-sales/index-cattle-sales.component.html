@@ -1,3 +1,4 @@
+<p-toast></p-toast>
 <div class="card">
     <div class="grid flex flex-wrap align-items-center">
         <div class="col-12 lg:col-6 md:col-6">
@@ -74,25 +75,25 @@
                             }">
                         {{ item[col.field] }}
                         </span>
-
-
                         <ng-container *ngIf="col.field == 'actions'">
-                            <div style="text-align: center; width: 100%">
-                                <button pButton type="button" icon="pi pi-pencil"
-                                    pTooltip="Ver detalle de la venta"
-                                    class="p-button-rounded p-button-outlined p-button-text"
-                                    [routerLink]="'view/' + item.id"></button>
-                                <!-- Botón Confirmar -->
-                                <button *ngIf="item.estado === 'PENDIENTE'" pButton type="button" icon="pi pi-check"
-                                    class="p-button-rounded p-button-success p-button-outlined ml-2"
-                                    (click)="confirmarVenta(item.id)" pTooltip="Confirmar venta"
-                                    tooltipPosition="top"></button>
-                                <!-- Botón Anular -->
-                                <button *ngIf="item.estado === 'PENDIENTE'" pButton type="button" icon="pi pi-ban"
-                                    class="p-button-rounded p-button-warning p-button-outlined ml-2"
-                                    (click)="anularVenta(item.id)" pTooltip="Anular venta"
-                                    tooltipPosition="top"></button>
+                            <div class="action-buttons">
+                            <button pButton type="button" icon="pi pi-eye"
+                                pTooltip="Ver detalle de la venta"
+                                class="p-button-rounded p-button-outlined p-button-text"
+                                [routerLink]="'view/' + item.id">
+                            </button>
+
+                            <button *ngIf="item.estado === 'PENDIENTE'" pButton type="button" icon="pi pi-check"
+                                class="p-button-rounded p-button-success p-button-outlined btn-mini"
+                                (click)="confirmarVenta(item.id)" pTooltip="Confirmar venta">
+                            </button>
+
+                            <button *ngIf="item.estado === 'PENDIENTE'" pButton type="button" icon="pi pi-ban"
+                                class="p-button-rounded p-button-warning p-button-outlined btn-mini"
+                                (click)="anularVenta(item.id)" pTooltip="Anular venta">
+                            </button>
                             </div>
+
                         </ng-container>
                     </td>
                 </tr>

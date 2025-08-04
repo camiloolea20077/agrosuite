@@ -32,6 +32,8 @@ import { BirthsService } from 'src/app/core/services/births.service';
   templateUrl: './select-cattle-modal.component.html',
 })
 export class SelectCattleModalComponent {
+  @Input() externalSelectedGanado: CattleTableModel[] = [];
+  @Input() externalSelectedNacimiento: BirthsTableModel[] = [];
   @ViewChild('dtBirths') dtBirths!: Table;
   origenSeleccionado: 'GANADO' | 'TERNERO' = 'GANADO';
   @Input() visible: boolean = false;
@@ -43,7 +45,8 @@ export class SelectCattleModalComponent {
   births: BirthsTableModel[] = []
   selectedGanado: CattleTableModel[] = [];
   selectedNacimiento: BirthsTableModel[] = [];
-
+  selectedGlobalGanado: CattleTableModel[] = [];
+  selectedGlobalNacimiento: BirthsTableModel[] = [];
   filtersTable!: IFilterTable<IBirthsFilterTable>
   rowSize = 10;
   totalRecords = 0;
@@ -63,6 +66,10 @@ export class SelectCattleModalComponent {
       const res = await lastValueFrom(this.cattleService.pageCattle(this.filtersTable));
       this.cattles = res.data?.content ?? [];
       this.totalRecords = res.data?.totalElements ?? 0;
+          // ✅ Sincronizar selección visible con selección global
+    this.selectedGanado = this.cattles.filter(cattle =>
+      this.selectedGlobalGanado.some(sel => sel.id === cattle.id)
+    );
     } catch {
       this.cattles = [];
       this.totalRecords = 0;
@@ -79,6 +86,10 @@ export class SelectCattleModalComponent {
             )
             this.births = response.data?.content ?? []
             this.totalRecords = response.data?.totalElements ?? 0
+                // ✅ Sincronizar selección visible con selección global
+    this.selectedNacimiento = this.births.filter(birth =>
+      this.selectedGlobalNacimiento.some(sel => sel.id === birth.id)
+    );
             this.loadingTable = false
         } catch (error) {
             this.births = []
@@ -105,11 +116,11 @@ export class SelectCattleModalComponent {
     let mapped: CreateCattleSaleItemDto[] = [];
 
     if (this.origenSeleccionado === 'GANADO') {
-      mapped = this.selectedGanado.map((animal: CattleTableModel) =>
+      mapped = this.selectedGlobalGanado.map((animal: CattleTableModel) =>
         this.mapGanadoToCreateDto(animal)
       );
     } else {
-      mapped = this.selectedNacimiento.map((animal: BirthsTableModel) =>
+      mapped = this.selectedGlobalNacimiento.map((animal: BirthsTableModel) =>
         this.mapNacimientoToCreateDto(animal)
       );
     }
@@ -123,7 +134,6 @@ export class SelectCattleModalComponent {
 
   handleClose() {
     this.onClose.emit();
-    this.selected = [];
   }
   open() {
     this.display = true;
@@ -174,6 +184,59 @@ private mapNacimientoToCreateDto(birth: BirthsTableModel): CreateCattleSaleItemD
         this.loadTableBirth(defaultEvent);
       }, 0);
     }
+  }
+  handleRowSelectGanado(event: any) {
+    const alreadySelected = this.selectedGlobalGanado.find(a => a.id === event.data.id);
+    if (!alreadySelected) {
+      this.selectedGlobalGanado.push(event.data);
+    }
+  }
+
+  handleRowUnselectGanado(event: any) {
+    this.selectedGlobalGanado = this.selectedGlobalGanado.filter(a => a.id !== event.data.id);
+  }
+
+  handleRowSelectNacimiento(event: any) {
+    const alreadySelected = this.selectedGlobalNacimiento.find(a => a.id === event.data.id);
+    if (!alreadySelected) {
+      this.selectedGlobalNacimiento.push(event.data);
+    }
+  }
+
+  handleRowUnselectNacimiento(event: any) {
+    this.selectedGlobalNacimiento = this.selectedGlobalNacimiento.filter(a => a.id !== event.data.id);
+  }
+  onSelectionChangeGanado(currentPageSelection: CattleTableModel[]) {
+    const idsSeleccionados = new Set(currentPageSelection.map(item => item.id));
+    const nuevos = currentPageSelection.filter(item =>
+      !this.selectedGlobalGanado.some(s => s.id === item.id)
+    );
+
+    // Añadir los nuevos
+    this.selectedGlobalGanado = [...this.selectedGlobalGanado, ...nuevos];
+
+    // Eliminar los que ya no están seleccionados en esta página
+    this.cattles.forEach(item => {
+      if (!idsSeleccionados.has(item.id)) {
+        this.selectedGlobalGanado = this.selectedGlobalGanado.filter(s => s.id !== item.id);
+      }
+    });
+  }
+  onSelectionChangeNacimiento(currentPageSelection: BirthsTableModel[]) {
+    const idsSeleccionados = new Set(currentPageSelection.map(item => item.id));
+    const nuevos = currentPageSelection.filter(item =>
+      !this.selectedGlobalNacimiento.some(s => s.id === item.id)
+    );
+
+    // Añadir los nuevos
+    this.selectedGlobalNacimiento = [...this.selectedGlobalNacimiento, ...nuevos];
+
+    // Eliminar los que ya no están seleccionados en esta página
+    this.births.forEach(item => {
+      if (!idsSeleccionados.has(item.id)) {
+        this.selectedGlobalNacimiento = this.selectedGlobalNacimiento.filter(s => s.id !== item.id);
+      }
+    });
   }
 
 }

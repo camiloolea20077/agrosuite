@@ -19,6 +19,7 @@ import { CattleSalesModule } from '../../../cattle-sales.module';
 import { AlertService } from 'src/app/shared/utils/pipes/alert.service';
 import { CreateCattleSaleItemDto } from '../../../domain/dto/create-cattle-sale-item.dto';
 import { TooltipModule } from 'primeng/tooltip';
+import { CattleSalePdfService } from 'src/app/core/services/pdf.service';
 
 @Component({
   selector: 'app-index-cattle-sales',
@@ -116,6 +117,7 @@ export class IndexCattleSalesComponent {
     readonly _helperService: HelpersService,
     private readonly _confirmationService: ConfirmationService,
     private readonly salesService: SalesService,
+    private readonly pdfService: CattleSalePdfService,
     private router: Router,
     private readonly _alertService: AlertService,
     private readonly cattleSaleService: SalesService,
@@ -232,5 +234,4 @@ export class IndexCattleSalesComponent {
       return '';
   }
 }
-
 }

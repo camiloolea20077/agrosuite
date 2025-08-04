@@ -138,7 +138,7 @@ public class BirthsQueryRepository {
     public void marcarNacimientosComoVendidos(List<Long> cattleIds) {
         String sql = """
             UPDATE births
-            SET activo = 0,
+            SET 
                 deleted_at = CURRENT_TIMESTAMP
             WHERE id IN (:ids)
         """;

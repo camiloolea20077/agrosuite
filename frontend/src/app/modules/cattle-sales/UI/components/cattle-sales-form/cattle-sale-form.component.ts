@@ -58,6 +58,7 @@ export class CattleSaleFormComponent {
   modalVisible = false;
   loadingTable: boolean = false;
   public frm!: FormGroup;
+  isSubmitting = false;
   public slug: string | null = 'create';
   public selectedItems: CreateCattleSaleItemDto[] = [];
   public selectedCattleIds: number[] = [];
@@ -116,7 +117,7 @@ export class CattleSaleFormComponent {
       nombreRazonSocial: [{ value: '', disabled: true }],
       telefono: [{ value: '', disabled: true }],
       direccion: [{ value: '', disabled: true }],
-
+      destinatario :[null, Validators.required],
       // Totales (deshabilitados desde el inicio)
       precioKilo: [null, Validators.required],
       pesoTotal: [{ value: 0, disabled: true }],
@@ -151,7 +152,7 @@ async buildData(): Promise<CreateCattleSaleDto> {
     total,
     moneda: value.moneda,
     formaPago: value.formaPago,
-    destino: value.destino,
+    destino: value.destinatario,
     observaciones: value.observaciones,
     terceroId: value.terceroId ?? 0, 
     cattleIds: this.selectedCattleIds,
@@ -166,6 +167,7 @@ async buildData(): Promise<CreateCattleSaleDto> {
         'Alerta del sistema',
         'Complete todos los campos y seleccione al menos un animal'
       );
+      this.isSubmitting = false;
       return;
     }
 
@@ -181,7 +183,7 @@ async buildData(): Promise<CreateCattleSaleDto> {
           severity: 'success',
           summary: 'Operación exitosa',
           detail: 'Venta registrada correctamente',
-          life: 5000,
+          life: 2000,
         });
         this._router.navigate(['/sales']);
       }
@@ -338,7 +340,7 @@ seleccionarTercero(event: AutoCompleteOnSelectEvent): void {
         horaEmision: data.horaEmision,
         moneda: data.moneda,
         formaPago: data.formaPago,
-        destino: data.destino,
+        destinatario: data.destino,
         observaciones: data.observaciones,
         precioKilo: data.precioKilo,
         pesoTotal: data.pesoTotal,

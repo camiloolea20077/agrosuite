@@ -7,7 +7,7 @@ export interface CreateCattleSaleDto {
   horaEmision: string; // formato HH:mm
   moneda: string;      // Ej: 'COP'
   formaPago: string;   // Ej: 'Contado', 'Crédito'
-
+  
   destino: string;
   observaciones: string;
 

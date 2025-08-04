@@ -35,6 +35,7 @@
       [globalFilterFields]="['numero_ganado', 'tipo_ganado', 'sexo', 'peso']"
       selectionMode="multiple"
       responsiveLayout="scroll"
+      (selectionChange)="onSelectionChangeGanado($event)"
       [rowsPerPageOptions]="[10, 20, 50]"
     >
       <ng-template pTemplate="caption">
@@ -93,6 +94,9 @@
       (onLazyLoad)="loadTableBirth($event)"
       [paginator]="true"
       [rows]="rowSize"
+      (selectionChange)="onSelectionChangeNacimiento($event)"
+      (onRowSelect)="handleRowSelectGanado($event)"
+      (onRowUnselect)="handleRowUnselectGanado($event)"
       [totalRecords]="totalRecords"
       [globalFilterFields]="[
         'numero_nacimiento',
@@ -169,8 +173,8 @@
         icon="pi pi-check"
         (click)="handleAccept()"
         [disabled]="
-          (origenSeleccionado === 'GANADO' && selectedGanado.length === 0) ||
-          (origenSeleccionado === 'TERNERO' && selectedNacimiento.length === 0)
+          (origenSeleccionado === 'GANADO' && selectedGlobalGanado.length === 0) ||
+          (origenSeleccionado === 'TERNERO' && selectedGlobalNacimiento.length === 0)
         "
       ></button>
     </div>

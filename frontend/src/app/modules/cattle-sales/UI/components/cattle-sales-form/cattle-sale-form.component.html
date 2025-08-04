@@ -1,6 +1,7 @@
-
 <div class="card">
-  <h1 class="m-0">{{ slug === 'create' ? 'Nueva Factura de Venta' : 'Visualizar Factura' }}</h1>
+  <h1 class="m-0">
+    {{ slug === "create" ? "Nueva Factura de Venta" : "Visualizar Factura" }}
+  </h1>
   <hr />
 
   <form [formGroup]="frm" (ngSubmit)="submitForm()" class="p-fluid">
@@ -64,20 +65,28 @@
             (completeMethod)="searchTerceros($event)"
             (onSelect)="seleccionarTercero($event)"
           ></p-autoComplete>
-      <label>Número de Documento</label>
-    </span>
+          <label>Número de Documento</label>
+        </span>
       </div>
 
       <div class="col-12 md:col-6 mt-3">
         <span class="p-float-label">
-          <input pInputText formControlName="tipoIdentificacion" [disabled]="true" />
+          <input
+            pInputText
+            formControlName="tipoIdentificacion"
+            [disabled]="true"
+          />
           <label>Tipo de Documento</label>
         </span>
       </div>
 
       <div class="col-12 md:col-6 mt-3">
         <span class="p-float-label">
-          <input pInputText formControlName="nombreRazonSocial" [disabled]="true" />
+          <input
+            pInputText
+            formControlName="nombreRazonSocial"
+            [disabled]="true"
+          />
           <label>Nombre o Razón Social</label>
         </span>
       </div>
@@ -93,6 +102,12 @@
         <span class="p-float-label">
           <input pInputText formControlName="direccion" [disabled]="true" />
           <label>Dirección</label>
+        </span>
+      </div>
+      <div class="col-12 lg:col-6 mt-3">
+        <span class="p-float-label">
+          <input pInputText formControlName="destinatario" />
+          <label>Destinatario</label>
         </span>
       </div>
     </div>
@@ -123,7 +138,7 @@
           </ng-template>
           <ng-template pTemplate="body" let-animal>
             <tr>
-              <td>{{ animal.numero_ganado || '—'}}</td>
+              <td>{{ animal.numero_ganado || "—" }}</td>
               <td>{{ animal.tipoOrigen }}</td>
               <td>{{ animal.pesoVenta }}</td>
               <td>{{ animal.precioKilo | currencyCop }}</td>
@@ -133,58 +148,64 @@
           </ng-template>
           <ng-template pTemplate="emptymessage">
             <tr>
-              <td colspan="6" class="text-center">No hay animales seleccionados</td>
+              <td colspan="6" class="text-center">
+                No hay animales seleccionados
+              </td>
             </tr>
           </ng-template>
         </p-table>
       </div>
     </div>
-<!-- Totales -->
-<h3 class="mt-4">Totales Generales</h3>
-<div class="grid mt-4">
-  <!-- Primero: Precio por Kilo y Peso Total -->
-  <div class="col-12 md:col-3">
-    <span class="p-float-label">
-      <input pInputText formControlName="precioKilo" />
-      <label>Precio por kilo</label>
-    </span>
-  </div>
+    <!-- Totales -->
+    <h3 class="mt-4">Totales Generales</h3>
+    <div class="grid mt-4">
+      <!-- Primero: Precio por Kilo y Peso Total -->
+      <div class="col-12 md:col-3">
+        <span class="p-float-label">
+          <input pInputText formControlName="precioKilo" />
+          <label>Precio por kilo</label>
+        </span>
+      </div>
 
-  <div class="col-12 md:col-3">
-    <span class="p-float-label">
-      <input pInputText formControlName="pesoTotal" [disabled]="true" />
-      <label>Peso Total</label>
-    </span>
-  </div>
+      <div class="col-12 md:col-3">
+        <span class="p-float-label">
+          <input pInputText formControlName="pesoTotal" [disabled]="true" />
+          <label>Peso Total</label>
+        </span>
+      </div>
 
-  <!-- Luego: Subtotal, IVA, Descuentos y Total -->
-  <div class="col-12 md:col-3">
-    <span class="p-float-label">
-      <input pInputText formControlName="subtotal" [disabled]="true" />
-      <label>Subtotal sin IVA</label>
-    </span>
-  </div>
+      <!-- Luego: Subtotal, IVA, Descuentos y Total -->
+      <div class="col-12 md:col-3">
+        <span class="p-float-label">
+          <input pInputText formControlName="subtotal" [disabled]="true" />
+          <label>Subtotal sin IVA</label>
+        </span>
+      </div>
 
-  <div class="col-12 md:col-3">
-    <span class="p-float-label">
-      <input pInputText formControlName="iva" [disabled]="true" />
-      <label>IVA</label>
-    </span>
-  </div>
-  <div class="col-12 md:col-3 lg:col-6 mt-3">
-    <span class="p-float-label">
-      <input pInputText formControlName="descuentos" [disabled]="true" />
-      <label>Descuentos</label>
-    </span>
-  </div>
+      <div class="col-12 md:col-3">
+        <span class="p-float-label">
+          <input pInputText formControlName="iva" [disabled]="true" />
+          <label>IVA</label>
+        </span>
+      </div>
+      <div class="col-12 md:col-3 lg:col-6 mt-3">
+        <span class="p-float-label">
+          <input pInputText formControlName="descuentos" [disabled]="true" />
+          <label>Descuentos</label>
+        </span>
+      </div>
 
-  <div class="col-12 md:col-3 lg:col-6 mt-3">
-    <span class="p-float-label">
-      <input pInputText [value]="frm.get('precioTotal')?.value | currencyCop" [disabled]="true" />
-      <label>Total a pagar</label>
-    </span>
-  </div>
-</div>
+      <div class="col-12 md:col-3 lg:col-6 mt-3">
+        <span class="p-float-label">
+          <input
+            pInputText
+            [value]="frm.get('precioTotal')?.value | currencyCop"
+            [disabled]="true"
+          />
+          <label>Total a pagar</label>
+        </span>
+      </div>
+    </div>
 
     <!-- Observaciones -->
     <div class="grid mt-3">
@@ -198,16 +219,6 @@
 
     <!-- Botones -->
     <div class="grid justify-end mt-4">
-      <div class="col-12 md:col-3">
-        <button
-          pButton
-          type="submit"
-          label="Guardar y Facturar"
-          icon="pi pi-save"
-          class="p-button-success w-full p-button-rounded"
-          [disabled]="frm.invalid || selectedItems.length === 0"
-        ></button>
-      </div>
       <div class="col-12 md:col-3" *ngIf="slug === 'view'">
         <button
           pButton
@@ -222,10 +233,30 @@
         <button
           pButton
           type="button"
+          label="Volver"
+          icon="pi pi-arrow-left"
+          class="p-button-secondary w-full p-button-rounded"
+          routerLink="/sales"
+        ></button>
+      </div>
+      <div class="col-12 md:col-3" *ngIf="slug === 'create'">
+        <button
+          pButton
+          type="button"
           label="Limpiar formulario"
           icon="pi pi-trash"
           class="p-button-warning w-full p-button-rounded"
           (click)="frm.reset()"
+        ></button>
+      </div>
+      <div class="col-12 md:col-3">
+        <button
+          pButton
+          type="submit"
+          label="Guardar y Facturar"
+          icon="pi pi-save"
+          class="p-button-success w-full p-button-rounded"
+          [disabled]="frm.invalid || selectedItems.length === 0"
         ></button>
       </div>
     </div>
