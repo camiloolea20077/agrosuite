@@ -93,7 +93,7 @@ export class CattleSalePdfService {
             body: [
               titles.map(title => ({ ...headerCell, text: title })),
               ...animales.map((a, i) => [
-                { ...rowCell, text: `Animal #${i + 1}` },
+                { ...rowCell, text: `${a.numero_ganado}` },
                 {...rowCell, text: '1', },
                 {...rowCell, text: `${a.pesoVenta}`, },
                 {...rowCell, text: `$${precioKilo.toLocaleString()}`, },
