@@ -20,6 +20,13 @@ import { AlertService } from 'src/app/shared/utils/pipes/alert.service';
 import { CreateCattleSaleItemDto } from '../../../domain/dto/create-cattle-sale-item.dto';
 import { TooltipModule } from 'primeng/tooltip';
 import { CattleSalePdfService } from 'src/app/core/services/pdf.service';
+import { DialogModule } from "primeng/dialog";
+import { ListElementService } from 'src/app/core/services/list-element.service';
+import { ListElementFarmsModes } from 'src/app/shared/utils/models/list-element-farms.model';
+import { FormsModule } from '@angular/forms';
+import { DropdownModule } from 'primeng/dropdown';
+import { IndexDBService } from 'src/app/core/services/index-db.service';
+import { ListUsersDto } from 'src/app/shared/utils/models/list-users.model';
 
 @Component({
   selector: 'app-index-cattle-sales',
@@ -37,7 +44,10 @@ import { CattleSalePdfService } from 'src/app/core/services/pdf.service';
     InventoryModule,
     CattleSalesModule,
     TooltipModule,
-  ],
+    DialogModule,
+    DropdownModule,
+    FormsModule
+],
   providers: [ConfirmationService, MessageService],
 })
 export class IndexCattleSalesComponent {
@@ -49,6 +59,13 @@ export class IndexCattleSalesComponent {
   public selectedItems: CreateCattleSaleItemDto[] = [];
   public selectedCattleIds: number[] = [];
   filtersTable!: IFilterTable<ICattleSalesFilterTable>;
+  showModalOtp = false;
+  filteredApprovers: ListUsersDto[] = [];
+  public selectedApproverId: number | null = null;
+  currentSaleId!: number;
+  public selectedSaleId!: number;
+  public displayOtpModal: boolean = false;
+
   cols: ColsModel[] = [
     {
       field: 'id',
@@ -119,6 +136,8 @@ export class IndexCattleSalesComponent {
     private readonly salesService: SalesService,
     private readonly pdfService: CattleSalePdfService,
     private router: Router,
+    private readonly indexDBService: IndexDBService,
+    private listElementService: ListElementService, 
     private readonly _alertService: AlertService,
     private readonly cattleSaleService: SalesService,
     private readonly _activatedRoute: ActivatedRoute,
@@ -234,4 +253,65 @@ export class IndexCattleSalesComponent {
       return '';
   }
 }
+async solicitarAnulacionConOtp(id: number): Promise<void> {
+  this.currentSaleId = id;
+  this.selectedApproverId = null;
+
+  try {
+    const requestedByUserId = await this.indexDBService.getUserId();
+    const response = await lastValueFrom(this.listElementService.forListByUsers());
+        this.filteredApprovers = response.data.filter(
+        (user: ListUsersDto) => user.id !== requestedByUserId
+      );
+  } catch (error) {
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: 'No se pudieron cargar los aprobadores'
+    });
+    return;
+  }
+
+  this.showModalOtp = true;
+}
+
+async enviarSolicitudAnulacionConOtp(): Promise<void> {
+  const requestedByUserId = await this.indexDBService.getUserId();
+  const approverUserId = this.selectedApproverId;
+
+   if (!approverUserId || !requestedByUserId) return; 
+
+  try {
+    await lastValueFrom(
+      this.cattleSaleService.solicitarAnulacionConOtp(this.currentSaleId, {
+        requestedByUserId,
+        approverUserId,
+      })
+    );
+
+    this.messageService.add({
+      severity: 'info',
+      summary: 'OTP Enviada',
+      detail: 'Correo enviado al aprobador',
+    });
+    this.showModalOtp = false;
+  } catch (error) {
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: 'No se pudo enviar el correo',
+    });
+  }
+}
+
+  async abrirModalOtp(saleId: number): Promise<void> {
+    this.currentSaleId = saleId;
+    const requestedByUserId = await this.indexDBService.getUserId();
+    const response = await lastValueFrom(this.listElementService.forListByUsers());
+      this.filteredApprovers = response.data.filter(
+      (user: ListUsersDto) => user.id !== requestedByUserId
+    );
+    this.showModalOtp = true;
+  }
+
 }

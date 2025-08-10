@@ -10,4 +10,5 @@ import com.erp.backend_erp.util.PageableDto;
 public interface UserService {
     UserDto create(CreateUserDto createUserDto);
     PageImpl<UsersTableDto> pageUsers(PageableDto<Object> pageableDto);
+    
 }

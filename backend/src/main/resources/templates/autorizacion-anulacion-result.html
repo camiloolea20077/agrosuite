@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultado de Autorización</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding-top: 80px;
+        }
+
+        .box {
+            display: inline-block;
+            background-color: #fff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .message-success {
+            color: #28a745;
+            font-size: 1.5rem;
+        }
+
+        .message-error {
+            color: #dc3545;
+            font-size: 1.5rem;
+        }
+
+        .icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <div class="icon" th:if="${success}" style="color: #28a745;">✅</div>
+        <div class="icon" th:if="${!success}" style="color: #dc3545;">❌</div>
+
+        <div th:if="${success}" class="message-success" th:text="${message}">Anulación exitosa.</div>
+        <div th:if="${!success}" class="message-error" th:text="${message}">Error en la anulación.</div>
+    </div>
+</body>
+</html>

@@ -7,6 +7,7 @@ import { BirthsModel } from "src/app/modules/births/domain/models/births.model";
 import { ListElementFarmsModes } from "src/app/shared/utils/models/list-element-farms.model";
 import { ListElementModel } from "src/app/shared/utils/models/list-element.model";
 import { ResponseModel } from "src/app/shared/utils/models/responde.models";
+import { ListUsersDto } from "src/app/shared/utils/models/list-users.model";
 
 @Injectable({
     providedIn: 'root'
@@ -36,6 +37,11 @@ export class ListElementService {
     forListByRoles(): Observable<ResponseModel<ListElementFarmsModes[]>> {
         return this.http.get<ResponseModel<ListElementFarmsModes[]>>(
             `${this.apiUrl}/list-roles`
+        )
+    }
+    forListByUsers(): Observable<ResponseModel<ListUsersDto[]>> {
+        return this.http.get<ResponseModel<ListUsersDto[]>>(
+            `${this.apiUrl}/list-users`
         )
     }
 }

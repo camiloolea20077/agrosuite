@@ -61,4 +61,9 @@ export class IndexDBService {
     const data = await this.loadDataAuthDB();
     return data?.user?.farm ?? null;
   }
+  // Obtener solo el ID del usuario
+  async getUserId(): Promise<number | null> {
+    const data = await this.loadDataAuthDB();
+    return data?.user?.id ?? null;
+  }
 }

@@ -84,5 +84,11 @@ public class GlobalExceptionHandler {
 				true, null);
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
+	@ExceptionHandler(BusinessException.class)
+	public String handleBusinessException(BusinessException ex, WebRequest request, org.springframework.ui.Model model) {
+		model.addAttribute("success", false);
+		model.addAttribute("message", "❌ " + ex.getMessage());
+		return "autorizacion-anulacion-result";
+	}
 
 }

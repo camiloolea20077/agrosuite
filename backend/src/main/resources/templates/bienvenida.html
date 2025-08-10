@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Bienvenido</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f4f4;
+      padding: 0;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 40px;
+    }
+
+    h2 {
+      color: #6D2279;
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 16px;
+      color: #333333;
+      line-height: 1.6;
+    }
+
+    .footer {
+      margin-top: 30px;
+      font-size: 13px;
+      color: #888;
+      text-align: center;
+    }
+
+    .highlight {
+      color: #F15A24;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>¡Hola <span class="highlight">{{nombre}}</span>!</h2>
+    <p>Bienvenido a <strong>AgroSuite</strong>, tu plataforma aliada para alcanzar nuevas oportunidades laborales.</p>
+    <p>Estamos encantados de que te unas a nuestra comunidad. Pronto podrás postularte a empleos, crear tu hoja de vida y recibir notificaciones personalizadas.</p>
+    <p>Si tienes alguna duda, no dudes en escribirnos.</p>
+
+    <div class="footer">
+      &copy; {{anio}} AgroSuite. Todos los derechos reservados.
+    </div>
+  </div>
+</body>
+</html>

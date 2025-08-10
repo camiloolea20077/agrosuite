@@ -18,7 +18,7 @@ import com.erp.backend_erp.util.MapperRepository;
 import com.erp.backend_erp.util.PageableDto;
 
 @Repository
-public class GanadoQueryRepository {
+public class    GanadoQueryRepository {
     
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -129,5 +129,12 @@ public class GanadoQueryRepository {
         params.addValue("ids", cattleIds);
         namedParameterJdbcTemplate.update(sql, params);
     }
-
+    public void updateFarmId(Long cattleId, Long newFarmId) {
+        String sql = "UPDATE cattle SET farm_id = :farmId WHERE id = :id";
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("farmId", newFarmId);
+        params.addValue("id", cattleId);
+        namedParameterJdbcTemplate.update(sql, params);
+        
+    }
 }

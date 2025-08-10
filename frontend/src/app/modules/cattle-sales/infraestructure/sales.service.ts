@@ -37,5 +37,22 @@ export class SalesService {
   anularVenta(id: number): Observable<ResponseModel<void>> {
     return this.http.put<ResponseModel<void>>(`${this.apiUrl}/${id}/anular`, null);
   }
+  solicitarAnulacionConOtp(
+    saleId: number,
+    payload: { requestedByUserId: number; approverUserId: number }
+  ): Observable<ResponseModel<void>> {
+    return this.http.post<ResponseModel<void>>(
+      `${this.apiUrl}/${saleId}/solicitar-anulacion`,
+      payload
+    );
+  }
+  autorizarAnulacionPorToken(token: string): Observable<ResponseModel<void>> {
+    return this.http.get<ResponseModel<void>>(
+      `${this.apiUrl}/autorizar-anulacion`,
+      {
+        params: { token }
+      }
+    );
+  }
 
 }

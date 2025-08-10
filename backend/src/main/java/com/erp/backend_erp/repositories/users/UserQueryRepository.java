@@ -1,5 +1,7 @@
 package com.erp.backend_erp.repositories.users;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -7,10 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.erp.backend_erp.dto.listElements.RolesElementsDto;
+import com.erp.backend_erp.dto.listElements.UsersElementsDto;
 import com.erp.backend_erp.dto.users.UsersTableDto;
 import com.erp.backend_erp.util.MapperRepository;
 import com.erp.backend_erp.util.PageableDto;
@@ -79,5 +84,22 @@ public class UserQueryRepository {
 
         return new PageImpl<>(result, pageable, count);
     }
-
+    public List<UsersElementsDto> getUsers() {
+        String sql = """
+            SELECT 
+                u.id,
+                CONCAT(u.nombre_completo, ' - ', r.nombre) AS nombre_con_rol
+            FROM users u
+            JOIN roles r ON u.role_id = r.id
+        """;
+        return namedParameterJdbcTemplate.query(sql, new MapSqlParameterSource(), new RowMapper<UsersElementsDto>() {
+            @Override
+            public UsersElementsDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                UsersElementsDto dto = new UsersElementsDto();
+                dto.setId(rs.getLong("id"));
+                dto.setNombre_con_rol(rs.getString("nombre_con_rol"));
+                return dto;
+            }
+        });
+    }
 }

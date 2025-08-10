@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.erp.backend_erp.dto.listElements.CattleElementsDto;
 import com.erp.backend_erp.dto.listElements.FarmsElementsDto;
 import com.erp.backend_erp.dto.listElements.RolesElementsDto;
+import com.erp.backend_erp.dto.listElements.UsersElementsDto;
 import com.erp.backend_erp.services.ListElementService;
 import com.erp.backend_erp.util.ApiResponse;
 
@@ -59,6 +60,16 @@ public class ListElementController {
     public ResponseEntity<ApiResponse<Object>> getRoles() {
         try {
             List<RolesElementsDto> list = this.listElementService.getRoles();
+            ApiResponse<Object> response = new ApiResponse<>(HttpStatus.OK.value(), "", false, list);
+            return ResponseEntity.ok(response);
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
+    @GetMapping("/list-users")
+    public ResponseEntity<ApiResponse<Object>> getUsers() {
+        try {
+            List<UsersElementsDto> list = this.listElementService.getUsers();
             ApiResponse<Object> response = new ApiResponse<>(HttpStatus.OK.value(), "", false, list);
             return ResponseEntity.ok(response);
         } catch (Exception ex) {

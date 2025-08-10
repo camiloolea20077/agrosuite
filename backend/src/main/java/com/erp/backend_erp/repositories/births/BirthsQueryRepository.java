@@ -146,5 +146,12 @@ public class BirthsQueryRepository {
         params.addValue("ids", cattleIds);
         namedParameterJdbcTemplate.update(sql, params);
     }
+    public void updateFarmId(Long birthId, Long newFarmId) {
+        String sql = "UPDATE births SET farm_id = :farmId WHERE id = :id";
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("farmId", newFarmId);
+        params.addValue("id", birthId);
+        namedParameterJdbcTemplate.update(sql, params);
+    }
 
 }
