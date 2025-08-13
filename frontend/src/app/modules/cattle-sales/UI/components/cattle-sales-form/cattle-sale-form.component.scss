@@ -1,3 +1,76 @@
 .justify-end{
     justify-content: flex-end;
 }
+.surface-card {
+    background: var(--surface-card);
+    border: 1px solid var(--surface-border);
+  }
+  
+  .field {
+    margin-bottom: 1.5rem;
+  }
+  
+  .p-panel .p-panel-header {
+    background: var(--primary-50);
+    border-bottom: 1px solid var(--primary-200);
+    border-radius: 6px 6px 0 0;
+  }
+  
+  .p-panel .p-panel-content {
+    padding: 1.5rem;
+  }
+  
+  .p-inputtext:focus,
+  .p-dropdown:focus,
+  .p-calendar:focus,
+  .p-autocomplete:focus {
+    box-shadow: 0 0 0 0.2rem var(--primary-200);
+  }
+  
+  .p-error {
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
+  
+  .font-semibold {
+    font-weight: 600;
+  }
+  
+  .p-chip {
+    font-size: 0.875rem;
+  }
+  
+  .p-datatable .p-datatable-thead > tr > th {
+    background: var(--surface-100);
+    border-bottom: 1px solid var(--surface-300);
+  }
+  
+  .p-inputgroup-addon.bg-primary {
+    background: var(--primary-color) !important;
+    color: var(--primary-color-text) !important;
+    border-color: var(--primary-color);
+  }
+  
+  .text-muted-color {
+    color: var(--text-color-secondary);
+  }
+  
+  @media (max-width: 768px) {
+    .flex.justify-content-end {
+      justify-content: center !important;
+    }
+    
+    .p-button {
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+    
+    .p-panel .p-panel-content {
+      padding: 1rem;
+    }
+    
+    .p-datatable .p-datatable-thead > tr > th {
+      font-size: 0.875rem;
+      padding: 0.5rem;
+    }
+  }

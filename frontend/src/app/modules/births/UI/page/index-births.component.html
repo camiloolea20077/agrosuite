@@ -1,92 +1,201 @@
 <p-toast position="top-right"></p-toast>
-<div class="card">
-    <div class="grid flex flex-wrap align-items-center">
-        <div class="col-12 lg:col-6 md:col-6">
-            <h1 class="m-0">Listado Nacimientos</h1>
-        </div>
-        <div class="col-12 col-12 lg:col-2 lg:col-offset-2 md:col-3">
-        </div>
-        <div class="col-12 col-12 lg:col-2 md:col-3">
-            <button pButton class="p-button-rounded w-full p-button-success p-button-outlined w-full" type="button"
-                icon="pi pi-plus-circle" label="Nuevo" routerLink="create"></button>
+
+<!-- Contenedor principal con mejor espaciado y sombra -->
+<div class="card shadow-3 border-round-lg overflow-hidden">
+    <!-- Header mejorado con gradiente y mejor tipografía -->
+    <div class="surface-0 p-4 border-bottom-1 surface-border">
+        <div class="flex flex-wrap align-items-center justify-content-between gap-3">
+            <div class="flex align-items-center gap-3">
+                <i class="pi pi-heart text-3xl text-pink-500"></i>
+                <div>
+                    <h1 class="text-2xl font-bold text-900 m-0 line-height-3">Registro de Nacimientos</h1>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button pButton 
+                    class="p-button-success p-button-raised border-round-lg px-4 py-2 font-semibold"
+                    type="button"
+                    icon="pi pi-plus-circle" 
+                    label="Registrar Nacimiento" 
+                    routerLink="create">
+                </button>
+            </div>
         </div>
     </div>
-    <div class="col-12">
-        <p-table #dt [value]="births" [lazy]="true" responsiveLayout="scroll" dataKey="id" [loading]="loadingTable"
-            [rows]="rowSize" [totalRecords]="totalRecords" [paginator]="true" (onLazyLoad)="loadTable($event)"
-            [rowsPerPageOptions]="[10, 25, 50]" [showCurrentPageReport]="true"
-            currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} entradas"
-            [class]="'small-font-table'">
+
+    <!-- Contenido de la tabla -->
+    <div class="p-4">
+        <p-table #dt 
+            [value]="births" 
+            [lazy]="true" 
+            responsiveLayout="scroll" 
+            dataKey="id" 
+            [loading]="loadingTable"
+            [rows]="rowSize" 
+            [totalRecords]="totalRecords" 
+            [paginator]="true" 
+            (onLazyLoad)="loadTable($event)"
+            [rowsPerPageOptions]="[10, 25, 50, 100]" 
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="Mostrando {first} - {last} de {totalRecords} registros"
+            styleClass="p-datatable-striped p-datatable-gridlines"
+            [tableStyle]="{'min-width': '50rem'}"
+            [scrollable]="true"
+            scrollHeight="600px">
+            
+            <!-- Caption mejorado con mejor buscador -->
             <ng-template pTemplate="caption">
-                <div class="flex flex-row flex-wrap card-container blue-container">
-                    <div class="flex col-12 sm:col-6 sm:max-w-20rem ml-auto p-0 mt-2 sm:mt-0">
-                        <span class="p-input-icon-left w-full lg:w-7">
+                <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center gap-3 mb-3 p-3 surface-50 border-round-lg">
+                    <div class="flex align-items-center gap-2">
+                        <i class="pi pi-filter text-pink-500"></i>
+                        <span class="font-semibold text-900">Filtros y Búsqueda</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="p-input-icon-left">
                             <i class="pi pi-search"></i>
-                            <input pInputText type="text" class="w-full input-search-table"
-                                (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Buscar" />
+                            <input pInputText 
+                                type="text" 
+                                class="w-full md:w-20rem"
+                                (input)="dt.filterGlobal($any($event.target).value, 'contains')" 
+                                placeholder="Buscar nacimientos..." />
                         </span>
                     </div>
                 </div>
             </ng-template>
+            
+            <!-- Header mejorado -->
             <ng-template pTemplate="header">
                 <tr>
                     <ng-container *ngFor="let col of cols">
-                        <th *ngIf="col.field != 'actions'" style="width: 10%" [class]="col.nameClass"
-                            [style]="col.minWidth" pSortableColumn="{{ col.field }}">
-                            <span [class]="col.nameClass"> {{ col.header }}</span>
-                            <p-sortIcon class="float-right" field="{{ col.field }}"></p-sortIcon>
+                        <th *ngIf="col.field != 'actions'" 
+                            [class]="col.nameClass + ' text-center'"
+                            [style]="col.minWidth" 
+                            pSortableColumn="{{ col.field }}"
+                            class="surface-100 text-900 font-bold p-3 text-sm uppercase letter-spacing-1 border-bottom-2 border-pink-500">
+                            <div class="flex align-items-center justify-content-center gap-2">
+                                <span> {{ col.header }}</span>
+                                <p-sortIcon field="{{ col.field }}"></p-sortIcon>
+                            </div>
                         </th>
-                        <th *ngIf="col.field == 'actions'" style="width: 10%" [class]="col.nameClass">
-                            <span [class]="col.nameClass"> {{ col.header }}</span>
+                        <th *ngIf="col.field == 'actions'" 
+                            [class]="col.nameClass + ' text-center'"
+                            class="surface-100 text-900 font-bold p-3 text-sm uppercase letter-spacing-1 border-bottom-2 border-pink-500">
+                            <div class="flex align-items-center justify-content-center">
+                                <i class="pi pi-cog mr-2"></i>
+                                <span>{{ col.header }}</span>
+                            </div>
                         </th>
                     </ng-container>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-item>
-                <tr>
-                    <td *ngFor="let col of cols" [class]="col.nameClass">
-                        <span *ngIf="col.type == 'icon'">
-                            <button *ngIf="item.activo == 1" pButton pTooltip="Activo" type="button"
-                                icon="pi true-icon pi-check-circle text-green-500"
-                                class="p-button-rounded p-button-text p-button-success"></button>
-                            <button *ngIf="item.activo == 2" pButton pTooltip="Inactivo" type="button"
-                                icon="pi false-icon pi-times-circle text-pink-500"
-                                class="p-button-rounded p-button-text p-button-danger"></button>
+            
+            <!-- Body mejorado -->
+            <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+                <tr class="hover:surface-hover transition-colors transition-duration-150">
+                    <td *ngFor="let col of cols" 
+                        [class]="col.nameClass + ' p-3 text-center border-bottom-1 surface-border'"
+                        [ngClass]="{'surface-50': rowIndex % 2 === 0}">
+                        
+                        <!-- Estado con badges mejorados -->
+                        <span *ngIf="col.type == 'icon'" class="flex justify-content-center">
+                            <p-tag *ngIf="item.activo == 1" 
+                                value="Activo" 
+                                severity="success" 
+                                icon="pi pi-check-circle"
+                                class="font-semibold">
+                            </p-tag>
+                            <p-tag *ngIf="item.activo == 2" 
+                                value="Inactivo" 
+                                severity="danger" 
+                                icon="pi pi-times-circle"
+                                class="font-semibold">
+                            </p-tag>
                         </span>
-                        <span *ngIf="col.type == 'number'">
-                            {{ item[col.field] }}
+                        
+                        <!-- Números con formato -->
+                        <span *ngIf="col.type == 'number'" class="font-medium text-900">
+                            {{ item[col.field] | number:'1.0-0' }}
                         </span>
-                        <span *ngIf="col.type === 'string'">
-                            {{ item[col.field] | uppercase }}
+                        
+                        <!-- Strings con mejor formato -->
+                        <span *ngIf="col.type === 'string'" class="font-medium text-900">
+                            {{ item[col.field] | titlecase }}
                         </span>
+                        
+                        <!-- Fechas con formato especial -->
+                        <span *ngIf="col.type === 'date'" class="font-medium text-900">
+                            <i class="pi pi-calendar mr-2 text-pink-500"></i>
+                            {{ item[col.field] | date:'dd/MM/yyyy' }}
+                        </span>
+                        
+                        <!-- Acciones mejoradas -->
                         <ng-container *ngIf="col.field == 'actions'">
-                            <div style="text-align: center; width: 100%">
-                                <button pButton type="button" icon="pi pi-pencil"
-                                    class="p-button-rounded p-button-outlined p-button-text"
-                                    [routerLink]="'edit/' + item.id"></button>
-                                <button pButton type="button" icon="pi pi-trash"
-                                    
-                                    class="p-button-rounded p-button-text p-button-danger"
-                                    ></button>
+                            <div class="flex justify-content-center gap-2">
+                                <button pButton 
+                                    type="button" 
+                                    icon="pi pi-pencil"
+                                    class="p-button-rounded p-button-outlined p-button-warning p-button-sm"
+                                    pTooltip="Editar registro de nacimiento"
+                                    tooltipPosition="top"
+                                    [routerLink]="'edit/' + item.id">
+                                </button>
+                                <!-- <button pButton 
+                                    type="button" 
+                                    icon="pi pi-trash"
+                                    class="p-button-rounded p-button-outlined p-button-danger p-button-sm"
+                                    pTooltip="Eliminar registro"
+                                    tooltipPosition="top"
+                                    (click)="deleteBirth(item.id)">
+                                </button> -->
                             </div>
                         </ng-container>
                     </td>
                 </tr>
             </ng-template>
+            
+            <!-- Empty message mejorado -->
             <ng-template pTemplate="emptymessage">
                 <tr>
-                    <td [attr.colspan]="cols.length">
-                        <div class="pt-4 pb-4 text-center">No se encontraron registros.</div>
+                    <td [attr.colspan]="cols.length" class="text-center p-6">
+                        <div class="flex flex-column align-items-center gap-3 py-4">
+                            <i class="pi pi-heart text-6xl text-300"></i>
+                            <h3 class="text-900 font-bold">No hay nacimientos registrados</h3>
+                            <p class="text-600 m-0">No se encontraron registros de nacimientos que coincidan con los criterios de búsqueda.</p>
+                            <button pButton 
+                                class="p-button-outlined mt-3 p-button-pink"
+                                icon="pi pi-plus" 
+                                label="Registrar primer nacimiento"
+                                routerLink="create">
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+            
+            <!-- Loading template mejorado -->
+            <ng-template pTemplate="loadingbody">
+                <tr>
+                    <td [attr.colspan]="cols.length" class="text-center p-6">
+                        <div class="flex flex-column align-items-center gap-3">
+                            <p-progressSpinner strokeWidth="3" animationDuration="1s"></p-progressSpinner>
+                            <span class="text-600">Cargando registros de nacimientos...</span>
+                        </div>
                     </td>
                 </tr>
             </ng-template>
         </p-table>
     </div>
 </div>
+
+<!-- Dialog de confirmación mejorado -->
 <p-confirmDialog
-  [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
-  [style]="{ width: '30vw' }"
-  [baseZIndex]="10000"
-  rejectButtonStyleClass="p-button-danger"
->
+    [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
+    [style]="{ width: '35vw', 'min-width': '300px' }"
+    [baseZIndex]="10000"
+    rejectButtonStyleClass="p-button-outlined p-button-danger"
+    acceptButtonStyleClass="p-button-danger"
+    header="Confirmar eliminación"
+    icon="pi pi-exclamation-triangle"
+    acceptLabel="Eliminar"
+    rejectLabel="Cancelar">
 </p-confirmDialog>

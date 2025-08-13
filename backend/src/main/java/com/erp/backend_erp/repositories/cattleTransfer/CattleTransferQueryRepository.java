@@ -34,14 +34,14 @@ public class CattleTransferQueryRepository {
                 f2.nombre AS destination_farm,
                 t.transfer_date,
                 t.observations,
-                u.nombre AS created_by,
+                u.nombre_completo AS created_by,
                 COUNT(*) OVER() AS total_rows
             FROM
                 cattle_transfer t
             INNER JOIN farms f1 ON f1.id = t.origin_farm_id
             INNER JOIN farms f2 ON f2.id = t.destination_farm_id
             INNER JOIN users u ON u.id = t.created_by
-            WHERE t.deleted_at IS NULL
+            WHERE u.deleted_at IS NULL
             AND t.origin_farm_id = :farmId
         """;
 

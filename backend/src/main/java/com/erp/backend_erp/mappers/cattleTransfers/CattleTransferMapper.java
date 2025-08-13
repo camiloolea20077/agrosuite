@@ -10,6 +10,7 @@ import com.erp.backend_erp.dto.cattleTransfer.CattleTransferDto;
 import com.erp.backend_erp.dto.cattleTransfer.CattleTransferItemDto;
 import com.erp.backend_erp.dto.cattleTransfer.CreateCattleTransferDto;
 import com.erp.backend_erp.dto.cattleTransfer.CreateCattleTransferItemDto;
+import com.erp.backend_erp.dto.cattleTransfer.ViewCattleTransferDto;
 import com.erp.backend_erp.entity.cattleTransfer.CattleTransferEntity;
 import com.erp.backend_erp.entity.cattleTransfer.CattleTransferItemEntity;
 @Mapper(componentModel = "spring")
@@ -29,6 +30,8 @@ public interface  CattleTransferMapper {
         @Mapping(target = "transferId", ignore = true),
         @Mapping(target = "cattleId", source = "cattleId"),
         @Mapping(target = "birthId", source = "birthId"),
+        @Mapping(target = "numero_ganado", source = "numero_ganado"),
+        @Mapping(target = "peso", source = "peso"),
         @Mapping(target = "created_at", ignore = true)
     })
     CattleTransferItemEntity toEntityItem(CreateCattleTransferItemDto dto);
@@ -38,7 +41,7 @@ public interface  CattleTransferMapper {
     // DTOs
     CattleTransferDto toDto(CattleTransferEntity entity);
     List<CattleTransferDto> toDtoList(List<CattleTransferEntity> entityList);
-
+    ViewCattleTransferDto toViewDto(CattleTransferEntity entity, List<CattleTransferItemEntity> items);
     CattleTransferItemDto toItemDto(CattleTransferItemEntity entity);
     List<CattleTransferItemDto> toItemDtoList(List<CattleTransferItemEntity> entityList);
 }

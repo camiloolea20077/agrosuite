@@ -1,14 +1,12 @@
-<p-toast position="top-right"></p-toast>
-
 <!-- Contenedor principal con mejor espaciado y sombra -->
 <div class="card shadow-3 border-round-lg overflow-hidden">
     <!-- Header mejorado con gradiente y mejor tipografía -->
     <div class="surface-0 p-4 border-bottom-1 surface-border">
         <div class="flex flex-wrap align-items-center justify-content-between gap-3">
             <div class="flex align-items-center gap-3">
-                <i class="pi pi-shopping-cart text-3xl text-green-600"></i>
+                <i class="pi pi-arrow-right-arrow-left text-3xl text-blue-600"></i>
                 <div>
-                    <h1 class="text-2xl font-bold text-900 m-0 line-height-3">Gestión de Ventas</h1>
+                    <h1 class="text-2xl font-bold text-900 m-0 line-height-3">Gestión de Transferencias</h1>
                 </div>
             </div>
             <div class="flex gap-2">
@@ -16,7 +14,7 @@
                     class="p-button-success p-button-raised border-round-lg px-4 py-2 font-semibold"
                     type="button"
                     icon="pi pi-plus-circle" 
-                    label="Nueva Venta" 
+                    label="Nueva Transferencia" 
                     routerLink="create">
                 </button>
             </div>
@@ -26,7 +24,7 @@
     <!-- Contenido de la tabla -->
     <div class="p-4">
         <p-table #dt 
-            [value]="sales" 
+            [value]="transfers" 
             [lazy]="true" 
             responsiveLayout="scroll" 
             dataKey="id" 
@@ -47,7 +45,7 @@
             <ng-template pTemplate="caption">
                 <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center gap-3 mb-3 p-3 surface-50 border-round-lg">
                     <div class="flex align-items-center gap-2">
-                        <i class="pi pi-filter text-green-600"></i>
+                        <i class="pi pi-filter text-blue-600"></i>
                         <span class="font-semibold text-900">Filtros y Búsqueda</span>
                     </div>
                     <div class="flex gap-2">
@@ -57,7 +55,7 @@
                                 type="text" 
                                 class="w-full md:w-20rem"
                                 (input)="dt.filterGlobal($any($event.target).value, 'contains')" 
-                                placeholder="Buscar ventas..." />
+                                placeholder="Buscar transferencias..." />
                         </span>
                     </div>
                 </div>
@@ -71,7 +69,7 @@
                             [class]="col.nameClass + ' text-center'"
                             [style]="col.minWidth" 
                             pSortableColumn="{{ col.field }}"
-                            class="surface-100 text-900 font-bold p-3 text-sm uppercase letter-spacing-1 border-bottom-2 border-green-500">
+                            class="surface-100 text-900 font-bold p-3 text-sm uppercase letter-spacing-1 border-bottom-2 border-blue-500">
                             <div class="flex align-items-center justify-content-center gap-2">
                                 <span> {{ col.header }}</span>
                                 <p-sortIcon field="{{ col.field }}"></p-sortIcon>
@@ -79,7 +77,7 @@
                         </th>
                         <th *ngIf="col.field == 'actions'" 
                             [class]="col.nameClass + ' text-center'"
-                            class="surface-100 text-900 font-bold p-3 text-sm uppercase letter-spacing-1 border-bottom-2 border-green-500">
+                            class="surface-100 text-900 font-bold p-3 text-sm uppercase letter-spacing-1 border-bottom-2 border-blue-500">
                             <div class="flex align-items-center justify-content-center">
                                 <i class="pi pi-cog mr-2"></i>
                                 <span>{{ col.header }}</span>
@@ -115,6 +113,7 @@
                         <!-- Números monetarios con formato especial -->
                         <span *ngIf="col.type === 'number' && ['total_venta', 'subtotal', 'iva', 'descuentos', 'precio_kilo'].includes(col.field)" 
                               class="font-bold text-900 flex justify-content-center align-items-center gap-2">
+                            <i class="pi pi-dollar text-green-600"></i>
                             {{ item[col.field] | currencyCop }}
                         </span>
                         
@@ -129,47 +128,16 @@
                             {{ item[col.field] | titlecase }}
                         </span>
                         
-                        <!-- Estado con tags mejorados -->
-                        <span *ngIf="col.field === 'estado'" class="flex justify-content-center">
-                            <p-tag [pTooltip]="getEstadoTooltip(item[col.field])"
-                                   tooltipPosition="top"
-                                   [value]="item[col.field]"
-                                   [severity]="item[col.field] === 'PENDIENTE' ? 'warning' : 
-                                             item[col.field] === 'CONFIRMADA' ? 'success' : 'danger'"
-                                   class="font-semibold">
-                            </p-tag>
-                        </span>
-                        
                         <!-- Acciones originales con mejor estilo -->
                         <ng-container *ngIf="col.field == 'actions'">
-                            <div class="flex justify-content-center gap-2 action-buttons">
+                            <div class="flex justify-content-center action-buttons">
                                 <button pButton 
                                     type="button" 
                                     icon="pi pi-eye"
                                     class="p-button-rounded p-button-outlined p-button-info p-button-sm"
-                                    pTooltip="Ver detalle de la venta"
+                                    pTooltip="Ver Transferencia"
                                     tooltipPosition="top"
                                     [routerLink]="'view/' + item.id">
-                                </button>
-
-                                <button *ngIf="item.estado === 'PENDIENTE'"
-                                    pButton 
-                                    type="button" 
-                                    icon="pi pi-check"
-                                    class="p-button-rounded p-button-success p-button-outlined p-button-sm"
-                                    (click)="confirmarVenta(item.id)"
-                                    pTooltip="Confirmar venta"
-                                    tooltipPosition="top">
-                                </button>
-
-                                <button *ngIf="item.estado === 'PENDIENTE'"
-                                    pButton 
-                                    type="button" 
-                                    icon="pi pi-envelope"
-                                    class="p-button-rounded p-button-warning p-button-outlined p-button-sm"
-                                    (click)="solicitarAnulacionConOtp(item.id)"
-                                    pTooltip="Anular venta"
-                                    tooltipPosition="top">
                                 </button>
                             </div>
                         </ng-container>
@@ -182,13 +150,13 @@
                 <tr>
                     <td [attr.colspan]="cols.length" class="text-center p-6">
                         <div class="flex flex-column align-items-center gap-3 py-4">
-                            <i class="pi pi-shopping-cart text-6xl text-300"></i>
-                            <h3 class="text-900 font-bold">No hay ventas registradas</h3>
-                            <p class="text-600 m-0">No se encontraron registros de ventas que coincidan con los criterios de búsqueda.</p>
+                            <i class="pi pi-arrow-right-arrow-left text-6xl text-300"></i>
+                            <h3 class="text-900 font-bold">No hay transferencias registradas</h3>
+                            <p class="text-600 m-0">No se encontraron registros de transferencias que coincidan con los criterios de búsqueda.</p>
                             <button pButton 
                                 class="p-button-outlined mt-3"
                                 icon="pi pi-plus" 
-                                label="Registrar primera venta"
+                                label="Registrar primera transferencia"
                                 routerLink="create">
                             </button>
                         </div>
@@ -202,7 +170,7 @@
                     <td [attr.colspan]="cols.length" class="text-center p-6">
                         <div class="flex flex-column align-items-center gap-3">
                             <p-progressSpinner strokeWidth="3" animationDuration="1s"></p-progressSpinner>
-                            <span class="text-600">Cargando datos de ventas...</span>
+                            <span class="text-600">Cargando datos de transferencias...</span>
                         </div>
                     </td>
                 </tr>
@@ -223,52 +191,3 @@
     acceptLabel="Eliminar"
     rejectLabel="Cancelar">
 </p-confirmDialog>
-
-<!-- Modal de aprobación mejorado -->
-<p-dialog
-    header="Seleccionar Aprobador"
-    [(visible)]="showModalOtp"
-    [modal]="true"
-    [style]="{ width: '35vw', minWidth: '350px' }"
-    [baseZIndex]="10000"
-    [closable]="true"
-    (onHide)="selectedApproverId = null"
-    styleClass="custom-dialog">
-    
-    <div class="p-fluid">
-        <div class="field mb-4">
-            <div class="flex align-items-center gap-2 mb-3">
-                <i class="pi pi-user text-primary"></i>
-                <label for="approver" class="font-semibold text-900">Seleccione el aprobador:</label>
-            </div>
-            <p-dropdown
-                id="approver"
-                [options]="filteredApprovers"
-                optionLabel="nombre_con_rol"
-                optionValue="id"
-                [(ngModel)]="selectedApproverId"
-                placeholder="Seleccione un aprobador"
-                [showClear]="true"
-                [filter]="true"
-                styleClass="w-full">
-            </p-dropdown>
-        </div>
-
-        <div class="flex justify-content-end mt-4 gap-2 pt-3 border-top-1 surface-border">
-            <button pButton 
-                type="button"
-                class="p-button-outlined p-button-secondary border-round-lg"
-                (click)="showModalOtp = false"
-                label="Cancelar">
-            </button>
-
-            <button pButton 
-                type="button"
-                class="p-button-primary border-round-lg"
-                label="Enviar Solicitud"
-                (click)="enviarSolicitudAnulacionConOtp()"
-                [disabled]="!selectedApproverId">
-            </button>
-        </div>
-    </div>
-</p-dialog>

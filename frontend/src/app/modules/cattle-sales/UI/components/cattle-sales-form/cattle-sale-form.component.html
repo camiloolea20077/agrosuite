@@ -1,268 +1,565 @@
 <div class="card">
-  <h1 class="m-0">
-    {{ slug === "create" ? "Nueva Factura de Venta" : "Visualizar Factura" }}
-  </h1>
-  <hr />
-
-  <form [formGroup]="frm" (ngSubmit)="submitForm()" class="p-fluid">
-    <!-- Información de la Factura -->
-    <div class="grid mt-4">
-      <div class="col-12 md:col-4">
-        <span class="p-float-label">
-          <input pInputText formControlName="numeroFactura" />
-          <label>Número de Factura</label>
-        </span>
-      </div>
-
-      <div class="col-12 md:col-4">
-        <p-calendar
-          formControlName="fechaVenta"
-          [showIcon]="true"
-          dateFormat="yy-mm-dd"
-          [monthNavigator]="true"
-          [yearNavigator]="true"
-          yearRange="2000:2100"
-        ></p-calendar>
-      </div>
-
-      <div class="col-12 md:col-4">
-        <span class="p-float-label">
-          <input pInputText formControlName="horaEmision" type="time" />
-          <label>Hora de Emisión</label>
-        </span>
-      </div>
-
-      <div class="col-12 md:col-4 lg:col-6 mt-3">
-        <span class="p-float-label">
-          <input pInputText formControlName="moneda" />
-          <label>Moneda</label>
-        </span>
-      </div>
-
-      <div class="col-12 md:col-4 lg:col-6 mt-3">
-        <span class="p-float-label">
-          <p-dropdown
-            formControlName="formaPago"
-            [options]="formasPago"
-            optionLabel="label"
-            optionValue="value"
-            placeholder="Seleccione"
-          ></p-dropdown>
-          <label>Forma de Pago</label>
-        </span>
-      </div>
+  <!-- Header -->
+  <div class="flex justify-content-between align-items-center mb-4">
+    <h1 class="m-0 text-primary">
+      <i class="pi pi-file-edit mr-2"></i>
+      {{ slug === "create" ? "Nueva Factura de Venta" : "Visualizar Factura" }}
+    </h1>
+    <div class="flex gap-2">
+      <p-chip 
+        label="Facturación" 
+        icon="pi pi-receipt" 
+        styleClass="p-chip-outlined">
+      </p-chip>
+      <p-chip 
+        [label]="slug === 'create' ? 'Creación' : 'Visualización'"
+        [icon]="slug === 'create' ? 'pi pi-plus' : 'pi pi-eye'"
+        [styleClass]="slug === 'create' ? 'p-chip-success' : 'p-chip-info'">
+      </p-chip>
     </div>
+  </div>
 
-    <!-- Datos del Comprador -->
-    <h3 class="mt-4">Datos del Comprador</h3>
-    <div class="grid">
-      <div class="col-12 md:col-6 mt-3">
-        <span class="p-float-label">
-          <p-autoComplete
-            formControlName="terceroIdentificacion"
-            [suggestions]="tercerosSugeridos"
-            field="numeroIdentificacion"
-            (completeMethod)="searchTerceros($event)"
-            (onSelect)="seleccionarTercero($event)"
-          ></p-autoComplete>
-          <label>Número de Documento</label>
-        </span>
-      </div>
-
-      <div class="col-12 md:col-6 mt-3">
-        <span class="p-float-label">
-          <input
-            pInputText
-            formControlName="tipoIdentificacion"
-            [disabled]="true"
-          />
-          <label>Tipo de Documento</label>
-        </span>
-      </div>
-
-      <div class="col-12 md:col-6 mt-3">
-        <span class="p-float-label">
-          <input
-            pInputText
-            formControlName="nombreRazonSocial"
-            [disabled]="true"
-          />
-          <label>Nombre o Razón Social</label>
-        </span>
-      </div>
-
-      <div class="col-12 md:col-6 mt-3">
-        <span class="p-float-label">
-          <input pInputText formControlName="telefono" [disabled]="true" />
-          <label>Teléfono</label>
-        </span>
-      </div>
-
-      <div class="col-12 lg:col-6 mt-3">
-        <span class="p-float-label">
-          <input pInputText formControlName="direccion" [disabled]="true" />
-          <label>Dirección</label>
-        </span>
-      </div>
-      <div class="col-12 lg:col-6 mt-3">
-        <span class="p-float-label">
-          <input pInputText formControlName="destinatario" />
-          <label>Destinatario</label>
-        </span>
-      </div>
-    </div>
-
-    <!-- Selección de Animales -->
-    <div class="col-12 mt-4">
-      <button
-        pButton
-        type="button"
-        [disabled]="slug === 'view'"
-        label="Seleccionar Animales"
-        icon="pi pi-search"
-        (click)="openModal()"
-        class="p-button-info p-button-rounded"
-      ></button>
-
-      <div class="mt-3">
-        <p-table [value]="selectedItems" [loading]="loadingTable">
-          <ng-template pTemplate="header">
-            <tr>
-              <th>Identificación</th>
-              <th>Tipo</th>
-              <th>Peso (kg)</th>
-              <th>Precio por kilo</th>
-              <th>Subtotal</th>
-              <th>Total</th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-animal>
-            <tr>
-              <td>{{ animal.numero_ganado || "—" }}</td>
-              <td>{{ animal.tipoOrigen }}</td>
-              <td>{{ animal.pesoVenta }}</td>
-              <td>{{ animal.precioKilo | currencyCop }}</td>
-              <td>{{ animal.precioKilo * animal.pesoVenta | currencyCop }}</td>
-              <td>{{ animal.precioTotal | currencyCop }}</td>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="emptymessage">
-            <tr>
-              <td colspan="6" class="text-center">
-                No hay animales seleccionados
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </div>
-    </div>
-    <!-- Totales -->
-    <h3 class="mt-4">Totales Generales</h3>
-    <div class="grid mt-4">
-      <!-- Primero: Precio por Kilo y Peso Total -->
-      <div class="col-12 md:col-3">
-        <span class="p-float-label">
-          <input pInputText formControlName="precioKilo" />
-          <label>Precio por kilo</label>
-        </span>
-      </div>
-
-      <div class="col-12 md:col-3">
-        <span class="p-float-label">
-          <input pInputText formControlName="pesoTotal" [disabled]="true" />
-          <label>Peso Total</label>
-        </span>
-      </div>
-
-      <!-- Luego: Subtotal, IVA, Descuentos y Total -->
-      <div class="col-12 md:col-3">
-        <span class="p-float-label">
-          <input pInputText formControlName="subtotal" [disabled]="true" />
-          <label>Subtotal sin IVA</label>
-        </span>
-      </div>
-
-      <div class="col-12 md:col-3">
-        <span class="p-float-label">
-          <input pInputText formControlName="iva" [disabled]="true" />
-          <label>IVA</label>
-        </span>
-      </div>
-      <div class="col-12 md:col-3 lg:col-6 mt-3">
-        <span class="p-float-label">
-          <input pInputText formControlName="descuentos" [disabled]="true" />
-          <label>Descuentos</label>
-        </span>
-      </div>
-
-      <div class="col-12 md:col-3 lg:col-6 mt-3">
-        <span class="p-float-label">
-          <input
-            pInputText
-            [value]="frm.get('precioTotal')?.value | currencyCop"
-            [disabled]="true"
-          />
-          <label>Total a pagar</label>
-        </span>
-      </div>
-    </div>
-
-    <!-- Observaciones -->
-    <div class="grid mt-3">
+  <!-- Form Container with Card Styling -->
+  <div class="surface-card p-4 shadow-2 border-round">
+    <form [formGroup]="frm" (ngSubmit)="submitForm()" class="formgrid grid">
+      
+      <!-- Invoice Information Section -->
       <div class="col-12">
-        <span class="p-float-label">
-          <input pInputText formControlName="observaciones" />
-          <label>Observaciones / Leyendas Fiscales</label>
-        </span>
-      </div>
-    </div>
+        <p-panel header="Información de la Factura" [toggleable]="true" [collapsed]="false">
+          <div class="formgrid grid">
+            <!-- Número de factura -->
+            <div class="field col-12 md:col-4">
+              <label for="numeroFactura" class="font-semibold block mb-2">
+                <i class="pi pi-hashtag mr-1"></i>Número de Factura *
+              </label>
+              <input 
+                pInputText 
+                id="numeroFactura"
+                formControlName="numeroFactura"
+                placeholder="Ej: F-001, FAC-2024-001"
+                class="w-full"
+                [class.ng-invalid]="frm.get('numeroFactura')?.invalid && frm.get('numeroFactura')?.touched"
+              />
+              <small
+                class="p-error block mt-1"
+                *ngIf="frm.get('numeroFactura')?.invalid && frm.get('numeroFactura')?.touched"
+              >
+                <i class="pi pi-exclamation-triangle mr-1"></i>
+                Este campo es obligatorio
+              </small>
+            </div>
 
-    <!-- Botones -->
-    <div class="grid justify-end mt-4">
-      <div class="col-12 md:col-3" *ngIf="slug === 'view'">
-        <button
-          pButton
-          type="button"
-          label="Imprimir Factura"
-          icon="pi pi-print"
-          class="p-button-secondary w-full p-button-rounded"
-          (click)="exportarPdf()"
-        ></button>
+            <!-- Fecha de venta -->
+            <div class="field col-12 md:col-4">
+              <label for="fechaVenta" class="font-semibold block mb-2">
+                <i class="pi pi-calendar mr-1"></i>Fecha de Venta *
+              </label>
+              <p-calendar
+                id="fechaVenta"
+                formControlName="fechaVenta"
+                [showIcon]="true"
+                dateFormat="yy-mm-dd"
+                [monthNavigator]="true"
+                [yearNavigator]="true"
+                yearRange="2000:2100"
+                placeholder="Seleccionar fecha"
+                class="w-full"
+                [class.ng-invalid]="frm.get('fechaVenta')?.invalid && frm.get('fechaVenta')?.touched"
+              ></p-calendar>
+              <small
+                class="p-error block mt-1"
+                *ngIf="frm.get('fechaVenta')?.invalid && frm.get('fechaVenta')?.touched"
+              >
+                <i class="pi pi-exclamation-triangle mr-1"></i>
+                Este campo es obligatorio
+              </small>
+            </div>
+
+            <!-- Hora de emisión -->
+            <div class="field col-12 md:col-4">
+              <label for="horaEmision" class="font-semibold block mb-2">
+                <i class="pi pi-clock mr-1"></i>Hora de Emisión *
+              </label>
+              <input 
+                pInputText 
+                id="horaEmision"
+                formControlName="horaEmision" 
+                type="time"
+                class="w-full"
+                [class.ng-invalid]="frm.get('horaEmision')?.invalid && frm.get('horaEmision')?.touched"
+              />
+              <small
+                class="p-error block mt-1"
+                *ngIf="frm.get('horaEmision')?.invalid && frm.get('horaEmision')?.touched"
+              >
+                <i class="pi pi-exclamation-triangle mr-1"></i>
+                Este campo es obligatorio
+              </small>
+            </div>
+
+            <!-- Moneda -->
+            <div class="field col-12 md:col-6">
+              <label for="moneda" class="font-semibold block mb-2">
+                <i class="pi pi-dollar mr-1"></i>Moneda *
+              </label>
+              <input 
+                pInputText 
+                id="moneda"
+                formControlName="moneda"
+                placeholder="Ej: COP, USD, EUR"
+                class="w-full"
+                [class.ng-invalid]="frm.get('moneda')?.invalid && frm.get('moneda')?.touched"
+              />
+              <small
+                class="p-error block mt-1"
+                *ngIf="frm.get('moneda')?.invalid && frm.get('moneda')?.touched"
+              >
+                <i class="pi pi-exclamation-triangle mr-1"></i>
+                Este campo es obligatorio
+              </small>
+            </div>
+
+            <!-- Forma de pago -->
+            <div class="field col-12 md:col-6">
+              <label for="formaPago" class="font-semibold block mb-2">
+                <i class="pi pi-credit-card mr-1"></i>Forma de Pago *
+              </label>
+              <p-dropdown
+                id="formaPago"
+                formControlName="formaPago"
+                [options]="formasPago"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Seleccionar forma de pago"
+                class="w-full"
+                [class.ng-invalid]="frm.get('formaPago')?.invalid && frm.get('formaPago')?.touched"
+              ></p-dropdown>
+              <small
+                class="p-error block mt-1"
+                *ngIf="frm.get('formaPago')?.invalid && frm.get('formaPago')?.touched"
+              >
+                <i class="pi pi-exclamation-triangle mr-1"></i>
+                Este campo es obligatorio
+              </small>
+            </div>
+          </div>
+        </p-panel>
       </div>
-      <div class="col-12 md:col-3">
-        <button
-          pButton
-          type="button"
-          label="Volver"
-          icon="pi pi-arrow-left"
-          class="p-button-secondary w-full p-button-rounded"
-          routerLink="/sales"
-        ></button>
+
+      <!-- Buyer Information Section -->
+      <div class="col-12 mt-4">
+        <p-panel header="Datos del Comprador" [toggleable]="true" [collapsed]="false">
+          <div class="formgrid grid">
+            <!-- Número de documento -->
+            <div class="field col-12 md:col-6">
+              <label for="terceroIdentificacion" class="font-semibold block mb-2">
+                <i class="pi pi-id-card mr-1"></i>Número de Documento *
+              </label>
+              <p-autoComplete
+                id="terceroIdentificacion"
+                formControlName="terceroIdentificacion"
+                [suggestions]="tercerosSugeridos"
+                field="numeroIdentificacion"
+                placeholder="Buscar por número de documento"
+                (completeMethod)="searchTerceros($event)"
+                (onSelect)="seleccionarTercero($event)"
+                class="w-full"
+                [class.ng-invalid]="frm.get('terceroIdentificacion')?.invalid && frm.get('terceroIdentificacion')?.touched"
+              ></p-autoComplete>
+              <small
+                class="p-error block mt-1"
+                *ngIf="frm.get('terceroIdentificacion')?.invalid && frm.get('terceroIdentificacion')?.touched"
+              >
+                <i class="pi pi-exclamation-triangle mr-1"></i>
+                Este campo es obligatorio
+              </small>
+            </div>
+
+            <!-- Tipo de documento -->
+            <div class="field col-12 md:col-6">
+              <label for="tipoIdentificacion" class="font-semibold block mb-2">
+                <i class="pi pi-tag mr-1"></i>Tipo de Documento
+              </label>
+              <input
+                pInputText
+                id="tipoIdentificacion"
+                formControlName="tipoIdentificacion"
+                [disabled]="true"
+                placeholder="Se completa automáticamente"
+                class="w-full"
+              />
+            </div>
+
+            <!-- Nombre o razón social -->
+            <div class="field col-12 md:col-6">
+              <label for="nombreRazonSocial" class="font-semibold block mb-2">
+                <i class="pi pi-user mr-1"></i>Nombre o Razón Social
+              </label>
+              <input
+                pInputText
+                id="nombreRazonSocial"
+                formControlName="nombreRazonSocial"
+                [disabled]="true"
+                placeholder="Se completa automáticamente"
+                class="w-full"
+              />
+            </div>
+
+            <!-- Teléfono -->
+            <div class="field col-12 md:col-6">
+              <label for="telefono" class="font-semibold block mb-2">
+                <i class="pi pi-phone mr-1"></i>Teléfono
+              </label>
+              <input 
+                pInputText 
+                id="telefono"
+                formControlName="telefono" 
+                [disabled]="true"
+                placeholder="Se completa automáticamente"
+                class="w-full"
+              />
+            </div>
+
+            <!-- Dirección -->
+            <div class="field col-12 md:col-6">
+              <label for="direccion" class="font-semibold block mb-2">
+                <i class="pi pi-map-marker mr-1"></i>Dirección
+              </label>
+              <input 
+                pInputText 
+                id="direccion"
+                formControlName="direccion" 
+                [disabled]="true"
+                placeholder="Se completa automáticamente"
+                class="w-full"
+              />
+            </div>
+
+            <!-- Destinatario -->
+            <div class="field col-12 md:col-6">
+              <label for="destinatario" class="font-semibold block mb-2">
+                <i class="pi pi-send mr-1"></i>Destinatario
+              </label>
+              <input 
+                pInputText 
+                id="destinatario"
+                formControlName="destinatario"
+                placeholder="Nombre del destinatario final"
+                class="w-full"
+              />
+            </div>
+          </div>
+        </p-panel>
       </div>
-      <div class="col-12 md:col-3" *ngIf="slug === 'create'">
-        <button
-          pButton
-          type="button"
-          label="Limpiar formulario"
-          icon="pi pi-trash"
-          class="p-button-warning w-full p-button-rounded"
-          (click)="frm.reset()"
-        ></button>
+
+      <!-- Animal Selection Section -->
+      <div class="col-12 mt-4">
+        <p-panel header="Selección de Animales" [toggleable]="true" [collapsed]="false">
+          <div class="mb-3">
+            <p-button
+              type="button"
+              [disabled]="slug === 'view'"
+              label="Seleccionar Animales"
+              icon="pi pi-search"
+              severity="info"
+              [style]="{'min-width': '180px'}"
+              (click)="openModal()"
+            ></p-button>
+            <small class="block mt-2 text-muted-color">
+              <i class="pi pi-info-circle mr-1"></i>
+              Haga clic para abrir el selector de animales disponibles para venta
+            </small>
+          </div>
+
+          <div class="mt-4">
+            <p-table 
+              [value]="selectedItems" 
+              [loading]="loadingTable"
+              [paginator]="selectedItems.length > 5"
+              [rows]="5"
+              [showCurrentPageReport]="true"
+              currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} animales"
+              styleClass="p-datatable-striped"
+            >
+              <ng-template pTemplate="caption">
+                <div class="flex justify-content-between align-items-center">
+                  <span class="text-xl font-semibold">
+                    <i class="pi pi-list mr-2"></i>
+                    Animales Seleccionados ({{ selectedItems.length }})
+                  </span>
+                  <p-tag 
+                    [value]="selectedItems.length + ' items'"
+                    severity="info"
+                    icon="pi pi-shopping-cart">
+                  </p-tag>
+                </div>
+              </ng-template>
+              
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>
+                    <i class="pi pi-hashtag mr-1"></i>
+                    Identificación
+                  </th>
+                  <th>
+                    <i class="pi pi-tag mr-1"></i>
+                    Tipo
+                  </th>
+                  <th>
+                    <i class="pi pi-chart-line mr-1"></i>
+                    Peso (kg)
+                  </th>
+                  <th>
+                    <i class="pi pi-dollar mr-1"></i>
+                    Precio por kilo
+                  </th>
+                  <th>
+                    <i class="pi pi-calculator mr-1"></i>
+                    Subtotal
+                  </th>
+                  <th>
+                    <i class="pi pi-money-bill mr-1"></i>
+                    Total
+                  </th>
+                </tr>
+              </ng-template>
+              
+              <ng-template pTemplate="body" let-animal>
+                <tr>
+                  <td>
+                    <span class="font-semibold">
+                      {{ animal.numero_ganado || "—" }}
+                    </span>
+                  </td>
+                  <td>
+                    <p-tag [value]="animal.tipoOrigen" severity="secondary"></p-tag>
+                  </td>
+                  <td>
+                    <span class="font-medium">{{ animal.pesoVenta }} kg</span>
+                  </td>
+                  <td>
+                    <span class="text-green-600 font-semibold">
+                      {{ animal.precioKilo | currencyCop }}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="font-medium">
+                      {{ animal.precioKilo * animal.pesoVenta | currencyCop }}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="text-primary font-bold text-lg">
+                      {{ animal.precioTotal | currencyCop }}
+                    </span>
+                  </td>
+                </tr>
+              </ng-template>
+              
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td colspan="6" class="text-center p-4">
+                    <div class="flex flex-column align-items-center gap-3">
+                      <i class="pi pi-inbox text-4xl text-muted-color"></i>
+                      <span class="text-muted-color font-semibold">
+                        No hay animales seleccionados
+                      </span>
+                      <small class="text-muted-color">
+                        Use el botón "Seleccionar Animales" para agregar items a la factura
+                      </small>
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </p-panel>
       </div>
-      <div class="col-12 md:col-3">
-        <button
-          pButton
-          type="submit"
-          label="Guardar y Facturar"
-          icon="pi pi-save"
-          class="p-button-success w-full p-button-rounded"
-          [disabled]="frm.invalid || selectedItems.length === 0"
-        ></button>
+
+      <!-- Totals Section -->
+      <div class="col-12 mt-4">
+        <p-panel header="Totales Generales" [toggleable]="true" [collapsed]="false">
+          <div class="formgrid grid">
+            <!-- Precio por kilo -->
+            <div class="field col-12 md:col-6 lg:col-3">
+              <label for="precioKilo" class="font-semibold block mb-2">
+                <i class="pi pi-dollar mr-1"></i>Precio por Kilo *
+              </label>
+              <p-inputNumber
+                id="precioKilo"
+                formControlName="precioKilo"
+                mode="currency"
+                currency="COP"
+                locale="es-CO"
+                placeholder="0"
+                class="w-full"
+              ></p-inputNumber>
+            </div>
+
+            <!-- Peso total -->
+            <div class="field col-12 md:col-6 lg:col-3">
+              <label for="pesoTotal" class="font-semibold block mb-2">
+                <i class="pi pi-chart-line mr-1"></i>Peso Total (kg)
+              </label>
+              <p-inputNumber
+                id="pesoTotal"
+                formControlName="pesoTotal"
+                [disabled]="true"
+                mode="decimal"
+                suffix=" kg"
+                placeholder="0.00"
+                class="w-full"
+              ></p-inputNumber>
+            </div>
+
+            <!-- Subtotal -->
+            <div class="field col-12 md:col-6 lg:col-3">
+              <label for="subtotal" class="font-semibold block mb-2">
+                <i class="pi pi-calculator mr-1"></i>Subtotal sin IVA
+              </label>
+              <p-inputNumber
+                id="subtotal"
+                formControlName="subtotal"
+                [disabled]="true"
+                mode="currency"
+                currency="COP"
+                locale="es-CO"
+                placeholder="$ 0"
+                class="w-full"
+              ></p-inputNumber>
+            </div>
+
+            <!-- IVA -->
+            <div class="field col-12 md:col-6 lg:col-3">
+              <label for="iva" class="font-semibold block mb-2">
+                <i class="pi pi-percentage mr-1"></i>IVA
+              </label>
+              <p-inputNumber
+                id="iva"
+                formControlName="iva"
+                [disabled]="true"
+                mode="currency"
+                currency="COP"
+                locale="es-CO"
+                placeholder="$ 0"
+                class="w-full"
+              ></p-inputNumber>
+            </div>
+
+            <!-- Descuentos -->
+            <div class="field col-12 md:col-6">
+              <label for="descuentos" class="font-semibold block mb-2">
+                <i class="pi pi-minus mr-1"></i>Descuentos
+              </label>
+              <p-inputNumber
+                id="descuentos"
+                formControlName="descuentos"
+                [disabled]="true"
+                mode="currency"
+                currency="COP"
+                locale="es-CO"
+                placeholder="$ 0"
+                class="w-full"
+              ></p-inputNumber>
+            </div>
+
+            <!-- Total a pagar -->
+            <div class="field col-12 md:col-6">
+              <label class="font-semibold block mb-2">
+                <i class="pi pi-money-bill mr-1"></i>Total a Pagar
+              </label>
+              <div class="p-inputgroup">
+                <span class="p-inputgroup-addon bg-primary text-primary-color">
+                  <i class="pi pi-dollar"></i>
+                </span>
+                <input
+                  pInputText
+                  [value]="frm.get('precioTotal')?.value | currencyCop"
+                  [disabled]="true"
+                  class="text-right font-bold text-xl text-primary"
+                />
+              </div>
+            </div>
+          </div>
+        </p-panel>
       </div>
-    </div>
-  </form>
+
+      <!-- Additional Information Section -->
+      <div class="col-12 mt-4">
+        <p-panel header="Información Adicional" [toggleable]="true" [collapsed]="false">
+          <div class="field">
+            <label for="observaciones" class="font-semibold block mb-2">
+              <i class="pi pi-file-edit mr-1"></i>Observaciones / Leyendas Fiscales
+            </label>
+            <textarea
+              pInputTextarea
+              id="observaciones"
+              formControlName="observaciones"
+              rows="3"
+              placeholder="Ingrese observaciones adicionales, términos y condiciones, o leyendas fiscales..."
+              class="w-full"
+              [autoResize]="true"
+            ></textarea>
+          </div>
+        </p-panel>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="col-12 mt-5">
+        <p-divider></p-divider>
+        <div class="flex flex-wrap gap-3 justify-content-center md:justify-content-end">
+          
+          <!-- Botón Imprimir (solo en modo view) -->
+          <p-button
+            *ngIf="slug === 'view'"
+            type="button"
+            label="Imprimir Factura"
+            icon="pi pi-print"
+            severity="secondary"
+            [outlined]="true"
+            [style]="{'min-width': '160px'}"
+            (click)="exportarPdf()"
+          ></p-button>
+
+          <!-- Botón Volver -->
+          <p-button
+            type="button"
+            label="Volver"
+            icon="pi pi-arrow-left"
+            severity="secondary"
+            [outlined]="true"
+            [style]="{'min-width': '120px'}"
+            routerLink="/sales"
+          ></p-button>
+
+          <!-- Botón Limpiar (solo en modo create) -->
+          <p-button
+            *ngIf="slug === 'create'"
+            type="button"
+            label="Limpiar Formulario"
+            icon="pi pi-refresh"
+            severity="warning"
+            [outlined]="true"
+            [style]="{'min-width': '160px'}"
+            (click)="frm.reset()"
+          ></p-button>
+
+          <!-- Botón Guardar (solo en modo create) -->
+          <p-button
+            *ngIf="slug === 'create'"
+            type="submit"
+            label="Guardar y Facturar"
+            icon="pi pi-save"
+            severity="success"
+            [style]="{'min-width': '180px'}"
+            [disabled]="frm.invalid || selectedItems.length === 0"
+          ></p-button>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
 
+<!-- Modal Component -->
 <app-select-cattle-modal
   [visible]="modalVisible"
   (onClose)="modalVisible = false"

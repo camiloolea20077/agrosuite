@@ -11,4 +11,5 @@ export const environment = {
     inventoryUrl: 'http://localhost:9001/inventory',
     salesUrl: 'http://localhost:9001/cattle-sale',
     tercerosUrl: 'http://localhost:9001/terceros',
+    cattleTransfers : 'http://localhost:9001/cattle-transfer'
 };

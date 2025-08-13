@@ -15,6 +15,9 @@ import { IFilterTable } from "src/app/shared/utils/models/filter-table";
 import { HelpersService } from "src/app/shared/utils/pipes/helper.service";
 import { ConfirmDialogModule } from 'primeng/confirmdialog'
 import { ToastModule } from "primeng/toast";
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { TagModule } from 'primeng/tag';
+
 
 @Component({
     selector: 'app-index-cattle',
@@ -26,6 +29,8 @@ import { ToastModule } from "primeng/toast";
         RouterModule,
         InputTextModule,
         ConfirmDialogModule,
+        ProgressSpinnerModule,
+        TagModule,
         ButtonModule, ReactiveFormsModule, TableModule, CommonModule, ToastModule],
 })
 export class IndexCattleComponent {

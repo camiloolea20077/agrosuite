@@ -19,14 +19,15 @@ import { CattleSalesModule } from '../../../cattle-sales.module';
 import { AlertService } from 'src/app/shared/utils/pipes/alert.service';
 import { CreateCattleSaleItemDto } from '../../../domain/dto/create-cattle-sale-item.dto';
 import { TooltipModule } from 'primeng/tooltip';
-import { CattleSalePdfService } from 'src/app/core/services/pdf.service';
 import { DialogModule } from "primeng/dialog";
 import { ListElementService } from 'src/app/core/services/list-element.service';
-import { ListElementFarmsModes } from 'src/app/shared/utils/models/list-element-farms.model';
 import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { IndexDBService } from 'src/app/core/services/index-db.service';
 import { ListUsersDto } from 'src/app/shared/utils/models/list-users.model';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { TagModule } from 'primeng/tag';
+
 
 @Component({
   selector: 'app-index-cattle-sales',
@@ -46,7 +47,9 @@ import { ListUsersDto } from 'src/app/shared/utils/models/list-users.model';
     TooltipModule,
     DialogModule,
     DropdownModule,
-    FormsModule
+    FormsModule,
+    ProgressSpinnerModule,
+    TagModule
 ],
   providers: [ConfirmationService, MessageService],
 })
@@ -134,7 +137,6 @@ export class IndexCattleSalesComponent {
     readonly _helperService: HelpersService,
     private readonly _confirmationService: ConfirmationService,
     private readonly salesService: SalesService,
-    private readonly pdfService: CattleSalePdfService,
     private router: Router,
     private readonly indexDBService: IndexDBService,
     private listElementService: ListElementService, 

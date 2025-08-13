@@ -19,6 +19,12 @@ import { CreateBirthsDto } from "../../../domain/dto/create-births.dto";
 import { BirthsModel } from "../../../domain/models/births.model";
 import { ResponseModel } from "src/app/shared/utils/models/responde.models";
 import { lastValueFrom } from "rxjs";
+import { ButtonModule } from 'primeng/button';
+import { PanelModule } from 'primeng/panel';
+import { ChipModule } from 'primeng/chip';
+import { DividerModule } from 'primeng/divider';
+import { InputNumberModule } from 'primeng/inputnumber';
+
 
 @Component({
     selector: "app-form-births",
@@ -37,7 +43,12 @@ import { lastValueFrom } from "rxjs";
         InputTextareaModule,
         InputTextModule,
         ToastModule,
-        ConfirmDialogModule
+        ConfirmDialogModule,
+        PanelModule,
+        ButtonModule,
+        ChipModule,
+        DividerModule,
+        InputNumberModule
     ],
 })
 export class FormBirthsComponent {

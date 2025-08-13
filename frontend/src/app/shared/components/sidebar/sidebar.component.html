@@ -1,53 +1,95 @@
+<!-- Toast para notificaciones -->
 <p-toast position="top-right"></p-toast>
 
-<!-- Botón de alternancia -->
-<button class="toggle-btn" (click)="toggleSidebar()">
-  <i class="pi pi-bars"></i>
-</button>
-
-<!-- Sidebar -->
-<div class="sidebar" *ngIf="isVisible">
-  <ul class="menu-list">
-    <li *ngFor="let item of items">
-<!-- Ítems sin hijos -->
-<ng-container *ngIf="!item.children">
-  <div
-    [routerLink]="item.route"
-    routerLinkActive="active"
-    [routerLinkActiveOptions]="{ exact: true }"
-    class="menu-item"
-  >
-    <i class="{{ item.icon }}"></i>
-    <span>{{ item.label }}</span>
+<!-- Overlay para móviles -->
+<div class="sidebar-overlay" 
+     [class.active]="sidebarService.isVisible && isMobile" 
+     (click)="closeSidebar()">
 </div>
 
-</ng-container>
-
-
-<ng-container *ngIf="item.children">
-  <div class="menu-item expandable" (click)="toggleItem(item.label)">
-    <i class="{{ item.icon }}"></i>
-    <span>{{ item.label }}</span>
-    <i
-      class="pi"
-      [ngClass]="isExpanded(item.label) ? 'pi-chevron-down' : 'pi-chevron-right'"
-      style="margin-left: auto;"
-    ></i>
+<!-- Sidebar -->
+<div class="sidebar" 
+     [class.visible]="sidebarService.isVisible"
+     [class.collapsed]="sidebarService.isCollapsed">
+     
+  <!-- Header del sidebar -->
+  <div class="sidebar-header">
+    <div class="logo" *ngIf="!sidebarService.isCollapsed">
+      <i class="pi pi-home"></i>
+      <span>AgroSuit</span>
+    </div>
+    <button class="collapse-btn" 
+            (click)="toggleExpanded()"
+            pButton
+            pRipple
+            type="button"
+            class="p-button-text"
+            *ngIf="!isMobile">
+      <i class="pi" [ngClass]="sidebarService.isCollapsed ? 'pi-angle-right' : 'pi-angle-left'"></i>
+    </button>
   </div>
-  <ul class="submenu-list" *ngIf="isExpanded(item.label)">
-    <li *ngFor="let child of item.children">
-      <a
-        [routerLink]="child.route"
-        routerLinkActive="active"
-        class="submenu-item no-link-style"
-      >
-        <i class="{{ child.icon }}"></i>
-        <span>{{ child.label }}</span>
-      </a>
-    </li>
-  </ul>
-</ng-container>
 
-    </li>
-  </ul>
+  <!-- Navegación -->
+  <nav class="sidebar-nav">
+    <ul class="menu-list">
+      <li *ngFor="let item of items; trackBy: trackByFn" class="menu-item-container">
+        
+        <!-- Ítems sin hijos -->
+        <ng-container *ngIf="!item.children">
+          <a [routerLink]="item.route"
+             routerLinkActive="active"
+             [routerLinkActiveOptions]="{ exact: item.exact || false }"
+             class="menu-item"
+             [pTooltip]="sidebarService.isCollapsed ? item.label : ''"
+             tooltipPosition="right"
+             [attr.aria-label]="item.label">
+            <i class="menu-icon {{ item.icon }}"></i>
+            <span class="menu-label" *ngIf="!sidebarService.isCollapsed">{{ item.label }}</span>
+          </a>
+        </ng-container>
+
+        <!-- Ítems con hijos -->
+        <ng-container *ngIf="item.children">
+          <div class="menu-item expandable"
+               (click)="toggleItem(item.label)"
+               [class.expanded]="isItemExpanded(item.label)"
+               [pTooltip]="sidebarService.isCollapsed ? item.label : ''"
+               tooltipPosition="right"
+               [attr.aria-label]="item.label"
+               [attr.aria-expanded]="isItemExpanded(item.label)">
+            <i class="menu-icon {{ item.icon }}"></i>
+            <span class="menu-label" *ngIf="!sidebarService.isCollapsed">{{ item.label }}</span>
+            <i class="expand-icon pi"
+               *ngIf="!sidebarService.isCollapsed"
+               [ngClass]="isItemExpanded(item.label) ? 'pi-chevron-down' : 'pi-chevron-right'">
+            </i>
+          </div>
+          
+          <!-- Submenú -->
+          <ul class="submenu-list" 
+              *ngIf="isItemExpanded(item.label) && !sidebarService.isCollapsed"
+              [@slideDown]>
+            <li *ngFor="let child of item.children; trackBy: trackByChildFn">
+              <a [routerLink]="child.route"
+                 routerLinkActive="active"
+                 class="submenu-item"
+                 [attr.aria-label]="child.label">
+                <i class="submenu-icon {{ child.icon }}"></i>
+                <span class="submenu-label">{{ child.label }}</span>
+              </a>
+            </li>
+          </ul>
+        </ng-container>
+        
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Footer del sidebar -->
+  <div class="sidebar-footer" *ngIf="!sidebarService.isCollapsed">
+    <div class="user-info">
+      <i class="pi pi-user"></i>
+      <span>Usuario</span>
+    </div>
+  </div>
 </div>

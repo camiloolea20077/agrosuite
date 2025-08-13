@@ -1,5 +1,6 @@
 package com.erp.backend_erp.entity.cattleTransfer;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -31,6 +32,13 @@ public class CattleTransferItemEntity {
     @Column(name = "birth_id")
     private Long birthId;
 
+    // Nuevos campos agregados
+    @Column(name = "numero_ganado")
+    private String numero_ganado;
+
+    @Column(name = "peso", precision = 10, scale = 2)
+    private BigDecimal peso;
+    
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime created_at;
 

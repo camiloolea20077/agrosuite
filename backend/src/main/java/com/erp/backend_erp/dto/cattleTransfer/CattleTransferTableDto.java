@@ -1,7 +1,5 @@
 package com.erp.backend_erp.dto.cattleTransfer;
 
-import java.time.LocalDateTime;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,15 +9,15 @@ public class CattleTransferTableDto {
         
     private Long id;
 
-    private String transferType; // 'CATTLE' o 'BIRTH'
+    private String transfer_type; // 'CATTLE' o 'BIRTH'
 
-    private String originFarm;   // Nombre de la finca origen
+    private String origin_farm;   // Nombre de la finca origen
 
-    private String destinationFarm; // Nombre de la finca destino
+    private String destination_farm; // Nombre de la finca destino
 
-    private LocalDateTime transferDate;
+    private String transfer_date;
 
     private String observations;
 
-    private String createdBy;  // Nombre del usuario que creó el traslado
+    private String created_by;  // Nombre del usuario que creó el traslado
 }

@@ -1,43 +1,281 @@
-<div class="grid mb-4">
-  <div class="col-12 md:col-4 lg:col-3">
-    <div class="metric-card">
-      <i class="pi pi-users icon"></i>
-      <div>
-        <p class="title">Total Empleados</p>
-        <h2 class="value">{{ totalEmployees }}</h2>
+<!-- Header del Dashboard -->
+<div class="dashboard-header mb-4">
+  <div class="flex justify-content-between align-items-center">
+    <div>
+      <h1 class="dashboard-title m-0">
+        <i class="pi pi-chart-line mr-3"></i>
+        Dashboard Ganadero
+      </h1>
+      <p class="dashboard-subtitle m-0 mt-2">
+        Resumen ejecutivo de tu operación ganadera
+      </p>
+    </div>
+    <div class="flex gap-2">
+      <p-chip label="Tiempo Real" icon="pi pi-clock" styleClass="p-chip-success"></p-chip>
+      <p-button 
+        icon="pi pi-refresh" 
+        label="Actualizar"
+        [outlined]="true"
+        size="small"
+        (click)="loadDashboardData()">
+      </p-button>
+    </div>
+  </div>
+</div>
+
+<!-- Métricas Principales -->
+<div class="grid mb-5">
+  <!-- Total Empleados -->
+  <div class="col-12 sm:col-6 lg:col-3">
+    <div class="metric-card metric-employees">
+      <div class="metric-content">
+        <div class="metric-icon-wrapper">
+          <i class="pi pi-users metric-icon"></i>
+          <div class="metric-badge">
+            <i class="pi pi-arrow-up text-green-500"></i>
+          </div>
+        </div>
+        <div class="metric-info">
+          <h3 class="metric-title">Empleados</h3>
+          <p class="metric-value">{{ totalEmployees | number }}</p>
+          <small class="metric-change">
+            <i class="pi pi-arrow-up text-green-500 mr-1"></i>
+            Personal activo
+          </small>
+        </div>
+      </div>
+      <div class="metric-progress">
+        <div class="progress-bar" style="width: 85%"></div>
       </div>
     </div>
   </div>
-  <div class="col-12 md:col-4 lg:col-3">
-    <div class="metric-card">
-      <i class="pi pi-heart icon"></i>
-      <div>
-        <p class="title">Nacimientos</p>
-        <h2 class="value">{{ totalBirths }}</h2>
+
+  <!-- Total Nacimientos -->
+  <div class="col-12 sm:col-6 lg:col-3">
+    <div class="metric-card metric-births">
+      <div class="metric-content">
+        <div class="metric-icon-wrapper">
+          <i class="pi pi-heart metric-icon"></i>
+          <div class="metric-badge">
+            <i class="pi pi-plus text-blue-500"></i>
+          </div>
+        </div>
+        <div class="metric-info">
+          <h3 class="metric-title">Nacimientos</h3>
+          <p class="metric-value">{{ totalBirths | number }}</p>
+          <small class="metric-change">
+            <i class="pi pi-calendar mr-1 text-blue-500"></i>
+            Este año
+          </small>
+        </div>
+      </div>
+      <div class="metric-progress">
+        <div class="progress-bar" style="width: 78%"></div>
       </div>
     </div>
   </div>
-  <div class="col-12 md:col-4 lg:col-3">
-    <div class="metric-card">
-      <i class="pi pi-verified icon"></i>
-      <div>
-        <p class="title">Ganado activo</p>
-        <h2 class="value">{{ totalCattle }}</h2>
+
+  <!-- Ganado Activo -->
+  <div class="col-12 sm:col-6 lg:col-3">
+    <div class="metric-card metric-cattle">
+      <div class="metric-content">
+        <div class="metric-icon-wrapper">
+          <i class="pi pi-verified metric-icon"></i>
+          <div class="metric-badge">
+            <i class="pi pi-check text-green-500"></i>
+          </div>
+        </div>
+        <div class="metric-info">
+          <h3 class="metric-title">Ganado Activo</h3>
+          <p class="metric-value">{{ totalCattle | number }}</p>
+          <small class="metric-change">
+            <i class="pi pi-arrow-up text-green-500 mr-1"></i>
+            En operación
+          </small>
+        </div>
+      </div>
+      <div class="metric-progress">
+        <div class="progress-bar" style="width: 92%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Métrica Adicional - Tasa de Natalidad -->
+  <div class="col-12 sm:col-6 lg:col-3">
+    <div class="metric-card metric-rate">
+      <div class="metric-content">
+        <div class="metric-icon-wrapper">
+          <i class="pi pi-percentage metric-icon"></i>
+          <div class="metric-badge">
+            <i class="pi pi-chart-line text-purple-500"></i>
+          </div>
+        </div>
+        <div class="metric-info">
+          <h3 class="metric-title">Tasa Natalidad</h3>
+          <p class="metric-value">{{ getBirthRate() }}%</p>
+          <small class="metric-change">
+            <i class="pi pi-arrow-up text-purple-500 mr-1"></i>
+            Vs. período anterior
+          </small>
+        </div>
+      </div>
+      <div class="metric-progress">
+        <div class="progress-bar" style="width: 68%"></div>
       </div>
     </div>
   </div>
 </div>
+
+<!-- Gráficos y Análisis -->
 <div class="grid">
-  <div class="col-12 md:col-6">
-    <p-card header="Nacimientos por Mes" class="chart-card">
-      <p-chart type="line" [data]="barChartData" [options]="chartOptions"></p-chart>
-    </p-card>
-  </div>
-  <div class="col-12 md:col-6">
-    <p-card header="Distribución de Nacimientos" class="chart-card">
-      <div class="small-doughnut">
-              <p-chart type="doughnut" [data]="pieChartData" [options]="chartOptions" styleClass="small-doughnut"></p-chart>
+  <!-- Gráfico de Nacimientos por Mes -->
+  <div class="col-12 lg:col-8">
+    <div class="chart-card births-chart">
+      <div class="chart-header">
+        <div class="flex justify-content-between align-items-center mb-3">
+          <div>
+            <h3 class="chart-title m-0">
+              <i class="pi pi-chart-bar mr-2 text-primary"></i>
+              Nacimientos por Mes
+            </h3>
+            <p class="chart-subtitle mt-1 mb-0">
+              Evolución mensual de nacimientos por sexo
+            </p>
+          </div>
+          <div class="flex align-items-center gap-3">
+            <div class="legend-item">
+              <span class="legend-color male"></span>
+              <small>Machos</small>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color female"></span>
+              <small>Hembras</small>
+            </div>
+            <p-button 
+              icon="pi pi-download" 
+              [outlined]="true" 
+              size="small"
+              pTooltip="Exportar gráfico">
+            </p-button>
+          </div>
+        </div>
       </div>
-    </p-card>
+      <div class="chart-content">
+        <p-chart 
+          type="line" 
+          [data]="barChartData" 
+          [options]="lineChartOptions"
+          width="100%"
+          height="300">
+        </p-chart>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel de Distribución y Estadísticas -->
+  <div class="col-12 lg:col-4">
+    <div class="stats-panel">
+      <!-- Gráfico de Distribución -->
+      <div class="distribution-card mb-4">
+        <div class="chart-header mb-3">
+          <h3 class="chart-title m-0">
+            <i class="pi pi-chart-pie mr-2 text-primary"></i>
+            Distribución por Sexo
+          </h3>
+          <p class="chart-subtitle mt-1 mb-0">
+            Proporción de nacimientos
+          </p>
+        </div>
+        <div class="doughnut-container">
+          <p-chart 
+            type="doughnut" 
+            [data]="pieChartData" 
+            [options]="doughnutOptions"
+            width="200"
+            height="200">
+          </p-chart>
+          <div class="doughnut-center">
+            <span class="total-label">Total</span>
+            <span class="total-value">{{ totalBirths }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Estadísticas Rápidas -->
+      <div class="quick-stats-card">
+        <h4 class="quick-stats-title mb-3">
+          <i class="pi pi-info-circle mr-2"></i>
+          Estadísticas Rápidas
+        </h4>
+        <div class="quick-stat-item">
+          <span class="stat-label">Promedio mensual</span>
+          <span class="stat-value">{{ getMonthlyAverage() }}</span>
+        </div>
+        <div class="quick-stat-item">
+          <span class="stat-label">Mes más productivo</span>
+          <span class="stat-value text-green-600">{{ getMostProductiveMonth() }}</span>
+        </div>
+        <div class="quick-stat-item">
+          <span class="stat-label">Ratio Hembra/Macho</span>
+          <span class="stat-value text-blue-600">{{ getGenderRatio() }}</span>
+        </div>
+        <div class="quick-stat-item">
+          <span class="stat-label">Último nacimiento</span>
+          <span class="stat-value text-purple-600">Hace 2 días</span>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+
+<!-- Sección de Actividad Reciente -->
+<div class="grid mt-4">
+  <div class="col-12">
+    <div class="activity-card">
+      <div class="activity-header mb-4">
+        <h3 class="activity-title m-0">
+          <i class="pi pi-history mr-2 text-primary"></i>
+          Actividad Reciente
+        </h3>
+        <p class="activity-subtitle mt-1 mb-0">
+          Últimos eventos en tu operación ganadera
+        </p>
+      </div>
+      <div class="activity-timeline">
+        <div class="timeline-item">
+          <div class="timeline-marker success">
+            <i class="pi pi-heart"></i>
+          </div>
+          <div class="timeline-content">
+            <h5 class="timeline-title">Nuevo Nacimiento</h5>
+            <p class="timeline-description">Vaca #A-123 dio a luz a una hembra</p>
+            <small class="timeline-time">Hace 2 horas</small>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-marker info">
+            <i class="pi pi-plus"></i>
+          </div>
+          <div class="timeline-content">
+            <h5 class="timeline-title">Ganado Registrado</h5>
+            <p class="timeline-description">Se registraron 3 nuevos animales en el lote B</p>
+            <small class="timeline-time">Hace 5 horas</small>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-marker warning">
+            <i class="pi pi-calendar"></i>
+          </div>
+          <div class="timeline-content">
+            <h5 class="timeline-title">Programación de Vacunación</h5>
+            <p class="timeline-description">Recordatorio: Vacunación lote C programada</p>
+            <small class="timeline-time">Hace 1 día</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+</style>

@@ -1,0 +1,499 @@
+<div class="card">
+  <!-- Header -->
+  <div class="flex justify-content-between align-items-center mb-4">
+    <h1 class="m-0 text-primary">
+      <i class="pi pi-arrow-right-arrow-left mr-2"></i>
+      {{ slug === "create" ? "Nuevo Traslado" : "Visualizar Traslado" }}
+    </h1>
+    <div class="flex gap-2">
+      <p-chip
+        label="Traslados"
+        icon="pi pi-arrow-right-arrow-left"
+        styleClass="p-chip-outlined"
+      >
+      </p-chip>
+      <p-chip
+        [label]="slug === 'create' ? 'Creación' : 'Visualización'"
+        [icon]="slug === 'create' ? 'pi pi-plus' : 'pi pi-eye'"
+        [styleClass]="slug === 'create' ? 'p-chip-success' : 'p-chip-info'"
+      >
+      </p-chip>
+    </div>
+  </div>
+
+  <!-- Form Container with Card Styling -->
+  <div class="surface-card p-4 shadow-2 border-round">
+    <form [formGroup]="frm" (ngSubmit)="submit()" class="formgrid grid">
+      <!-- Transfer Information Section -->
+      <div class="col-12">
+        <p-panel
+          header="Información del Traslado"
+          [toggleable]="true"
+          [collapsed]="false"
+        >
+          <div class="formgrid grid">
+            <!-- Tipo de traslado -->
+            <div class="field col-12 md:col-4">
+              <label for="transferType" class="font-semibold block mb-2">
+                <i class="pi pi-tag mr-1"></i>Tipo de Traslado *
+              </label>
+              <p-dropdown
+                id="transferType"
+                formControlName="transferType"
+                [options]="transferTypes"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Seleccionar tipo de traslado"
+                class="w-full"
+                [class.ng-invalid]="
+                  frm.get('transferType')?.invalid &&
+                  frm.get('transferType')?.touched
+                "
+              ></p-dropdown>
+              <small
+                class="p-error block mt-1"
+                *ngIf="
+                  frm.get('transferType')?.invalid &&
+                  frm.get('transferType')?.touched
+                "
+              >
+                <i class="pi pi-exclamation-triangle mr-1"></i>
+                Este campo es obligatorio
+              </small>
+            </div>
+
+            <!-- Fecha de traslado -->
+            <div class="field col-12 md:col-4">
+              <label for="transferDate" class="font-semibold block mb-2">
+                <i class="pi pi-calendar mr-1"></i>Fecha de Traslado *
+              </label>
+              <p-calendar
+                id="transferDate"
+                formControlName="transferDate"
+                [showIcon]="true"
+                dateFormat="yy-mm-dd"
+                [monthNavigator]="true"
+                [yearNavigator]="true"
+                yearRange="2000:2100"
+                placeholder="Seleccionar fecha"
+                class="w-full"
+                [class.ng-invalid]="
+                  frm.get('transferDate')?.invalid &&
+                  frm.get('transferDate')?.touched
+                "
+              ></p-calendar>
+              <small
+                class="p-error block mt-1"
+                *ngIf="
+                  frm.get('transferDate')?.invalid &&
+                  frm.get('transferDate')?.touched
+                "
+              >
+                <i class="pi pi-exclamation-triangle mr-1"></i>
+                Este campo es obligatorio
+              </small>
+            </div>
+
+            <!-- Número de traslado -->
+            <div class="field col-12 md:col-4">
+              <label for="id" class="font-semibold block mb-2">
+                <i class="pi pi-hashtag mr-1"></i>Número de Traslado
+              </label>
+              <input
+                pInputText
+                id="id"
+                formControlName="id"
+                placeholder="Se genera automáticamente"
+                class="w-full"
+                [disabled]="true"
+              />
+              <small class="text-muted-color block mt-1">
+                <i class="pi pi-info-circle mr-1"></i>
+                Se asigna automáticamente al guardar
+              </small>
+            </div>
+          </div>
+        </p-panel>
+      </div>
+
+      <!-- Origin and Destination Farms Section -->
+      <div class="col-12 mt-4">
+        <p-panel
+          header="Fincas de Origen y Destino"
+          [toggleable]="true"
+          [collapsed]="false"
+        >
+          <div class="formgrid grid">
+            <!-- Finca origen -->
+            <div class="field col-12 md:col-6">
+              <label for="originFarmId" class="font-semibold block mb-2">
+                <i class="pi pi-send mr-1"></i>Finca Origen *
+              </label>
+              <p-dropdown
+                id="originFarmId"
+                formControlName="originFarmId"
+                [options]="farmsModels"
+                optionLabel="nombre"
+                optionValue="id"
+                placeholder="Seleccionar finca de origen"
+                class="w-full"
+                [class.ng-invalid]="
+                  frm.get('originFarmId')?.invalid &&
+                  frm.get('originFarmId')?.touched
+                "
+              ></p-dropdown>
+              <small
+                class="p-error block mt-1"
+                *ngIf="
+                  frm.get('originFarmId')?.invalid &&
+                  frm.get('originFarmId')?.touched
+                "
+              >
+                <i class="pi pi-exclamation-triangle mr-1"></i>
+                Este campo es obligatorio
+              </small>
+            </div>
+
+            <!-- Finca destino -->
+            <div class="field col-12 md:col-6">
+              <label for="destinationFarmId" class="font-semibold block mb-2">
+                <i class="pi pi-map-marker mr-1"></i>Finca Destino *
+              </label>
+              <p-dropdown
+                id="destinationFarmId"
+                formControlName="destinationFarmId"
+                [options]="farmsDestination"
+                optionLabel="nombre"
+                optionValue="id"
+                placeholder="Seleccionar finca de destino"
+                class="w-full"
+                [class.ng-invalid]="
+                  frm.get('destinationFarmId')?.invalid &&
+                  frm.get('destinationFarmId')?.touched
+                "
+              ></p-dropdown>
+              <small
+                class="p-error block mt-1"
+                *ngIf="
+                  frm.get('destinationFarmId')?.invalid &&
+                  frm.get('destinationFarmId')?.touched
+                "
+              >
+                <i class="pi pi-exclamation-triangle mr-1"></i>
+                Este campo es obligatorio
+              </small>
+            </div>
+
+            <!-- Validación origen = destino -->
+            <div
+              class="col-12"
+              *ngIf="frm.get('destinationFarmId')?.hasError('sameFarm')"
+            >
+              <div
+                class="flex align-items-center gap-2 p-3 surface-border border-round-lg bg-red-50 border-red-200"
+              >
+                <i class="pi pi-exclamation-triangle text-red-500"></i>
+                <small class="p-error font-medium">
+                  La finca destino no puede ser igual a la de origen.
+                </small>
+              </div>
+            </div>
+          </div>
+        </p-panel>
+      </div>
+
+      <!-- Cattle Selection Section -->
+      <div class="col-12 mt-4">
+        <p-panel
+          header="Selección de Ganado"
+          [toggleable]="true"
+          [collapsed]="false"
+        >
+          <div class="mb-3">
+            <p-button
+              type="button"
+              [disabled]="slug === 'view'"
+              label="Seleccionar Ganado"
+              icon="pi pi-search"
+              severity="info"
+              [style]="{ 'min-width': '180px' }"
+              (click)="openModal()"
+            ></p-button>
+            <small class="block mt-2 text-muted-color">
+              <i class="pi pi-info-circle mr-1"></i>
+              Haga clic para abrir el selector de ganado disponible para
+              traslado
+            </small>
+          </div>
+
+          <div class="mt-4">
+            <p-table
+              [value]="selectedSaleLikeItems"
+              [loading]="loadingTable"
+              [paginator]="selectedSaleLikeItems.length > 5"
+              [rows]="5"
+              [showCurrentPageReport]="true"
+              currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} animales"
+              styleClass="p-datatable-striped"
+            >
+              <ng-template pTemplate="caption">
+                <div class="flex justify-content-between align-items-center">
+                  <span class="text-xl font-semibold">
+                    <i class="pi pi-list mr-2"></i>
+                    Ganado Seleccionado ({{ selectedSaleLikeItems.length }})
+                  </span>
+                  <p-tag
+                    [value]="selectedSaleLikeItems.length + ' items'"
+                    severity="info"
+                    icon="pi pi-arrow-right-arrow-left"
+                  >
+                  </p-tag>
+                </div>
+              </ng-template>
+
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>
+                    <i class="pi pi-hashtag mr-1"></i>
+                    #
+                  </th>
+                  <th>
+                    <i class="pi pi-tag mr-1"></i>
+                    Identificación
+                  </th>
+                  <th>
+                    <i class="pi pi-sitemap mr-1"></i>
+                    Origen
+                  </th>
+                  <th>
+                    <i class="pi pi-chart-line mr-1"></i>
+                    Peso (kg)
+                  </th>
+                  <th>
+                    <i class="pi pi-cog mr-1"></i>
+                    Acciones
+                  </th>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="body" let-item let-i="rowIndex">
+                <tr>
+                  <td>
+                    <span class="font-semibold">{{ i + 1 }}</span>
+                  </td>
+                  <td>
+                    <div class="flex align-items-center gap-2">
+                      <i class="pi pi-tag text-blue-600"></i>
+                      <span class="font-semibold">
+                        {{ item.numero_ganado || "—" }}
+                      </span>
+                    </div>
+                  </td>
+                  <td>
+                    <p-tag
+                      [value]="item.tipoOrigen"
+                      severity="secondary"
+                    ></p-tag>
+                  </td>
+                  <td>
+                    <div class="flex align-items-center gap-2">
+                      <i class="pi pi-sort-numeric-up text-green-600"></i>
+                      <span class="font-medium">{{ item.pesoVenta }} kg</span>
+                    </div>
+                  </td>
+                  <td>
+                    <p-button
+                      [disabled]="slug === 'view'"
+                      type="button"
+                      icon="pi pi-trash"
+                      severity="danger"
+                      [outlined]="true"
+                      size="small"
+                      [rounded]="true"
+                      pTooltip="Remover del traslado"
+                      tooltipPosition="top"
+                      (click)="removeRow(i)"
+                    ></p-button>
+                  </td>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td colspan="5" class="text-center p-4">
+                    <div class="flex flex-column align-items-center gap-3">
+                      <i class="pi pi-inbox text-4xl text-muted-color"></i>
+                      <span class="text-muted-color font-semibold">
+                        No hay ganado seleccionado
+                      </span>
+                      <small class="text-muted-color">
+                        Use el botón "Seleccionar Ganado" para agregar animales
+                        al traslado
+                      </small>
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </p-panel>
+      </div>
+
+      <!-- Summary Information Section -->
+      <div class="col-12 mt-4">
+        <p-panel
+          header="Resumen del Traslado"
+          [toggleable]="true"
+          [collapsed]="false"
+        >
+          <div class="formgrid grid">
+            <!-- Total de animales -->
+            <div class="field col-12 md:col-6 lg:col-3">
+              <label class="font-semibold block mb-2">
+                <i class="pi pi-list mr-1"></i>Total de Animales
+              </label>
+              <div class="p-inputgroup">
+                <span class="p-inputgroup-addon bg-primary text-primary-color">
+                  <i class="pi pi-hashtag"></i>
+                </span>
+                <input
+                  pInputText
+                  [value]="selectedSaleLikeItems.length"
+                  [disabled]="true"
+                  class="text-right font-bold text-xl text-primary"
+                />
+              </div>
+            </div>
+
+            <!-- Peso total -->
+            <div class="field col-12 md:col-6 lg:col-3">
+              <label class="font-semibold block mb-2">
+                <i class="pi pi-chart-line mr-1"></i>Peso Total
+              </label>
+              <div class="p-inputgroup">
+                <span class="p-inputgroup-addon bg-green-600 text-white">
+                  <i class="pi pi-sort-numeric-up"></i>
+                </span>
+                <input
+                  pInputText
+                  [value]="getTotalWeightFromSelected()"
+                  [disabled]="true"
+                  class="text-right font-bold text-xl text-green-600"
+                />
+              </div>
+            </div>
+
+            <!-- Estado del traslado -->
+            <div class="field col-12 md:col-6 lg:col-3">
+              <label class="font-semibold block mb-2">
+                <i class="pi pi-info-circle mr-1"></i>Estado
+              </label>
+              <div class="p-inputgroup">
+                <span class="p-inputgroup-addon bg-blue-600 text-white">
+                  <i class="pi pi-check-circle"></i>
+                </span>
+                <input
+                  pInputText
+                  [value]="slug === 'create' ? 'Pendiente' : 'Registrado'"
+                  [disabled]="true"
+                  class="text-right font-bold text-xl text-blue-600"
+                />
+              </div>
+            </div>
+
+            <!-- Fecha actual -->
+            <div class="field col-12 md:col-6 lg:col-3">
+              <label class="font-semibold block mb-2">
+                <i class="pi pi-calendar mr-1"></i>Fecha Actual
+              </label>
+              <div class="p-inputgroup">
+                <span class="p-inputgroup-addon bg-orange-500 text-white">
+                  <i class="pi pi-calendar"></i>
+                </span>
+                <input
+                  pInputText
+                  [value]="getFormattedCurrentDate()"
+                  [disabled]="true"
+                  class="text-right font-bold text-orange-500"
+                />
+              </div>
+            </div>
+          </div>
+        </p-panel>
+      </div>
+
+      <!-- Observations Section -->
+      <div class="col-12 mt-4">
+        <p-panel
+          header="Información Adicional"
+          [toggleable]="true"
+          [collapsed]="false"
+        >
+          <div class="field">
+            <label for="observations" class="font-semibold block mb-2">
+              <i class="pi pi-comment mr-1"></i>Observaciones
+            </label>
+            <textarea
+              pInputTextarea
+              id="observations"
+              formControlName="observations"
+              rows="3"
+              placeholder="Ingrese observaciones adicionales sobre el traslado..."
+              class="w-full"
+              [autoResize]="true"
+            ></textarea>
+          </div>
+        </p-panel>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="col-12 mt-5">
+        <p-divider></p-divider>
+        <div
+          class="flex flex-wrap gap-3 justify-content-center md:justify-content-end"
+        >
+          <!-- Botón Volver -->
+          <p-button
+            type="button"
+            label="Volver"
+            icon="pi pi-arrow-left"
+            severity="secondary"
+            [outlined]="true"
+            [style]="{ 'min-width': '120px' }"
+            routerLink="/transfers"
+          ></p-button>
+
+          <!-- Botón Limpiar (solo en modo create) -->
+          <p-button
+            *ngIf="slug === 'create'"
+            type="button"
+            label="Limpiar Formulario"
+            icon="pi pi-refresh"
+            severity="warning"
+            [outlined]="true"
+            [style]="{ 'min-width': '160px' }"
+            (click)="frm.reset({ transferType: 'CATTLE' })"
+          ></p-button>
+
+          <!-- Botón Guardar (solo en modo create) -->
+          <p-button
+            *ngIf="slug === 'create'"
+            type="submit"
+            label="Guardar Traslado"
+            icon="pi pi-save"
+            severity="success"
+            [style]="{ 'min-width': '180px' }"
+            [disabled]="frm.invalid || selectedSaleLikeItems.length === 0"
+          ></p-button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Component -->
+<app-select-cattle-modal
+  [visible]="modalVisible"
+  (onClose)="modalVisible = false"
+  (onSelect)="handleSelected($event)"
+></app-select-cattle-modal>

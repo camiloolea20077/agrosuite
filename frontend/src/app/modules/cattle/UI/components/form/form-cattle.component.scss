@@ -1,25 +1,74 @@
 .justify-end{
     justify-content: flex-end;
 }
-p-toast {
-    z-index: 9999;
-}
-::ng-deep .p-datepicker {
-  font-size: 0.8rem; // Reduce el tamaño general del popup
-  width: 100px !important; // Ajusta el ancho del calendario emergente
-}
+// p-toast {
+//     z-index: 9999;
+// }
+// ::ng-deep .p-datepicker {
+//   font-size: 0.8rem; // Reduce el tamaño general del popup
+//   width: 100px !important; // Ajusta el ancho del calendario emergente
+// }
 
-::ng-deep .p-datepicker table td {
-  padding: 0.25rem !important; // Reduce espacio entre los días
-}
+// ::ng-deep .p-datepicker table td {
+//   padding: 0.25rem !important; // Reduce espacio entre los días
+// }
 
-::ng-deep .p-datepicker .p-datepicker-header {
-  padding: 0.25rem 0.5rem !important;
-}
+// ::ng-deep .p-datepicker .p-datepicker-header {
+//   padding: 0.25rem 0.5rem !important;
+// }
 
-::ng-deep .p-datepicker .p-datepicker-title {
-  font-size: 0.85rem;
-}
-.p-calendar .p-datepicker {
-    min-width: 50%;
-}
+// ::ng-deep .p-datepicker .p-datepicker-title {
+//   font-size: 0.85rem;
+// }
+// .p-calendar .p-datepicker {
+//     min-width: 50%;
+// }
+
+.surface-card {
+    background: var(--surface-card);
+    border: 1px solid var(--surface-border);
+  }
+  
+  .field {
+    margin-bottom: 1.5rem;
+  }
+  
+  .p-panel .p-panel-header {
+    background: var(--primary-50);
+    border-bottom: 1px solid var(--primary-200);
+    border-radius: 6px 6px 0 0;
+  }
+  
+  .p-panel .p-panel-content {
+    padding: 1.5rem;
+  }
+  
+  .p-inputtext:focus,
+  .p-dropdown:focus,
+  .p-calendar:focus {
+    box-shadow: 0 0 0 0.2rem var(--primary-200);
+  }
+  
+  .p-error {
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
+  
+  .font-semibold {
+    font-weight: 600;
+  }
+  
+  .p-chip {
+    font-size: 0.875rem;
+  }
+  
+  @media (max-width: 768px) {
+    .flex.justify-content-end {
+      justify-content: center !important;
+    }
+    
+    .p-button {
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+  }

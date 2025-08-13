@@ -1,205 +1,301 @@
 <p-toast></p-toast>
 <div class="card">
-  <div class="grid flex flex-wrap align-items-center">
-    <div class="col-12 lg:col-10 md:col-9 sm:col-6">
-      <h1 class="m-0">
-        {{ slug === "edit" ? "Editar Nacimiento" : "Nuevo Nacimiento" }}
-      </h1>
-    </div>
+  <!-- Header -->
+  <div class="flex justify-content-between align-items-center mb-4">
+    <h1 class="m-0 text-primary">
+      <i class="pi pi-heart mr-2"></i>
+      {{ slug === "edit" ? "Editar Nacimiento" : "Nuevo Nacimiento" }}
+    </h1>
+    <p-chip 
+      label="Registro de Nacimiento" 
+      icon="pi pi-star" 
+      styleClass="p-chip-outlined">
+    </p-chip>
   </div>
-  <hr />
-  <div class="grid formgrid p-fluid">
+
+  <!-- Form Container with Card Styling -->
+  <div class="surface-card p-4 shadow-2 border-round">
     <form
       [formGroup]="frm"
       name="frm"
       id="frm"
-      class="col-12 sm:col-12 md:col-12 lg:col-12"
       (ngSubmit)="buildsaveBirth()"
+      class="formgrid grid"
     >
-      <div class="grid mt-1 p-2">
-        <div class="col-12 sm:col-12 md:col-12 lg:col-12 mt-2">
-          <div class="grid lg:mt-4 sm:mt-1">
-            <!-- Tipo de vaca (Dropdown) -->
-            <div class="col-12 md:col-6 lg:col-6">
-              <span class="p-float-label">
-                <p-dropdown
-                  [options]="cattleFemales"
-                  optionLabel="numero_ganado"
-                  optionValue="id"
-                  formControlName="tipo_vaca"
-                ></p-dropdown>
-                <label for="tipo_vaca">Numero de vaca</label>
-              </span>
-              <small
-                class="p-error"
-                *ngIf="
-                  frm.get('tipo_vaca')?.invalid && frm.get('tipo_vaca')?.touched
-                "
-                >Campo obligatorio</small
+      <!-- Parent Information Section -->
+      <div class="col-12">
+        <p-panel header="Información de Progenitores" [toggleable]="true" [collapsed]="false">
+          <div class="formgrid grid">
+            <!-- Número de vaca -->
+            <div class="field col-12 md:col-6">
+              <label for="tipo_vaca" class="font-semibold block mb-2">
+                <i class="pi pi-venus mr-1 text-pink-500"></i>Número de Vaca *
+              </label>
+              <p-dropdown
+                id="tipo_vaca"
+                [options]="cattleFemales"
+                optionLabel="numero_ganado"
+                optionValue="id"
+                formControlName="tipo_vaca"
+                placeholder="Seleccionar vaca madre"
+                [filter]="true"
+                filterBy="numero_ganado"
+                class="w-full"
+                [class.ng-invalid]="frm.get('tipo_vaca')?.invalid && frm.get('tipo_vaca')?.touched"
               >
+                <ng-template pTemplate="selectedItem" let-selectedOption>
+                  <div class="flex align-items-center gap-2" *ngIf="selectedOption">
+                    <i class="pi pi-venus text-pink-500"></i>
+                    <span>{{ selectedOption.numero_ganado }}</span>
+                  </div>
+                </ng-template>
+                <ng-template pTemplate="item" let-option>
+                  <div class="flex align-items-center gap-2">
+                    <i class="pi pi-venus text-pink-500"></i>
+                    <span>{{ option.numero_ganado }}</span>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+              <small
+                class="p-error block mt-1"
+                *ngIf="frm.get('tipo_vaca')?.invalid && frm.get('tipo_vaca')?.touched"
+              >
+                <i class="pi pi-exclamation-triangle mr-1"></i>
+                Este campo es obligatorio
+              </small>
             </div>
 
-            <!-- Nombre de toro (Dropdown) -->
-            <div class="col-12 md:col-6 lg:col-6">
-              <span class="p-float-label">
-                <p-dropdown
-                  [options]="cattleMales"
-                  optionLabel="numero_ganado"
-                  optionValue="id"
-                  formControlName="nombre_toro"
-                ></p-dropdown>
-                <label for="nombre_toro">Numero de toro</label>
-              </span>
-              <small
-                class="p-error"
-                *ngIf="
-                  frm.get('nombre_toro')?.invalid &&
-                  frm.get('nombre_toro')?.touched
-                "
-                >Campo obligatorio</small
+            <!-- Número de toro -->
+            <div class="field col-12 md:col-6">
+              <label for="nombre_toro" class="font-semibold block mb-2">
+                <i class="pi pi-mars mr-1 text-blue-500"></i>Número de Toro *
+              </label>
+              <p-dropdown
+                id="nombre_toro"
+                [options]="cattleMales"
+                optionLabel="numero_ganado"
+                optionValue="id"
+                formControlName="nombre_toro"
+                placeholder="Seleccionar toro padre"
+                [filter]="true"
+                filterBy="numero_ganado"
+                class="w-full"
+                [class.ng-invalid]="frm.get('nombre_toro')?.invalid && frm.get('nombre_toro')?.touched"
               >
+                <ng-template pTemplate="selectedItem" let-selectedOption>
+                  <div class="flex align-items-center gap-2" *ngIf="selectedOption">
+                    <i class="pi pi-mars text-blue-500"></i>
+                    <span>{{ selectedOption.numero_ganado }}</span>
+                  </div>
+                </ng-template>
+                <ng-template pTemplate="item" let-option>
+                  <div class="flex align-items-center gap-2">
+                    <i class="pi pi-mars text-blue-500"></i>
+                    <span>{{ option.numero_ganado }}</span>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+              <small
+                class="p-error block mt-1"
+                *ngIf="frm.get('nombre_toro')?.invalid && frm.get('nombre_toro')?.touched"
+              >
+                <i class="pi pi-exclamation-triangle mr-1"></i>
+                Este campo es obligatorio
+              </small>
             </div>
           </div>
-          <div class="grid lg:mt-4 sm:mt-1">
+        </p-panel>
+      </div>
+
+      <!-- Birth Information Section -->
+      <div class="col-12 mt-4">
+        <p-panel header="Información del Nacimiento" [toggleable]="true" [collapsed]="false">
+          <div class="formgrid grid">
             <!-- Fecha de nacimiento -->
-            <div class="col-12 md:col-6">
-              <span class="p-float-label">
-                <p-calendar
-                  formControlName="fecha_nacimiento"
-                  [appendTo]="'body'"
-                  [showIcon]="true"
-                  dateFormat="dd/mm/yy"
-                  [monthNavigator]="true"
-                  [yearNavigator]="true"
-                  yearRange="1900:2100"
-                ></p-calendar>
-                <label for="fecha_nacimiento">Fecha de nacimiento</label>
-              </span>
+            <div class="field col-12 md:col-6">
+              <label for="fecha_nacimiento" class="font-semibold block mb-2">
+                <i class="pi pi-calendar mr-1"></i>Fecha de Nacimiento *
+              </label>
+              <p-calendar
+                id="fecha_nacimiento"
+                formControlName="fecha_nacimiento"
+                dateFormat="dd/mm/yy"
+                [showIcon]="true"
+                [monthNavigator]="true"
+                [yearNavigator]="true"
+                yearRange="1900:2100"
+                placeholder="Seleccionar fecha"
+                class="w-full"
+                [class.ng-invalid]="frm.get('fecha_nacimiento')?.invalid && frm.get('fecha_nacimiento')?.touched"
+              ></p-calendar>
               <small
-                class="p-error"
-                *ngIf="
-                  frm.get('fecha_nacimiento')?.invalid &&
-                  frm.get('fecha_nacimiento')?.touched
-                "
-                >Campo obligatorio</small
+                class="p-error block mt-1"
+                *ngIf="frm.get('fecha_nacimiento')?.invalid && frm.get('fecha_nacimiento')?.touched"
               >
+                <i class="pi pi-exclamation-triangle mr-1"></i>
+                Este campo es obligatorio
+              </small>
             </div>
 
             <!-- Número de cría -->
-            <div class="col-12 md:col-6">
-              <span class="p-float-label">
-                <input
-                  pInputText
-                  id="numero_cria"
-                  formControlName="numero_cria"
-                />
-                <label for="numero_cria">Número de cría</label>
-              </span>
+            <div class="field col-12 md:col-6">
+              <label for="numero_cria" class="font-semibold block mb-2">
+                <i class="pi pi-hashtag mr-1"></i>Número de Cría *
+              </label>
+              <input
+                pInputText
+                id="numero_cria"
+                formControlName="numero_cria"
+                placeholder="Ej: C-001, CRIA-123"
+                class="w-full"
+                [class.ng-invalid]="frm.get('numero_cria')?.invalid && frm.get('numero_cria')?.touched"
+              />
               <small
-                class="p-error"
-                *ngIf="
-                  frm.get('numero_cria')?.invalid &&
-                  frm.get('numero_cria')?.touched
-                "
-                >Campo obligatorio</small
+                class="p-error block mt-1"
+                *ngIf="frm.get('numero_cria')?.invalid && frm.get('numero_cria')?.touched"
               >
+                <i class="pi pi-exclamation-triangle mr-1"></i>
+                Este campo es obligatorio
+              </small>
             </div>
           </div>
+        </p-panel>
+      </div>
 
-          <div class="grid lg:mt-4 sm:mt-1">
+      <!-- Offspring Characteristics Section -->
+      <div class="col-12 mt-4">
+        <p-panel header="Características de la Cría" [toggleable]="true" [collapsed]="false">
+          <div class="formgrid grid">
             <!-- Sexo -->
-            <div class="col-12 md:col-6 lg:col-6">
-              <span class="p-float-label">
-                <p-dropdown
-                  [options]="sexOptions"
-                  optionLabel="name"
-                  optionValue="value"
-                  formControlName="sexo"
-                ></p-dropdown>
-                <label for="sexo">Sexo</label>
-              </span>
-              <small
-                class="p-error"
-                *ngIf="frm.get('sexo')?.invalid && frm.get('sexo')?.touched"
-                >Campo obligatorio</small
+            <div class="field col-12 md:col-6">
+              <label for="sexo" class="font-semibold block mb-2">
+                <i class="pi pi-users mr-1"></i>Sexo de la Cría *
+              </label>
+              <p-dropdown
+                id="sexo"
+                [options]="sexOptions"
+                optionLabel="name"
+                optionValue="value"
+                formControlName="sexo"
+                placeholder="Seleccionar sexo"
+                class="w-full"
+                [class.ng-invalid]="frm.get('sexo')?.invalid && frm.get('sexo')?.touched"
               >
+                <ng-template pTemplate="selectedItem" let-selectedOption>
+                  <div class="flex align-items-center gap-2" *ngIf="selectedOption">
+                    <i class="pi" 
+                       [ngClass]="{
+                         'pi-mars text-blue-500': selectedOption.value === 'M',
+                         'pi-venus text-pink-500': selectedOption.value === 'F'
+                       }"></i>
+                    <span>{{ selectedOption.name }}</span>
+                  </div>
+                </ng-template>
+                <ng-template pTemplate="item" let-option>
+                  <div class="flex align-items-center gap-2">
+                    <i class="pi" 
+                       [ngClass]="{
+                         'pi-mars text-blue-500': option.value === 'M',
+                         'pi-venus text-pink-500': option.value === 'F'
+                       }"></i>
+                    <span>{{ option.name }}</span>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+              <small
+                class="p-error block mt-1"
+                *ngIf="frm.get('sexo')?.invalid && frm.get('sexo')?.touched"
+              >
+                <i class="pi pi-exclamation-triangle mr-1"></i>
+                Este campo es obligatorio
+              </small>
             </div>
 
             <!-- Color de cría -->
-            <div class="col-12 md:col-6">
-              <span class="p-float-label">
-                <input
-                  pInputText
-                  id="color_cria"
-                  formControlName="color_cria"
-                />
-                <label for="color_cria">Color de cría</label>
-              </span>
+            <div class="field col-12 md:col-6">
+              <label for="color_cria" class="font-semibold block mb-2">
+                <i class="pi pi-palette mr-1"></i>Color de la Cría *
+              </label>
+              <input
+                pInputText
+                id="color_cria"
+                formControlName="color_cria"
+                placeholder="Ej: Negro, Blanco, Marrón moteado"
+                class="w-full"
+                [class.ng-invalid]="frm.get('color_cria')?.invalid && frm.get('color_cria')?.touched"
+              />
               <small
-                class="p-error"
-                *ngIf="
-                  frm.get('color_cria')?.invalid &&
-                  frm.get('color_cria')?.touched
-                "
-                >Campo obligatorio</small
+                class="p-error block mt-1"
+                *ngIf="frm.get('color_cria')?.invalid && frm.get('color_cria')?.touched"
               >
+                <i class="pi pi-exclamation-triangle mr-1"></i>
+                Este campo es obligatorio
+              </small>
             </div>
           </div>
+        </p-panel>
+      </div>
 
-          <div class="grid lg:mt-4 sm:mt-1">
-            <!-- Observaciones -->
-            <div class="col-12">
-              <span class="p-float-label">
-                <textarea
-                  pInputTextarea
-                  rows="3"
-                  id="observaciones"
-                  formControlName="observaciones"
-                ></textarea>
-                <label for="observaciones">Observaciones</label>
-              </span>
-              <small
-                class="p-error"
-                *ngIf="
-                  frm.get('observaciones')?.invalid &&
-                  frm.get('observaciones')?.touched
-                "
-                >Campo obligatorio</small
-              >
-            </div>
+      <!-- Additional Information Section -->
+      <div class="col-12 mt-4">
+        <p-panel header="Información Adicional" [toggleable]="true" [collapsed]="false">
+          <!-- Observaciones -->
+          <div class="field">
+            <label for="observaciones" class="font-semibold block mb-2">
+              <i class="pi pi-file-edit mr-1"></i>Observaciones del Nacimiento
+            </label>
+            <textarea
+              pInputTextarea
+              id="observaciones"
+              formControlName="observaciones"
+              rows="4"
+              placeholder="Ingrese detalles sobre el parto, condiciones de salud, complicaciones, etc..."
+              class="w-full"
+              [autoResize]="true"
+            ></textarea>
+            <small
+              class="p-error block mt-1"
+              *ngIf="frm.get('observaciones')?.invalid && frm.get('observaciones')?.touched"
+            >
+              <i class="pi pi-exclamation-triangle mr-1"></i>
+              Este campo es obligatorio
+            </small>
           </div>
-        </div>
-        <!-- Botones -->
-        <div class="grid col-12 p-0 mt-3 justify-end">
-          <div class="col-12 md:col-3">
-            <button
-              pButton
-              type="submit"
-              label="Guardar"
-              icon="pi pi-save"
-              class="p-button-success w-full p-button-rounded"
-            ></button>
-          </div>
-          <div class="col-12 md:col-3">
-            <button
-              pButton
-              type="button"
-              label="Limpiar"
-              icon="pi pi-trash"
-              class="p-button-warning w-full p-button-rounded"
-              (click)="resetForm()"
-            ></button>
-          </div>
-          <div class="col-12 md:col-3">
-            <button
-              pButton
-              type="button"
-              label="Volver"
-              icon="pi pi-arrow-left"
-              class="p-button-secondary w-full p-button-rounded"
-              routerLink="/births"
-            ></button>
-          </div>
+        </p-panel>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="col-12 mt-5">
+        <p-divider></p-divider>
+        <div class="flex flex-wrap gap-3 justify-content-center md:justify-content-end">
+          <p-button
+            type="submit"
+            label="Guardar Nacimiento"
+            icon="pi pi-save"
+            severity="success"
+            [style]="{'min-width': '160px'}"
+            [disabled]="frm.invalid"
+          ></p-button>
+          
+          <p-button
+            type="button"
+            label="Limpiar"
+            icon="pi pi-refresh"
+            severity="warning"
+            [outlined]="true"
+            [style]="{'min-width': '120px'}"
+            (click)="resetForm()"
+          ></p-button>
+          
+          <p-button
+            type="button"
+            label="Volver"
+            icon="pi pi-arrow-left"
+            severity="secondary"
+            [outlined]="true"
+            [style]="{'min-width': '120px'}"
+            routerLink="/births"
+          ></p-button>
         </div>
       </div>
     </form>

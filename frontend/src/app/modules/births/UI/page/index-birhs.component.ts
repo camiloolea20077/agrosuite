@@ -15,6 +15,10 @@ import { ButtonModule } from "primeng/button";
 import { CommonModule } from "@angular/common";
 import { ToastModule } from "primeng/toast";
 import { ConfirmationService, MessageService } from "primeng/api";
+import { TagModule } from 'primeng/tag';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+
+
 @Component({
     selector: "app-index-births",
     standalone: true,
@@ -30,7 +34,9 @@ import { ConfirmationService, MessageService } from "primeng/api";
         ReactiveFormsModule, 
         TableModule, 
         CommonModule, 
-        ToastModule
+        ToastModule,
+        TagModule,
+        ProgressSpinnerModule
     ]
 })
 export class IndexBirthsComponent {

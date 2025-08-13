@@ -4,3 +4,69 @@
 p-toast {
     z-index: 9999;
 }
+  .surface-card {
+    background: var(--surface-card);
+    border: 1px solid var(--surface-border);
+  }
+  
+  .field {
+    margin-bottom: 1.5rem;
+  }
+  
+  .p-panel .p-panel-header {
+    background: var(--primary-50);
+    border-bottom: 1px solid var(--primary-200);
+    border-radius: 6px 6px 0 0;
+  }
+  
+  .p-panel .p-panel-content {
+    padding: 1.5rem;
+  }
+  
+  .p-inputtext:focus,
+  .p-dropdown:focus,
+  .p-calendar:focus {
+    box-shadow: 0 0 0 0.2rem var(--primary-200);
+  }
+  
+  .p-error {
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
+  
+  .font-semibold {
+    font-weight: 600;
+  }
+  
+  .p-chip {
+    font-size: 0.875rem;
+  }
+  
+  /* Estilos específicos para los dropdowns con iconos */
+  .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
+    padding: 0.75rem 1rem;
+  }
+  
+  .p-dropdown-panel .p-dropdown-items .p-dropdown-item:hover {
+    background: var(--primary-50);
+  }
+  
+  /* Mejorar la visualización del filtro en dropdown */
+  .p-dropdown-filter-container {
+    padding: 0.5rem;
+  }
+  
+  @media (max-width: 768px) {
+    .flex.justify-content-end {
+      justify-content: center !important;
+    }
+    
+    .p-button {
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+    
+    .p-panel .p-panel-content {
+      padding: 1rem;
+    }
+  }

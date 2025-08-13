@@ -4,21 +4,26 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.erp.backend_erp.dto.cattleTransfer.CattleTransferDto;
+import com.erp.backend_erp.dto.cattleTransfer.CattleTransferTableDto;
 import com.erp.backend_erp.dto.cattleTransfer.CreateCattleTransferDto;
+import com.erp.backend_erp.dto.cattleTransfer.ViewCattleTransferDto;
 import com.erp.backend_erp.entity.cattleTransfer.CattleTransferEntity;
 import com.erp.backend_erp.entity.cattleTransfer.CattleTransferItemEntity;
 import com.erp.backend_erp.mappers.cattleTransfers.CattleTransferMapper;
 import com.erp.backend_erp.repositories.births.BirthsQueryRepository;
 import com.erp.backend_erp.repositories.cattleTransfer.CattleTransferItemJPARepository;
 import com.erp.backend_erp.repositories.cattleTransfer.CattleTransferJPARepository;
+import com.erp.backend_erp.repositories.cattleTransfer.CattleTransferQueryRepository;
 import com.erp.backend_erp.repositories.ganado.GanadoQueryRepository;
 import com.erp.backend_erp.services.CattleTransferService;
-
-import jakarta.transaction.Transactional;
-
+import com.erp.backend_erp.util.GlobalException;
+import com.erp.backend_erp.util.PageableDto;
 
 @Service
 public class CattleTransferServiceImpl implements CattleTransferService{
@@ -38,6 +43,9 @@ public class CattleTransferServiceImpl implements CattleTransferService{
 
     @Autowired
     private BirthsQueryRepository birthsQueryRepository;
+
+    @Autowired
+    private CattleTransferQueryRepository cattleTransferQueryRepository;
     
     @Override
     @Transactional
@@ -62,14 +70,14 @@ public class CattleTransferServiceImpl implements CattleTransferService{
         cattleTransferItemJPARepository.saveAll(items);
 
         // 5. Actualizar farm_id en cattle o births según tipo
-        if ("CATTLE".equalsIgnoreCase(savedTransfer.getTransferType())) {
+        if ("GANADO".equalsIgnoreCase(savedTransfer.getTransferType())) {
             items.stream()
                 .filter(item -> item.getCattleId() != null)
                 .forEach(item -> {
                     // Actualiza el farm_id del ganado
                     cattleQueryRepository.updateFarmId(item.getCattleId(), savedTransfer.getDestinationFarmId());
                 });
-        } else if ("BIRTH".equalsIgnoreCase(savedTransfer.getTransferType())) {
+        } else if ("TERNERO".equalsIgnoreCase(savedTransfer.getTransferType())) {
             items.stream()
                 .filter(item -> item.getBirthId() != null)
                 .forEach(item -> {
@@ -85,5 +93,18 @@ public class CattleTransferServiceImpl implements CattleTransferService{
         resultDto.setItems(cattleTransferMapper.toItemDtoList(savedItems));
 
         return resultDto;
+    }
+
+    @Override
+    public PageImpl<CattleTransferTableDto> pageTransfers(PageableDto<Object> pageableDto) {
+        return cattleTransferQueryRepository.pageTransfers(pageableDto);
+    }
+    @Override
+    @Transactional(readOnly = true)
+    public ViewCattleTransferDto getTransferById(Long id, Long farmId) {
+        CattleTransferEntity entity = cattleTransferJPARepository.findByIdAndFarmId(id, farmId)
+            .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "Transferencia no encontrada"));
+        List<CattleTransferItemEntity> items = cattleTransferItemJPARepository.findAllByTransferId(entity.getId());
+        return cattleTransferMapper.toViewDto(entity, items);
     }
 }

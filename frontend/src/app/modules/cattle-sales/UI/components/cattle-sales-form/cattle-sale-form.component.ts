@@ -30,6 +30,13 @@ import { TerceroService } from 'src/app/core/services/terceros.service';
 import { AutoCompleteModelDto, FilterTerceroDto, IAutoComplete } from 'src/app/shared/dto/autocomplete-terceros.model';
 import { AutoCompleteCompleteEvent, AutoCompleteModule, AutoCompleteOnSelectEvent } from 'primeng/autocomplete';
 import { CattleSalePdfService } from 'src/app/core/services/pdf.service';
+import { PanelModule } from 'primeng/panel';
+import { ButtonModule } from 'primeng/button';
+import { ChipModule } from 'primeng/chip';
+import { DividerModule } from 'primeng/divider';
+import { TagModule } from 'primeng/tag'; 
+
+
 @Component({
   selector: 'app-cattle-sale-form',
   templateUrl: './cattle-sale-form.component.html',
@@ -51,6 +58,11 @@ import { CattleSalePdfService } from 'src/app/core/services/pdf.service';
     CattleSalesModule,
     DropdownModule,
     AutoCompleteModule,
+    PanelModule,
+    ButtonModule,
+    ChipModule,
+    DividerModule,
+    TagModule,
   ],
   encapsulation: ViewEncapsulation.None,
 })

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './modules/auth/auth.guard';
 import { DummyComponent } from './shared/components/dummy-component/dummy.component';
-
+//Como esta
 const routes: Routes = [
   {
     path: '',
@@ -84,7 +84,15 @@ const routes: Routes = [
             (m) => m.CattleSalesModule
           ),
           canActivate: [AuthGuard],
-      }
+      },
+      {
+        path: 'transfers',
+        loadChildren: () =>
+          import('./modules/cattle-transfers/cattle-transfers.module').then(
+            (m) => m.CattleTransfersModule
+          ),
+          canActivate: [AuthGuard],
+      },
     ],
   },
   {

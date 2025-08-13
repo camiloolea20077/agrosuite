@@ -18,12 +18,23 @@ import { CreateCattleDto } from 'src/app/core/models/cattle/create-cattle.dto';
 import { CattleService } from 'src/app/core/services/cattle.service';
 import { ResponseModel } from 'src/app/shared/utils/models/responde.models';
 import { AlertService } from 'src/app/shared/utils/pipes/alert.service';
-import { ConfirmationService, MessageService } from 'primeng/api'
+import { MessageService } from 'primeng/api'
 import { CommonModule } from '@angular/common';
 import { UpdateCattleDto } from 'src/app/core/models/cattle/update-cattle.dto';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from "primeng/confirmdialog";
+import { PanelModule } from 'primeng/panel';
+// Para el botón mejorado
+import { ButtonModule } from 'primeng/button';
 
+// Para el chip en el header
+import { ChipModule } from 'primeng/chip';
+
+// Para el separador entre secciones
+import { DividerModule } from 'primeng/divider';
+
+// Para el input numérico del peso
+import { InputNumberModule } from 'primeng/inputnumber';
 @Component({
     selector: 'app-form-cattle',
     standalone: true,
@@ -40,7 +51,12 @@ import { ConfirmDialogModule } from "primeng/confirmdialog";
     InputTextareaModule,
     InputTextModule,
     ToastModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    PanelModule,
+    ButtonModule,
+    ChipModule,
+    DividerModule,
+    InputNumberModule
 ],
 })
 export class FormCattleComponent implements OnInit {
