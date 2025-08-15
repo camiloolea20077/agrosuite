@@ -97,7 +97,13 @@ export class SidebarComponent implements OnInit, OnDestroy {
   // Alternativamente, una versión más simple sería:
   private checkScreenSize(): void {
     this.isMobile = window.innerWidth <= 768;
-    // Remover completamente la lógica de cerrar automáticamente
+
+    if (this.isMobile) {
+      this.sidebarService.setCollapsed(false);
+      this.sidebarService.setVisible(false);
+    } else {
+      this.sidebarService.setVisible(true);
+    }
   }
 
   private loadMenuItems(): void {
@@ -203,37 +209,6 @@ private buildMenu(): void {
       ],
     });
   }
-
-  // Módulo de Movimiento de Inventario (con permisos)
-  if (this.hasOperationPermissions()) {
-    this.items.push({
-      label: 'Movimiento de Inventario',
-      icon: 'pi pi-arrows-alt',
-      children: [
-        {
-          label: 'Entradas de Inventario',
-          icon: 'pi pi-plus-circle',
-          route: '/inventory/entries',
-        },
-        {
-          label: 'Salidas de Inventario',
-          icon: 'pi pi-minus-circle',
-          route: '/inventory/exits',
-        },
-        {
-          label: 'Transferencias',
-          icon: 'pi pi-refresh',
-          route: '/inventory/transfers',
-        },
-        {
-          label: 'Ajustes de Inventario',
-          icon: 'pi pi-cog',
-          route: '/inventory/adjustments',
-        },
-      ],
-    });
-  }
-
   // Módulo de Recursos Humanos (con permisos)
   if (this.hasHRPermissions()) {
     this.items.push({

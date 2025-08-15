@@ -5,15 +5,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CreateSuppliersDto {
+public class SuppliersTableDto {
+    private Long id;
     private String nit;
-    private String observaciones;
-    private String cargo;
-    private String codigo;
     private String nombre;
     private String contacto;
     private String telefono;
     private String email;
-    private String direccion;
     private Long activo;
 }

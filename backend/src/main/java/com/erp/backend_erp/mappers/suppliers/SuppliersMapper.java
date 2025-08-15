@@ -17,13 +17,15 @@ public interface SuppliersMapper {
         @Mapping(target = "created_at", ignore = true),
         @Mapping(target = "updated_at", ignore = true),
         @Mapping(target = "deleted_at", ignore = true),
-        @Mapping(target = "codigo", source = "dto.codigo"),
         @Mapping(target = "nombre", source = "dto.nombre"),
         @Mapping(target = "contacto", source = "dto.contacto"),
         @Mapping(target = "telefono", source = "dto.telefono"),
         @Mapping(target = "email", source = "dto.email"),
         @Mapping(target = "direccion", source = "dto.direccion"),
-        @Mapping(target = "activo", source = "dto.activo")
+        @Mapping(target = "activo", source = "dto.activo"),
+        @Mapping(target = "nit", source = "dto.nit"),
+        @Mapping(target = "observaciones", source = "dto.observaciones"),
+        @Mapping(target = "cargo", source = "dto.cargo")
     })
     SuppliersEntity createToEntity(CreateSuppliersDto dto);
 
@@ -32,25 +34,29 @@ public interface SuppliersMapper {
         @Mapping(target = "created_at", ignore = true),
         @Mapping(target = "updated_at", ignore = true),
         @Mapping(target = "deleted_at", ignore = true),
-        @Mapping(target = "codigo", source = "dto.codigo"),
         @Mapping(target = "nombre", source = "dto.nombre"),
         @Mapping(target = "contacto", source = "dto.contacto"),
         @Mapping(target = "telefono", source = "dto.telefono"),
         @Mapping(target = "email", source = "dto.email"),
         @Mapping(target = "direccion", source = "dto.direccion"),
-        @Mapping(target = "activo", source = "dto.activo")
+        @Mapping(target = "activo", source = "dto.activo"),
+        @Mapping(target = "nit", source = "dto.nit"),
+        @Mapping(target = "observaciones", source = "dto.observaciones"),
+        @Mapping(target = "cargo", source = "dto.cargo")
     })
     void updateEntityFromDto(UpdateSuppliersDto dto, @MappingTarget SuppliersEntity entity);
 
     @Mappings({
         @Mapping(target = "id", source = "entity.id"),
-        @Mapping(target = "codigo", source = "entity.codigo"),
         @Mapping(target = "nombre", source = "entity.nombre"),
         @Mapping(target = "contacto", source = "entity.contacto"),
         @Mapping(target = "telefono", source = "entity.telefono"),
         @Mapping(target = "email", source = "entity.email"),
         @Mapping(target = "direccion", source = "entity.direccion"),
-        @Mapping(target = "activo", source = "entity.activo")
+        @Mapping(target = "activo", source = "entity.activo"),
+        @Mapping(target = "nit", source = "entity.nit"),
+        @Mapping(target = "observaciones", source = "entity.observaciones"),
+        @Mapping(target = "cargo", source = "entity.cargo")
     })
     SuppliersDto toDto(SuppliersEntity entity);
 }

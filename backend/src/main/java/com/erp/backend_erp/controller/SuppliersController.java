@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,9 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.erp.backend_erp.dto.suppliers.CreateSuppliersDto;
 import com.erp.backend_erp.dto.suppliers.SuppliersDto;
+import com.erp.backend_erp.dto.suppliers.SuppliersTableDto;
 import com.erp.backend_erp.dto.suppliers.UpdateSuppliersDto;
 import com.erp.backend_erp.services.SuppliersService;
 import com.erp.backend_erp.util.ApiResponse;
+import com.erp.backend_erp.util.PageableDto;
 @RestController
 @RequestMapping("/suppliers")
 public class SuppliersController {
@@ -76,13 +79,13 @@ public class SuppliersController {
         );
     }
 
-    // @PostMapping("/page")
-    // public ResponseEntity<ApiResponse<Object>> page(@RequestBody PageableDto<Object> pageableDto) {
-    //     PageImpl<SuppliersTableDto> page = suppliersService.getPage(pageableDto);
-    //     return ResponseEntity.ok(
-    //         new ApiResponse<>(HttpStatus.OK.value(), "Datos obtenidos correctamente", false, page)
-    //     );
-    // }
+    @PostMapping("/page")
+    public ResponseEntity<ApiResponse<Object>> page(@RequestBody PageableDto<Object> pageableDto) {
+        PageImpl<SuppliersTableDto> page = suppliersService.getPage(pageableDto);
+        return ResponseEntity.ok(
+            new ApiResponse<>(HttpStatus.OK.value(), "Datos obtenidos correctamente", false, page)
+        );
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Object>> delete(@PathVariable Long id) {

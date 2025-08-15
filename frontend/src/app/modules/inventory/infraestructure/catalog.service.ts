@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ResponseTableModel } from 'src/app/shared/utils/models/response-table.model';
-import { EstadoInventario, EstadoMovimiento, Supplier, TipoInsumo, TipoMovimiento } from '../domain/dto/inventory.interface';
+import { EstadoInventario, EstadoMovimiento, IFilterTableSupplier, Supplier, SupplierTableModelDto, TipoInsumo, TipoMovimiento } from '../domain/dto/inventory.interface';
 import { ResponseModel } from 'src/app/shared/utils/models/responde.models';
 import { IFilterTable } from 'src/app/shared/utils/models/filter-table';
 
@@ -106,8 +106,8 @@ export class InventoryCatalogService {
   }
 
   // ========================= Proveedores =========================
-  pageSuppliers(iFilterTable: IFilterTable<any>): Observable<ResponseTableModel<Supplier>> {
-    return this.http.post<ResponseTableModel<Supplier>>(`${this.baseUrl}suppliers/page`, iFilterTable);
+  pageSuppliers(iFilterTable: IFilterTable<IFilterTableSupplier>): Observable<ResponseTableModel<SupplierTableModelDto>> {
+    return this.http.post<ResponseTableModel<SupplierTableModelDto>>(`${this.baseUrl}suppliers/page`, iFilterTable);
   }
 
   createSupplier(supplier: Omit<Supplier, 'id'>): Observable<ResponseModel<Supplier>> {

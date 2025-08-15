@@ -25,7 +25,10 @@ export class SidebarService {
   get isCollapsed(): boolean {
     return this._isCollapsed.value;
   }
-
+  // 👇 NUEVO
+  setVisible(value: boolean): void { this._isVisible.next(value); }
+  setCollapsed(value: boolean): void { this._isCollapsed.next(value); }
+  
   toggleSidebar(): void {
     this._isVisible.next(!this._isVisible.value);
   }

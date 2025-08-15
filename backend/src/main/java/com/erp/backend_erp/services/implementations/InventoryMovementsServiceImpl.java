@@ -334,9 +334,9 @@ public class InventoryMovementsServiceImpl implements InventoryMovementsService 
         }
 
         // 3) Normalizar cantidades y validar pendientes
-        BigDecimal original     = abs(nvl(movement.getCantidad()));           // p.ej. 25
-        BigDecimal devueltaAcum = abs(nvl(movement.getCantidadDevuelta()));   // p.ej. 0..n
-        BigDecimal toReturn     = abs(nvl(returnQuantity));                    // p.ej. 10
+        BigDecimal original     = abs(nvl(movement.getCantidad()));
+        BigDecimal devueltaAcum = abs(nvl(movement.getCantidadDevuelta()));  
+        BigDecimal toReturn     = abs(nvl(returnQuantity));                   
         if (toReturn.signum() == 0) throw new GlobalException(HttpStatus.BAD_REQUEST, "Cantidad de devolución inválida");
 
         BigDecimal pendiente = original.subtract(devueltaAcum);

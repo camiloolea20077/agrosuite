@@ -132,13 +132,33 @@ export interface EstadoMovimiento {
 }
 
 export interface Supplier {
-  id?: number;
-  codigo: string;
+  id: number;
+  nit: string;
+  cargo: string;
+  observaciones?: string;
   nombre: string;
-  contacto?: string;
-  telefono?: string;
-  email?: string;
+  contacto: string;
+  telefono: string;
+  email: string;
   direccion?: string;
+  activo: number;
+}
+export interface SupplierTableModelDto {
+  id: number;
+  nombre: string;
+  contacto: string;
+  telefono: string;
+  nit: string;
+  email: string;
+  activo: number;
+}
+export interface IFilterTableSupplier {
+  id: number;
+  nombre: string;
+  contacto: string;
+  telefono: string;
+  nit: string;
+  email: string;
   activo: number;
 }
 export interface InventoryMovementTableModelDto {

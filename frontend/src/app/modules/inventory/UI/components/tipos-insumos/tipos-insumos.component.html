@@ -1,0 +1,321 @@
+<div class="main-container">
+  <div class="card">
+    <!-- Header de la tarjeta -->
+    <div class="card-header">
+      <h4>Gestión de Tipos de Insumos</h4>
+    </div>
+
+    <div class="card-content">
+      <!-- Toolbar mejorado -->
+      <div class="p-toolbar mb-4">
+        <div class="toolbar-left"></div>
+        <div class="toolbar-right">
+          <p-button
+            severity="success"
+            label="Nuevo Tipo"
+            icon="pi pi-plus"
+            (onClick)="openNew()"
+            class="create-button"
+          ></p-button>
+        </div>
+      </div>
+
+      <!-- Tabla con estilos mejorados -->
+      <p-table
+        #dt
+        [value]="tiposInsumos"
+        [loading]="loading"
+        styleClass="p-datatable-gridlines modern-table"
+        [paginator]="true"
+        [rows]="10"
+        [rowsPerPageOptions]="[5, 10, 25, 50]"
+        [globalFilterFields]="['codigo', 'nombre', 'descripcion']"
+        responsiveLayout="scroll"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+      >
+        <!-- Búsqueda mejorada -->
+        <ng-template pTemplate="caption">
+          <div class="table-header">
+            <div class="search-container">
+              <span class="p-input-icon-left">
+                <i class="pi pi-search"></i>
+                <input
+                  pInputText
+                  type="text"
+                  (input)="
+                    dt.filterGlobal($any($event.target).value, 'contains')
+                  "
+                  placeholder="Buscar tipos de insumos..."
+                  class="search-input"
+                />
+              </span>
+            </div>
+          </div>
+        </ng-template>
+
+        <!-- Headers con mejor diseño -->
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="codigo" style="width: 150px">
+              <div class="flex justify-content-between align-items-center">
+                <span class="header-text">
+                  <i class="pi pi-code mr-2"></i>
+                  Código
+                </span>
+                <p-sortIcon field="codigo"></p-sortIcon>
+              </div>
+            </th>
+            <th pSortableColumn="nombre" style="width: 250px">
+              <div class="flex justify-content-between align-items-center">
+                <span class="header-text">
+                  <i class="pi pi-tag mr-2"></i>
+                  Nombre
+                </span>
+                <p-sortIcon field="nombre"></p-sortIcon>
+              </div>
+            </th>
+            <th pSortableColumn="descripcion">
+              <div class="flex justify-content-between align-items-center">
+                <span class="header-text">
+                  <i class="pi pi-file-edit mr-2"></i>
+                  Descripción
+                </span>
+              </div>
+            </th>
+            <th pSortableColumn="activo" style="width: 120px">
+              <div class="flex justify-content-between align-items-center">
+                <span class="header-text">
+                  <i class="pi pi-power-off mr-2"></i>
+                  Estado
+                </span>
+                <p-sortIcon field="activo"></p-sortIcon>
+              </div>
+            </th>
+            <th style="width: 120px">
+              <span class="header-text">
+                <i class="pi pi-cog mr-2"></i>
+                Acciones
+              </span>
+            </th>
+          </tr>
+        </ng-template>
+
+        <!-- Filas con mejor presentación -->
+        <ng-template pTemplate="body" let-tipoInsumo let-rowIndex="rowIndex">
+          <tr class="table-row" [attr.data-index]="rowIndex">
+            <td>
+              <div class="code-cell">
+                <strong class="code-badge">{{ tipoInsumo.codigo }}</strong>
+              </div>
+            </td>
+            <td>
+              <div class="name-cell">
+                <span class="name-text">{{ tipoInsumo.nombre }}</span>
+              </div>
+            </td>
+            <td>
+              <div class="description-cell">
+                <span class="description-text">
+                  {{ tipoInsumo.descripcion || "Sin descripción" }}
+                </span>
+              </div>
+            </td>
+            <td>
+              <div class="status-cell">
+                <p-tag
+                  [value]="getEstadoLabel(tipoInsumo.activo)"
+                  [severity]="getEstadoSeverity(tipoInsumo.activo)"
+                  class="status-tag"
+                ></p-tag>
+              </div>
+            </td>
+            <td>
+              <div class="action-buttons">
+                <p-button
+                  icon="pi pi-pencil"
+                  severity="info"
+                  size="small"
+                  (onClick)="editTipoInsumo(tipoInsumo)"
+                  pTooltip="Editar tipo de insumo"
+                  tooltipPosition="top"
+                  class="edit-button"
+                ></p-button>
+                <p-button
+                  icon="pi pi-trash"
+                  severity="danger"
+                  size="small"
+                  (onClick)="deleteTipoInsumo(tipoInsumo)"
+                  pTooltip="Eliminar tipo de insumo"
+                  tooltipPosition="top"
+                  class="delete-button"
+                ></p-button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <!-- Mensaje vacío mejorado -->
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="5" class="empty-message">
+              <div class="empty-state">
+                <i class="pi pi-inbox empty-icon"></i>
+                <h3>No hay tipos de insumos</h3>
+                <p>
+                  No se encontraron tipos de insumos que coincidan con tu
+                  búsqueda.
+                </p>
+                <p-button
+                  label="Crear el primero"
+                  icon="pi pi-plus"
+                  (onClick)="openNew()"
+                  class="mt-3"
+                ></p-button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <!-- Loading template -->
+        <ng-template pTemplate="loadingbody">
+          <tr>
+            <td colspan="5">
+              <div class="loading-state">
+                <i class="pi pi-spin pi-spinner loading-spinner"></i>
+                <span>Cargando tipos de insumos...</span>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+
+<!-- Dialog mejorado para Crear/Editar -->
+<p-dialog
+  [(visible)]="displayDialog"
+  [header]="isEditing ? 'Editar Tipo de Insumo' : 'Crear Nuevo Tipo de Insumo'"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="p-fluid modern-dialog"
+  [style]="{ width: '500px' }"
+>
+  <div class="form-container">
+    <form [formGroup]="tipoInsumoForm" (ngSubmit)="saveTipoInsumo()">
+      <!-- Campo Estado -->
+      <div class="field">
+        <label for="activo">
+          <i class="pi pi-power-off mr-2"></i>
+          Estado
+        </label>
+        <p-dropdown
+          id="activo"
+          formControlName="activo"
+          [options]="[
+            { label: '✓ Activo', value: 1 },
+            { label: '✗ Inactivo', value: 0 }
+          ]"
+          placeholder="Seleccione el estado"
+          [class.ng-invalid]="isFieldInvalid('activo')"
+          [class.ng-dirty]="tipoInsumoForm.get('activo')?.touched"
+          class="form-dropdown"
+        ></p-dropdown>
+        <small class="p-error" *ngIf="isFieldInvalid('activo')">
+          {{ getFieldError("activo") }}
+        </small>
+      </div>
+      <!-- Campo Código -->
+      <div class="field">
+        <label for="codigo">
+          <i class="pi pi-code mr-2"></i>
+          Código
+        </label>
+        <input
+          type="text"
+          pInputText
+          id="codigo"
+          formControlName="codigo"
+          placeholder="Ej: SEG, LIM, MAN..."
+          [class.ng-invalid]="isFieldInvalid('codigo')"
+          [class.ng-dirty]="tipoInsumoForm.get('codigo')?.touched"
+          class="form-input"
+        />
+        <small class="p-error" *ngIf="isFieldInvalid('codigo')">
+          {{ getFieldError("codigo") }}
+        </small>
+      </div>
+
+      <!-- Campo Nombre -->
+      <div class="field">
+        <label for="nombre">
+          <i class="pi pi-tag mr-2"></i>
+          Nombre
+        </label>
+        <input
+          type="text"
+          pInputText
+          id="nombre"
+          formControlName="nombre"
+          placeholder="Ej: Seguridad Industrial, Limpieza..."
+          [class.ng-invalid]="isFieldInvalid('nombre')"
+          [class.ng-dirty]="tipoInsumoForm.get('nombre')?.touched"
+          class="form-input"
+        />
+        <small class="p-error" *ngIf="isFieldInvalid('nombre')">
+          {{ getFieldError("nombre") }}
+        </small>
+      </div>
+
+      <!-- Campo Descripción -->
+      <div class="field">
+        <label for="descripcion" data-optional>
+          <i class="pi pi-file-edit mr-2"></i>
+          Descripción
+          <span class="optional-text">(opcional)</span>
+        </label>
+        <textarea
+          pInputTextarea
+          id="descripcion"
+          formControlName="descripcion"
+          placeholder="Describe brevemente este tipo de insumo..."
+          rows="3"
+          [class.ng-invalid]="isFieldInvalid('descripcion')"
+          [class.ng-dirty]="tipoInsumoForm.get('descripcion')?.touched"
+          class="form-textarea"
+        ></textarea>
+        <small class="p-error" *ngIf="isFieldInvalid('descripcion')">
+          {{ getFieldError("descripcion") }}
+        </small>
+      </div>
+    </form>
+  </div>
+
+  <!-- Footer del dialog -->
+  <ng-template pTemplate="footer">
+    <div class="dialog-footer">
+      <p-button
+        label="Cancelar"
+        icon="pi pi-times"
+        severity="secondary"
+        (onClick)="hideDialog()"
+        [disabled]="submitting"
+        class="cancel-button"
+      ></p-button>
+      <p-button
+        [label]="isEditing ? 'Actualizar' : 'Crear'"
+        [icon]="isEditing ? 'pi pi-check' : 'pi pi-plus'"
+        (onClick)="saveTipoInsumo()"
+        [loading]="submitting"
+        [disabled]="tipoInsumoForm.invalid"
+        class="save-button"
+      ></p-button>
+    </div>
+  </ng-template>
+</p-dialog>
+<p-toast></p-toast>
+<!-- Confirmation Dialog -->
+<p-confirmDialog styleClass="modern-confirm-dialog"></p-confirmDialog>

@@ -27,10 +27,7 @@ public class SuppliersEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "codigo", unique = true, length = 50)
-    private String codigo;
-
+    
     @Column(name = "nombre", nullable = false, length = 200)
     private String nombre;
 
@@ -48,6 +45,15 @@ public class SuppliersEntity {
 
     @Column(name = "activo")
     private Long activo;
+
+    @Column(name = "nit")
+    private String nit;
+
+    @Column(name = "observaciones")
+    private String observaciones;
+
+    @Column(name = "cargo")
+    private String cargo;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime created_at;

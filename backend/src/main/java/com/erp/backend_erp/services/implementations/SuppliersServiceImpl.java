@@ -3,11 +3,13 @@ package com.erp.backend_erp.services.implementations;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.erp.backend_erp.dto.suppliers.CreateSuppliersDto;
 import com.erp.backend_erp.dto.suppliers.SuppliersDto;
+import com.erp.backend_erp.dto.suppliers.SuppliersTableDto;
 import com.erp.backend_erp.dto.suppliers.UpdateSuppliersDto;
 import com.erp.backend_erp.entity.inventory.SuppliersEntity;
 import com.erp.backend_erp.mappers.suppliers.SuppliersMapper;
@@ -15,6 +17,7 @@ import com.erp.backend_erp.repositories.suppliers.SuppliersJPARepository;
 import com.erp.backend_erp.repositories.suppliers.SuppliersQueryRepository;
 import com.erp.backend_erp.services.SuppliersService;
 import com.erp.backend_erp.util.GlobalException;
+import com.erp.backend_erp.util.PageableDto;
 
 @Service
 public class SuppliersServiceImpl implements SuppliersService {
@@ -105,8 +108,8 @@ public class SuppliersServiceImpl implements SuppliersService {
         return entities.stream().map(suppliersMapper::toDto).toList();
     }
 
-    // @Override
-    // public PageImpl<SuppliersTableDto> getPage(PageableDto<Object> pageableDto) {
-    //     return suppliersQueryRepository.listSuppliers(pageableDto);
-    // }
+    @Override
+    public PageImpl<SuppliersTableDto> getPage(PageableDto<Object> pageableDto) {
+        return suppliersQueryRepository.listSuppliers(pageableDto);
+    }
 }
