@@ -10,6 +10,7 @@ import { EmployeesModel } from "src/app/modules/employees/domain/models/employee
 import { IFilterTable } from "src/app/shared/utils/models/filter-table";
 import { ResponseModel } from "src/app/shared/utils/models/responde.models";
 import { ResponseTableModel } from "src/app/shared/utils/models/response-table.model";
+import { EmployeeList } from "src/app/modules/employees/domain/models/employee-list.models";
 
 @Injectable({
     providedIn: 'root'
@@ -41,5 +42,9 @@ export class EmployeesService {
 
     getEmployeesById(id: number): Observable<ResponseModel<EmployeesModel>> {
         return this.http.get<ResponseModel<EmployeesModel>>(`${this.apiUrl}/${id}`);
+    }
+
+    getEmployees(): Observable<ResponseModel<EmployeeList[]>> {
+        return this.http.get<ResponseModel<EmployeeList[]>>(`${this.apiUrl}/list`);
     }
 }

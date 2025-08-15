@@ -9,6 +9,7 @@ public class InventoryTableDto {
     private Long id;
     private String nombre_insumo;
     private String unidad;
-    private Integer cantidad_total;
     private String descripcion;
+    private Long stock_actual;
+    private String estado_stock;
 }

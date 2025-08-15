@@ -1,0 +1,362 @@
+.inventory-movements {
+  padding: 1rem;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(2px);
+}
+
+.loading-content {
+  text-align: center;
+  border-radius: 16px !important;
+}
+
+.table-container {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.filter-section {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid #e2e8f0;
+}
+
+.filter-icon-container {
+  width: 32px;
+  height: 32px;
+  background: #dbeafe;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hover\:bg-blue-50:hover {
+  background-color: #eff6ff !important;
+  transition: background-color 0.2s ease;
+}
+
+.hover\:bg-orange-50:hover {
+  background-color: #fff7ed !important;
+  transition: background-color 0.2s ease;
+}
+
+.transition-colors {
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.modern-card {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+.info-section {
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.observation-badge {
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+/* PrimeNG Component Overrides */
+::ng-deep .modern-table .p-datatable .p-datatable-header {
+  background: #f8fafc;
+  border: none;
+  padding: 1rem;
+  border-radius: 16px 16px 0 0;
+}
+
+::ng-deep .modern-table .p-datatable .p-datatable-thead > tr > th {
+  background: #f1f5f9;
+  border: none;
+  padding: 1rem 0.75rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+::ng-deep .modern-table .p-datatable .p-datatable-tbody > tr {
+  transition: background-color 0.2s ease;
+}
+
+::ng-deep .modern-table .p-datatable .p-datatable-tbody > tr > td {
+  border: none;
+  padding: 1rem 0.75rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+::ng-deep .modern-tabs .p-tabview .p-tabview-nav {
+  background: #f8fafc;
+  border-radius: 12px 12px 0 0;
+  padding: 0.5rem;
+}
+
+::ng-deep .modern-tabs .p-tabview .p-tabview-nav li .p-tabview-nav-link {
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  margin: 0 0.25rem;
+}
+
+::ng-deep .modern-tabs .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+  background: white;
+  color: #3b82f6;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
+}
+
+::ng-deep .modern-dialog .p-dialog .p-dialog-header {
+  background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+  color: white;
+  padding: 1.5rem;
+  border-radius: 16px 16px 0 0;
+}
+
+::ng-deep .modern-dialog .p-dialog .p-dialog-content {
+  padding: 1.5rem;
+  border-radius: 0 0 16px 16px;
+}
+
+/* Button Styles */
+::ng-deep .rounded-button .p-button {
+  border-radius: 25px !important;
+  transition: all 0.2s ease;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+}
+
+::ng-deep .rounded-button .p-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+::ng-deep .rounded-button-outlined .p-button {
+  border-radius: 25px !important;
+  transition: all 0.2s ease;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border: 2px solid;
+}
+
+::ng-deep .action-button .p-button {
+  border-radius: 50% !important;
+  width: 2.5rem;
+  height: 2.5rem;
+  transition: all 0.2s ease;
+}
+
+::ng-deep .action-button .p-button:hover {
+  transform: scale(1.1);
+}
+
+::ng-deep .approval-button .p-button {
+  border-radius: 20px !important;
+  font-weight: 600;
+}
+
+::ng-deep .rejection-button .p-button {
+  border-radius: 20px !important;
+  font-weight: 600;
+}
+
+/* Tag Styles */
+::ng-deep .modern-tag .p-tag {
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 0.4rem 0.8rem;
+}
+
+/* Form Controls */
+::ng-deep .modern-dropdown .p-dropdown {
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+::ng-deep .modern-dropdown .p-dropdown:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+::ng-deep .modern-calendar .p-calendar {
+  border-radius: 12px;
+}
+
+::ng-deep .modern-calendar .p-inputtext {
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+::ng-deep .modern-input .p-inputtext {
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+::ng-deep .modern-input .p-inputtext:hover,
+::ng-deep .modern-calendar .p-inputtext:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+::ng-deep .modern-input .p-inputtext:focus,
+::ng-deep .modern-calendar .p-inputtext:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+::ng-deep .modern-textarea .p-inputtextarea {
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+::ng-deep .modern-textarea .p-inputtextarea:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+::ng-deep .modern-textarea .p-inputtextarea:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+::ng-deep .modern-checkbox {
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+::ng-deep .modern-checkbox .p-checkbox .p-checkbox-box {
+  border-radius: 6px;
+  border: 2px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+::ng-deep .modern-checkbox .p-checkbox .p-checkbox-box:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+::ng-deep .modern-checkbox .p-checkbox .p-checkbox-box.p-highlight {
+  background: #3b82f6;
+  border-color: #3b82f6;
+}
+
+/* Progress Spinner */
+::ng-deep .p-progressspinner .p-progressspinner-svg {
+  animation: p-progressspinner-rotate 2s linear infinite;
+}
+
+/* Toast */
+::ng-deep .p-toast .p-toast-message {
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+/* Utility Classes */
+.bg-white-alpha-20 {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.text-white-alpha-70 {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.bg-blue-50 {
+  background: #eff6ff;
+}
+
+.text-blue-600 {
+  color: #2563eb;
+}
+
+.text-blue-700 {
+  color: #1d4ed8;
+}
+
+.bg-green-50 {
+  background: #f0fdf4;
+}
+
+.text-green-600 {
+  color: #16a34a;
+}
+
+.text-green-700 {
+  color: #15803d;
+}
+
+.bg-purple-50 {
+  background: #faf5ff;
+}
+
+.text-purple-600 {
+  color: #9333ea;
+}
+
+.text-purple-700 {
+  color: #7c3aed;
+}
+
+.bg-orange-50 {
+  background: #fff7ed;
+}
+
+.text-orange-600 {
+  color: #ea580c;
+}
+
+.text-orange-700 {
+  color: #c2410c;
+}
+
+.bg-gray-100 {
+  background: #f3f4f6;
+}
+
+.text-600 {
+  color: #4b5563;
+}
+
+.text-900 {
+  color: #111827;
+}
+
+.shadow-3 {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.shadow-2 {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Dropdown Panel */
+::ng-deep .p-dropdown-panel {
+  z-index: 9999 !important;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.filter-section {
+  overflow: visible !important;
+}

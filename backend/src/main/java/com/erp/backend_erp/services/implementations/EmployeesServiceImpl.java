@@ -1,11 +1,14 @@
 package com.erp.backend_erp.services.implementations;
 
+import java.util.List;
+
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.erp.backend_erp.dto.employees.CreateEmployeesDto;
 import com.erp.backend_erp.dto.employees.EmployeesDto;
+import com.erp.backend_erp.dto.employees.EmployeesListDto;
 import com.erp.backend_erp.dto.employees.EmployeesTableDto;
 import com.erp.backend_erp.dto.employees.UpdateEmployeesDto;
 import com.erp.backend_erp.entity.employees.EmployeesEntity;
@@ -86,4 +89,11 @@ public class EmployeesServiceImpl implements EmployeesService {
         return employeesQueryRepository.pageEmployees(pageableDto);
     }
     
+    @Override
+    public List<EmployeesListDto> getEmployees(Long farmId) {
+        List<EmployeesListDto> employees = employeesQueryRepository.getInventory(farmId);
+        if(employees.isEmpty())
+            throw new GlobalException(HttpStatus.OK, "No se encontraron registros");
+        return employees;
+    }
 }

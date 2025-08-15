@@ -103,4 +103,13 @@ public class EmployeesController {
             throw ex;
         }
     }
+    @GetMapping("/list")
+    public ResponseEntity<ApiResponse<Object>> findAll(@RequestHeader("farmid") Long farmId) {
+        try {
+            ApiResponse<Object> response = new ApiResponse<>(HttpStatus.OK.value(), "", false, employeesService.getEmployees(farmId));
+            return ResponseEntity.ok(response);
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
 }
