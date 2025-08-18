@@ -40,6 +40,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     ]
 })
 export class IndexBirthsComponent {
+    globalFilter: string = '';
     public rowSize = 10
     public totalRecords = 0
     public loadingTable = true
@@ -48,14 +49,14 @@ export class IndexBirthsComponent {
     cols: ColsModel[] = [
         {
             field: 'numero_toro',
-            header: '# De Toro',
+            header: 'De Toro',
             type: 'string',
             nameClass: 'text-center',
             minWidth: 'min-width: 150px;',
         },
         {
             field: 'numero_ganado',
-            header: '# De Vaca',
+            header: 'De Vaca',
             type: 'string',
             nameClass: 'text-center',
             minWidth: 'min-width: 150px;',
@@ -149,4 +150,57 @@ export class IndexBirthsComponent {
             this.cols.push(columnAction)
         }
     }
+getColumnIcon(field: string): string {
+  const iconMap: { [key: string]: string } = {
+    'numero_toro': 'pi pi-hashtag',
+    'numero_ganado': 'pi pi-hashtag',
+    'numero_cria': 'pi pi-hashtag',
+    'color_cria': 'pi pi-tags',
+    'sexo': 'pi pi-venus-mars',
+    'fecha_nacimiento': 'pi pi-calendar',
+    'lote_ganado': 'pi pi-chart-line',
+    'peso_cria': 'pi pi-chart-line',
+    'observaciones': 'pi pi-comment',
+    'estado': 'pi pi-circle',
+    'activo': 'pi pi-power-off'
+  };
+  return iconMap[field] || 'pi pi-circle';
+}
+
+// Método para obtener etiqueta de estado
+getEstadoLabel(activo: number): string {
+  switch (activo) {
+    case 1:
+      return 'Activo';
+    case 2:
+      return 'Inactivo';
+    default:
+      return 'Desconocido';
+  }
+}
+
+// Método para obtener severidad de estado
+getEstadoSeverity(activo: number): string {
+  switch (activo) {
+    case 1:
+      return 'success';
+    case 2:
+      return 'danger';
+    default:
+      return 'info';
+  }
+}
+// Método para obtener campos de filtro global
+getFilterFields(): string[] {
+  return this.cols
+    .filter(col => col.field !== 'actions')
+    .map(col => col.field);
+}
+  filterGlobal(event: Event) {
+    this.loadTable({
+      first: 0,
+      rows: this.rowSize,
+      globalFilter: (event.target as HTMLInputElement)?.value ?? '',
+    })
+  }
 }

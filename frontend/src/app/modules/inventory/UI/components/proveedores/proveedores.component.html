@@ -1,37 +1,31 @@
 <div class="main-container">
-  <div class="card professional-card">
-    <!-- Header premium -->
-    <div class="card-header professional-header">
-      <div class="header-content">
-        <div class="header-left">
-          <i class="pi pi-building header-icon"></i>
-          <div class="header-info">
-            <h3 class="header-title">Gestión de Proveedores</h3>
-          </div>
-        </div>
-      </div>
+  <div class="card">
+    <!-- Header de la tarjeta -->
+    <div class="card-header">
+      <h4>Gestión de Proveedores</h4>
     </div>
 
-    <div class="card-content professional-content">
-      <!-- Toolbar premium -->
-      <div class="professional-toolbar">
+    <div class="card-content">
+      <!-- Toolbar mejorado -->
+      <div class="p-toolbar mb-4">
+        <div class="toolbar-left"></div>
         <div class="toolbar-right">
           <p-button
             severity="success"
             label="Nuevo Proveedor"
             icon="pi pi-plus"
             (onClick)="openNew()"
-            class="create-button premium-button"
+            class="create-button"
           ></p-button>
         </div>
       </div>
 
-      <!-- Tabla premium -->
+      <!-- Tabla con estilos mejorados -->
       <p-table
         #dt
         [value]="proveedores"
         [loading]="loading"
-        styleClass="p-datatable-gridlines professional-table"
+        styleClass="p-datatable-gridlines modern-table"
         [paginator]="true"
         [rows]="pageSize"
         [rowsPerPageOptions]="[10, 25, 50, 100]"
@@ -45,19 +39,19 @@
         selectionMode="single"
         [(selection)]="selectedProveedor"
       >
-        <!-- Búsqueda premium -->
+        <!-- Búsqueda mejorada -->
         <ng-template pTemplate="caption">
-          <div class="table-header professional-search">
-            <div class="search-section">
-              <span class="p-input-icon-left search-wrapper">
-                <i class="pi pi-search search-icon"></i>
+          <div class="table-header">
+            <div class="search-container">
+              <span class="p-input-icon-left">
+                <i class="pi pi-search"></i>
                 <input
                   pInputText
                   type="text"
                   [(ngModel)]="globalFilter"
-                  (input)="onGlobalFilter($event)"
+                  (input)="filterGlobal($event)"
                   placeholder="Buscar por NIT, nombre, contacto, email o teléfono..."
-                  class="search-input premium-input"
+                  class="search-input"
                 />
               </span>
               <p-button
@@ -73,7 +67,7 @@
           </div>
         </ng-template>
 
-        <!-- Headers premium -->
+        <!-- Headers con mejor diseño -->
         <ng-template pTemplate="header">
           <tr>
             <th pSortableColumn="nit" style="width: 130px">
@@ -137,18 +131,18 @@
           </tr>
         </ng-template>
 
-        <!-- Filas premium -->
+        <!-- Filas con mejor presentación -->
         <ng-template pTemplate="body" let-proveedor let-rowIndex="rowIndex">
-          <tr class="table-row professional-row" [attr.data-index]="rowIndex">
+          <tr class="table-row" [attr.data-index]="rowIndex">
             <td>
               <div class="nit-cell">
-                <strong class="nit-badge">{{ proveedor.nit }}</strong>
+                <strong class="code-badge">{{ proveedor.nit }}</strong>
               </div>
             </td>
             <td>
               <div class="company-cell">
                 <div class="company-info">
-                  <span class="company-name">{{ proveedor.nombre }}</span>
+                  <span class="name-text">{{ proveedor.nombre }}</span>
                   <small class="company-detail" *ngIf="proveedor.direccion">
                     <i class="pi pi-map-marker"></i> {{ proveedor.direccion }}
                   </small>
@@ -190,16 +184,15 @@
                 <p-tag
                   [value]="getEstadoLabel(proveedor.activo)"
                   [severity]="getEstadoSeverity(proveedor.activo)"
-                  [icon]="getEstadoIcon(proveedor.activo)"
-                  class="status-tag premium-tag"
+                  class="status-tag"
                 ></p-tag>
               </div>
             </td>
             <td>
-              <div class="action-buttons premium-actions">
+              <div class="action-buttons">
                 <p-button
                   icon="pi pi-pencil"
-                  severity="warning"
+                  severity="info"
                   size="small"
                   (onClick)="editProveedor(proveedor)"
                   pTooltip="Editar proveedor"
@@ -220,32 +213,32 @@
           </tr>
         </ng-template>
 
-        <!-- Mensaje vacío premium -->
+        <!-- Mensaje vacío mejorado -->
         <ng-template pTemplate="emptymessage">
           <tr>
             <td colspan="7" class="empty-message">
-              <div class="empty-state premium-empty">
+              <div class="empty-state">
                 <i class="pi pi-building empty-icon"></i>
                 <h3>No hay proveedores registrados</h3>
                 <p>
-                  Comienza agregando tu primer proveedor para gestionar tu red empresarial.
+                  No se encontraron proveedores que coincidan con tu búsqueda.
                 </p>
                 <p-button
-                  label="Registrar Proveedor"
+                  label="Crear el primero"
                   icon="pi pi-plus"
                   (onClick)="openNew()"
-                  class="mt-3 premium-button"
+                  class="mt-3"
                 ></p-button>
               </div>
             </td>
           </tr>
         </ng-template>
 
-        <!-- Loading premium -->
+        <!-- Loading template -->
         <ng-template pTemplate="loadingbody">
           <tr>
             <td colspan="7">
-              <div class="loading-state premium-loading">
+              <div class="loading-state">
                 <i class="pi pi-spin pi-spinner loading-spinner"></i>
                 <span>Cargando proveedores...</span>
               </div>
@@ -257,31 +250,45 @@
   </div>
 </div>
 
-<!-- Dialog premium para Crear/Editar -->
+<!-- Dialog mejorado para Crear/Editar -->
 <p-dialog
   [(visible)]="displayDialog"
-  [header]="isEditing ? 'Editar Proveedor' : 'Registrar Nuevo Proveedor'"
+  [header]="isEditing ? 'Editar Proveedor' : 'Crear Nuevo Proveedor'"
   [modal]="true"
   [closable]="true"
   [draggable]="false"
   [resizable]="false"
-  styleClass="p-fluid premium-dialog"
+  styleClass="p-fluid modern-dialog"
   [style]="{ width: '700px' }"
 >
-  <div class="form-container premium-form">
-<form [formGroup]="proveedorForm" (ngSubmit)="saveProveedor()" class="proveedor-form">
-  <!-- Información de la empresa -->
-  <div class="form-section">
-    <h4 class="section-title">
-      <i class="pi pi-building"></i>
-      <span>Información de la Empresa</span>
-    </h4>
-    
-    <div class="form-grid">
-      <div class="form-group">
-        <label for="nit" class="form-label required">
-          <i class="pi pi-id-card"></i>
-          <span>NIT</span>
+  <div class="form-container">
+    <form [formGroup]="proveedorForm" (ngSubmit)="saveProveedor()">
+      <!-- Campo Estado -->
+      <div class="field">
+        <label for="activo">
+          <i class="pi pi-power-off mr-2"></i>
+          Estado
+        </label>
+        <p-dropdown
+          id="activo"
+          formControlName="activo"
+          [options]="estadoOptions"
+          placeholder="Seleccione el estado"
+          [class.ng-invalid]="isFieldInvalid('activo')"
+          [class.ng-dirty]="proveedorForm.get('activo')?.touched"
+          class="form-dropdown"
+          [showClear]="true"
+        ></p-dropdown>
+        <small class="p-error" *ngIf="isFieldInvalid('activo')">
+          {{ getFieldError("activo") }}
+        </small>
+      </div>
+
+      <!-- Campo NIT -->
+      <div class="field">
+        <label for="nit">
+          <i class="pi pi-id-card mr-2"></i>
+          NIT
         </label>
         <input
           type="text"
@@ -289,41 +296,20 @@
           id="nit"
           formControlName="nit"
           placeholder="Ej: 123456789-0"
-          [class.is-invalid]="isFieldInvalid('nit')"
-          [class.is-valid]="proveedorForm.get('nit')?.valid && proveedorForm.get('nit')?.touched"
-          class="form-control"
+          [class.ng-invalid]="isFieldInvalid('nit')"
+          [class.ng-dirty]="proveedorForm.get('nit')?.touched"
+          class="form-input"
         />
-        <div class="error-message" *ngIf="isFieldInvalid('nit')">
-          <i class="pi pi-exclamation-triangle"></i>
-          <span>{{ getFieldError("nit") }}</span>
-        </div>
+        <small class="p-error" *ngIf="isFieldInvalid('nit')">
+          {{ getFieldError("nit") }}
+        </small>
       </div>
 
-      <div class="form-group">
-        <label for="activo" class="form-label required">
-          <i class="pi pi-power-off"></i>
-          <span>Estado</span>
-        </label>
-        <p-dropdown
-          id="activo"
-          formControlName="activo"
-          [options]="estadoOptions"
-          placeholder="Seleccione el estado"
-          [class.is-invalid]="isFieldInvalid('activo')"
-          [class.is-valid]="proveedorForm.get('activo')?.valid && proveedorForm.get('activo')?.touched"
-          class="form-control dropdown"
-          [showClear]="true"
-        ></p-dropdown>
-        <div class="error-message" *ngIf="isFieldInvalid('activo')">
-          <i class="pi pi-exclamation-triangle"></i>
-          <span>{{ getFieldError("activo") }}</span>
-        </div>
-      </div>
-
-      <div class="form-group full-width">
-        <label for="nombre" class="form-label required">
-          <i class="pi pi-building"></i>
-          <span>Razón Social / Nombre de la Empresa</span>
+      <!-- Campo Nombre -->
+      <div class="field">
+        <label for="nombre">
+          <i class="pi pi-building mr-2"></i>
+          Razón Social / Nombre de la Empresa
         </label>
         <input
           type="text"
@@ -331,20 +317,21 @@
           id="nombre"
           formControlName="nombre"
           placeholder="Ej: Corporación ABC S.A.S."
-          [class.is-invalid]="isFieldInvalid('nombre')"
-          [class.is-valid]="proveedorForm.get('nombre')?.valid && proveedorForm.get('nombre')?.touched"
-          class="form-control"
+          [class.ng-invalid]="isFieldInvalid('nombre')"
+          [class.ng-dirty]="proveedorForm.get('nombre')?.touched"
+          class="form-input"
         />
-        <div class="error-message" *ngIf="isFieldInvalid('nombre')">
-          <i class="pi pi-exclamation-triangle"></i>
-          <span>{{ getFieldError("nombre") }}</span>
-        </div>
+        <small class="p-error" *ngIf="isFieldInvalid('nombre')">
+          {{ getFieldError("nombre") }}
+        </small>
       </div>
 
-      <div class="form-group full-width">
-        <label for="direccion" class="form-label">
-          <i class="pi pi-map-marker"></i>
-          <span>Dirección</span>
+      <!-- Campo Dirección -->
+      <div class="field">
+        <label for="direccion" data-optional>
+          <i class="pi pi-map-marker mr-2"></i>
+          Dirección
+          <span class="optional-text">(opcional)</span>
         </label>
         <input
           type="text"
@@ -352,30 +339,20 @@
           id="direccion"
           formControlName="direccion"
           placeholder="Ej: Calle 123 #45-67, Bogotá, Colombia"
-          [class.is-invalid]="isFieldInvalid('direccion')"
-          [class.is-valid]="proveedorForm.get('direccion')?.valid && proveedorForm.get('direccion')?.touched"
-          class="form-control"
+          [class.ng-invalid]="isFieldInvalid('direccion')"
+          [class.ng-dirty]="proveedorForm.get('direccion')?.touched"
+          class="form-input"
         />
-        <div class="error-message" *ngIf="isFieldInvalid('direccion')">
-          <i class="pi pi-exclamation-triangle"></i>
-          <span>{{ getFieldError("direccion") }}</span>
-        </div>
+        <small class="p-error" *ngIf="isFieldInvalid('direccion')">
+          {{ getFieldError("direccion") }}
+        </small>
       </div>
-    </div>
-  </div>
 
-  <!-- Información de contacto -->
-  <div class="form-section">
-    <h4 class="section-title">
-      <i class="pi pi-users"></i>
-      <span>Información de Contacto</span>
-    </h4>
-    
-    <div class="form-grid">
-      <div class="form-group">
-        <label for="contacto" class="form-label required">
-          <i class="pi pi-user"></i>
-          <span>Nombre del Contacto</span>
+      <!-- Campo Contacto -->
+      <div class="field">
+        <label for="contacto">
+          <i class="pi pi-user mr-2"></i>
+          Nombre del Contacto
         </label>
         <input
           type="text"
@@ -383,20 +360,21 @@
           id="contacto"
           formControlName="contacto"
           placeholder="Ej: Juan Pérez"
-          [class.is-invalid]="isFieldInvalid('contacto')"
-          [class.is-valid]="proveedorForm.get('contacto')?.valid && proveedorForm.get('contacto')?.touched"
-          class="form-control"
+          [class.ng-invalid]="isFieldInvalid('contacto')"
+          [class.ng-dirty]="proveedorForm.get('contacto')?.touched"
+          class="form-input"
         />
-        <div class="error-message" *ngIf="isFieldInvalid('contacto')">
-          <i class="pi pi-exclamation-triangle"></i>
-          <span>{{ getFieldError("contacto") }}</span>
-        </div>
+        <small class="p-error" *ngIf="isFieldInvalid('contacto')">
+          {{ getFieldError("contacto") }}
+        </small>
       </div>
 
-      <div class="form-group">
-        <label for="cargo" class="form-label">
-          <i class="pi pi-briefcase"></i>
-          <span>Cargo</span>
+      <!-- Campo Cargo -->
+      <div class="field">
+        <label for="cargo" data-optional>
+          <i class="pi pi-briefcase mr-2"></i>
+          Cargo
+          <span class="optional-text">(opcional)</span>
         </label>
         <input
           type="text"
@@ -404,20 +382,21 @@
           id="cargo"
           formControlName="cargo"
           placeholder="Ej: Gerente de Ventas"
-          [class.is-invalid]="isFieldInvalid('cargo')"
-          [class.is-valid]="proveedorForm.get('cargo')?.valid && proveedorForm.get('cargo')?.touched"
-          class="form-control"
+          [class.ng-invalid]="isFieldInvalid('cargo')"
+          [class.ng-dirty]="proveedorForm.get('cargo')?.touched"
+          class="form-input"
         />
-        <div class="error-message" *ngIf="isFieldInvalid('cargo')">
-          <i class="pi pi-exclamation-triangle"></i>
-          <span>{{ getFieldError("cargo") }}</span>
-        </div>
+        <small class="p-error" *ngIf="isFieldInvalid('cargo')">
+          {{ getFieldError("cargo") }}
+        </small>
       </div>
 
-      <div class="form-group">
-        <label for="telefono" class="form-label">
-          <i class="pi pi-phone"></i>
-          <span>Teléfono</span>
+      <!-- Campo Teléfono -->
+      <div class="field">
+        <label for="telefono" data-optional>
+          <i class="pi pi-phone mr-2"></i>
+          Teléfono
+          <span class="optional-text">(opcional)</span>
         </label>
         <input
           type="tel"
@@ -425,20 +404,21 @@
           id="telefono"
           formControlName="telefono"
           placeholder="Ej: +57 301 234 5678"
-          [class.is-invalid]="isFieldInvalid('telefono')"
-          [class.is-valid]="proveedorForm.get('telefono')?.valid && proveedorForm.get('telefono')?.touched"
-          class="form-control"
+          [class.ng-invalid]="isFieldInvalid('telefono')"
+          [class.ng-dirty]="proveedorForm.get('telefono')?.touched"
+          class="form-input"
         />
-        <div class="error-message" *ngIf="isFieldInvalid('telefono')">
-          <i class="pi pi-exclamation-triangle"></i>
-          <span>{{ getFieldError("telefono") }}</span>
-        </div>
+        <small class="p-error" *ngIf="isFieldInvalid('telefono')">
+          {{ getFieldError("telefono") }}
+        </small>
       </div>
 
-      <div class="form-group">
-        <label for="email" class="form-label">
-          <i class="pi pi-envelope"></i>
-          <span>Email</span>
+      <!-- Campo Email -->
+      <div class="field">
+        <label for="email" data-optional>
+          <i class="pi pi-envelope mr-2"></i>
+          Email
+          <span class="optional-text">(opcional)</span>
         </label>
         <input
           type="email"
@@ -446,54 +426,43 @@
           id="email"
           formControlName="email"
           placeholder="Ej: contacto@empresa.com"
-          [class.is-invalid]="isFieldInvalid('email')"
-          [class.is-valid]="proveedorForm.get('email')?.valid && proveedorForm.get('email')?.touched"
-          class="form-control"
+          [class.ng-invalid]="isFieldInvalid('email')"
+          [class.ng-dirty]="proveedorForm.get('email')?.touched"
+          class="form-input"
         />
-        <div class="error-message" *ngIf="isFieldInvalid('email')">
-          <i class="pi pi-exclamation-triangle"></i>
-          <span>{{ getFieldError("email") }}</span>
-        </div>
+        <small class="p-error" *ngIf="isFieldInvalid('email')">
+          {{ getFieldError("email") }}
+        </small>
       </div>
-    </div>
-  </div>
 
-  <!-- Observaciones -->
-  <div class="form-section">
-    <h4 class="section-title">
-      <i class="pi pi-file-edit"></i>
-      <span>Observaciones</span>
-    </h4>
-    
-    <div class="form-group full-width">
-      <label for="observaciones" class="form-label optional">
-        <i class="pi pi-comment"></i>
-        <span>Información adicional</span>
-        <small class="optional-badge">Opcional</small>
-      </label>
-      <textarea
-        pInputTextarea
-        id="observaciones"
-        formControlName="observaciones"
-        placeholder="Escriba cualquier información adicional sobre el proveedor..."
-        rows="4"
-        [class.is-invalid]="isFieldInvalid('observaciones')"
-        [class.is-valid]="proveedorForm.get('observaciones')?.valid && proveedorForm.get('observaciones')?.touched"
-        class="form-control textarea"
-        [autoResize]="true"
-      ></textarea>
-      <div class="error-message" *ngIf="isFieldInvalid('observaciones')">
-        <i class="pi pi-exclamation-triangle"></i>
-        <span>{{ getFieldError("observaciones") }}</span>
+      <!-- Campo Observaciones -->
+      <div class="field">
+        <label for="observaciones" data-optional>
+          <i class="pi pi-comment mr-2"></i>
+          Observaciones
+          <span class="optional-text">(opcional)</span>
+        </label>
+        <textarea
+          pInputTextarea
+          id="observaciones"
+          formControlName="observaciones"
+          placeholder="Escriba cualquier información adicional sobre el proveedor..."
+          rows="3"
+          [class.ng-invalid]="isFieldInvalid('observaciones')"
+          [class.ng-dirty]="proveedorForm.get('observaciones')?.touched"
+          class="form-textarea"
+          [autoResize]="true"
+        ></textarea>
+        <small class="p-error" *ngIf="isFieldInvalid('observaciones')">
+          {{ getFieldError("observaciones") }}
+        </small>
       </div>
-    </div>
-  </div>
-</form>
+    </form>
   </div>
 
   <!-- Footer del dialog -->
   <ng-template pTemplate="footer">
-    <div class="dialog-footer premium-footer">
+    <div class="dialog-footer">
       <p-button
         label="Cancelar"
         icon="pi pi-times"
@@ -503,12 +472,12 @@
         class="cancel-button"
       ></p-button>
       <p-button
-        [label]="isEditing ? 'Actualizar Proveedor' : 'Registrar Proveedor'"
+        [label]="isEditing ? 'Actualizar' : 'Crear'"
         [icon]="isEditing ? 'pi pi-check' : 'pi pi-plus'"
         (onClick)="saveProveedor()"
         [loading]="submitting"
         [disabled]="proveedorForm.invalid"
-        class="save-button premium-button"
+        class="save-button"
       ></p-button>
     </div>
   </ng-template>
@@ -522,7 +491,7 @@
   [closable]="true"
   [draggable]="false"
   [resizable]="false"
-  styleClass="premium-view-dialog"
+  styleClass="modern-view-dialog"
   [style]="{ width: '600px' }"
 >
   <div class="provider-details" *ngIf="selectedProveedor">
@@ -546,7 +515,6 @@
           <p-tag
             [value]="getEstadoLabel(selectedProveedor.activo)"
             [severity]="getEstadoSeverity(selectedProveedor.activo)"
-            [icon]="getEstadoIcon(selectedProveedor.activo)"
           ></p-tag>
         </div>
       </div>
@@ -599,4 +567,4 @@
 </p-dialog>
 
 <p-toast></p-toast>
-<p-confirmDialog styleClass="premium-confirm-dialog"></p-confirmDialog>
+<p-confirmDialog styleClass="modern-confirm-dialog"></p-confirmDialog>

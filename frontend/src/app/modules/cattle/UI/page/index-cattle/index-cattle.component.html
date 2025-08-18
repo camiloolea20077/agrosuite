@@ -1,195 +1,184 @@
-<p-toast position="top-right"></p-toast>
+<!-- Tabla de Ganado con estilos de Proveedores -->
+<div class="main-container">
+  <div class="card">
+    <!-- Header de la tarjeta -->
+    <div class="card-header">
+      <h4>Gestión de Ganado</h4>
+    </div>
 
-<!-- Contenedor principal con mejor espaciado y sombra -->
-<div class="card shadow-3 border-round-lg overflow-hidden">
-    <!-- Header mejorado con gradiente y mejor tipografía -->
-    <div class="surface-0 p-4 border-bottom-1 surface-border">
-        <div class="flex flex-wrap align-items-center justify-content-between gap-3">
-            <div class="flex align-items-center gap-3">
-                <i class="pi pi-list text-3xl text-primary"></i>
-                <div>
-                    <h1 class="text-2xl font-bold text-900 m-0 line-height-3">Gestión de Ganado</h1>
-                </div>
-            </div>
-            <div class="flex gap-2">
-                <button pButton 
-                    class="p-button-success p-button-raised border-round-lg px-4 py-2 font-semibold"
-                    type="button"
-                    icon="pi pi-plus-circle" 
-                    label="Agregar Ganado" 
-                    routerLink="create">
-                </button>
-            </div>
+    <div class="card-content">
+      <!-- Toolbar mejorado -->
+      <div class="p-toolbar mb-4">
+        <div class="toolbar-left"></div>
+        <div class="toolbar-right">
+          <p-button
+            severity="success"
+            label="Agregar Ganado"
+            icon="pi pi-plus"
+            routerLink="create"
+            class="create-button"
+          ></p-button>
         </div>
-    </div>
+      </div>
 
-    <!-- Contenido de la tabla -->
-    <div class="p-4">
-        <p-table #dt 
-            [value]="cattles" 
-            [lazy]="true" 
-            responsiveLayout="scroll" 
-            dataKey="id" 
-            [loading]="loadingTable"
-            [rows]="rowSize" 
-            [totalRecords]="totalRecords" 
-            [paginator]="true" 
-            (onLazyLoad)="loadTable($event)"
-            [rowsPerPageOptions]="[10, 25, 50, 100]" 
-            [showCurrentPageReport]="true"
-            currentPageReportTemplate="Mostrando {first} - {last} de {totalRecords} registros"
-            styleClass="p-datatable-striped p-datatable-gridlines"
-            [tableStyle]="{'min-width': '50rem'}"
-            [scrollable]="true"
-            scrollHeight="600px">
-            
-            <!-- Caption mejorado con mejor buscador -->
-            <ng-template pTemplate="caption">
-                <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center gap-3 mb-3 p-3 surface-50 border-round-lg">
-                    <div class="flex align-items-center gap-2">
-                        <i class="pi pi-filter text-primary"></i>
-                        <span class="font-semibold text-900">Filtros y Búsqueda</span>
-                    </div>
-                    <div class="flex gap-2">
-                        <span class="p-input-icon-left">
-                            <i class="pi pi-search"></i>
-                            <input pInputText 
-                                type="text" 
-                                class="w-full md:w-20rem"
-                                (input)="dt.filterGlobal($any($event.target).value, 'contains')" 
-                                placeholder="Buscar en todos los campos..." />
-                        </span>
-                    </div>
+      <!-- Tabla con estilos mejorados -->
+      <p-table
+        #dt
+        [value]="cattles"
+        [loading]="loadingTable"
+        styleClass="p-datatable-gridlines modern-table"
+        [paginator]="true"
+        [rows]="rowSize"
+        [rowsPerPageOptions]="[10, 25, 50, 100]"
+        [globalFilterFields]="getFilterFields()"
+        responsiveLayout="scroll"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+        [totalRecords]="totalRecords"
+        [lazy]="true"
+        (onLazyLoad)="loadTable($event)"
+        selectionMode="single"
+        [(selection)]="selectedCattle"
+        [tableStyle]="{'min-width': '50rem'}"
+        [scrollable]="true"
+        scrollHeight="600px"
+      >
+        <!-- Búsqueda mejorada -->
+        <ng-template pTemplate="caption">
+          <div class="table-header">
+            <div class="search-container">
+              <span class="p-input-icon-left">
+                <i class="pi pi-search"></i>
+                <input
+                  pInputText
+                  type="text"
+                  [(ngModel)]="globalFilter"
+                  (input)="filterGlobal($event)"
+                  placeholder="Buscar en todos los campos..."
+                  class="search-input"
+                />
+              </span>
+            </div>
+          </div>
+        </ng-template>
+
+        <!-- Headers con mejor diseño -->
+        <ng-template pTemplate="header">
+          <tr>
+            <ng-container *ngFor="let col of cols">
+              <th *ngIf="col.field !== 'actions'" 
+                  [pSortableColumn]="col.field"
+                  [style]="col.minWidth"
+                  [class]="col.nameClass">
+                <div class="flex justify-content-between align-items-center">
+                  <span class="header-text">
+                    <i [class]="getColumnIcon(col.field)" class="mr-2"></i>
+                    {{ col.header }}
+                  </span>
+                  <p-sortIcon [field]="col.field"></p-sortIcon>
                 </div>
-            </ng-template>
-            
-            <!-- Header mejorado -->
-            <ng-template pTemplate="header">
-                <tr>
-                    <ng-container *ngFor="let col of cols">
-                        <th *ngIf="col.field != 'actions'" 
-                            [class]="col.nameClass + ' text-center'"
-                            [style]="col.minWidth" 
-                            pSortableColumn="{{ col.field }}"
-                            class="surface-100 text-900 font-bold p-3 text-sm uppercase letter-spacing-1 border-bottom-2 border-primary">
-                            <div class="flex align-items-center justify-content-center gap-2">
-                                <span> {{ col.header }}</span>
-                                <p-sortIcon field="{{ col.field }}"></p-sortIcon>
-                            </div>
-                        </th>
-                        <th *ngIf="col.field == 'actions'" 
-                            [class]="col.nameClass + ' text-center'"
-                            class="surface-100 text-900 font-bold p-3 text-sm uppercase letter-spacing-1 border-bottom-2 border-primary">
-                            <div class="flex align-items-center justify-content-center">
-                                <i class="pi pi-cog mr-2"></i>
-                                <span>{{ col.header }}</span>
-                            </div>
-                        </th>
-                    </ng-container>
-                </tr>
-            </ng-template>
-            
-            <!-- Body mejorado -->
-            <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
-                <tr class="hover:surface-hover transition-colors transition-duration-150">
-                    <td *ngFor="let col of cols" 
-                        [class]="col.nameClass + ' p-3 text-center border-bottom-1 surface-border'"
-                        [ngClass]="{'surface-50': rowIndex % 2 === 0}">
-                        
-                        <!-- Estado con badges mejorados -->
-                        <span *ngIf="col.type == 'icon'" class="flex justify-content-center">
-                            <p-tag *ngIf="item.activo == 1" 
-                                value="Activo" 
-                                severity="success" 
-                                icon="pi pi-check-circle"
-                                class="font-semibold">
-                            </p-tag>
-                            <p-tag *ngIf="item.activo == 2" 
-                                value="Inactivo" 
-                                severity="danger" 
-                                icon="pi pi-times-circle"
-                                class="font-semibold">
-                            </p-tag>
-                        </span>
-                        
-                        <!-- Números con formato -->
-                        <span *ngIf="col.type == 'number'" class="font-medium text-900">
-                            {{ item[col.field] | number:'1.0-0' }}
-                        </span>
-                        
-                        <!-- Strings con mejor formato -->
-                        <span *ngIf="col.type === 'string'" class="font-medium text-900">
-                            {{ item[col.field] | titlecase }}
-                        </span>
-                        
-                        <!-- Acciones mejoradas -->
-                        <ng-container *ngIf="col.field == 'actions'">
-                            <div class="flex justify-content-center gap-2">
-                                <button pButton 
-                                    type="button" 
-                                    icon="pi pi-pencil"
-                                    class="p-button-rounded p-button-outlined p-button-warning p-button-sm"
-                                    pTooltip="Editar registro"
-                                    tooltipPosition="top"
-                                    [routerLink]="'edit/' + item.id">
-                                </button>
-                                <button pButton 
-                                    type="button" 
-                                    icon="pi pi-trash"
-                                    class="p-button-rounded p-button-outlined p-button-danger p-button-sm"
-                                    pTooltip="Eliminar registro"
-                                    tooltipPosition="top"
-                                    (click)="deleteCattle(item.id)">
-                                </button>
-                            </div>
-                        </ng-container>
-                    </td>
-                </tr>
-            </ng-template>
-            
-            <!-- Empty message mejorado -->
-            <ng-template pTemplate="emptymessage">
-                <tr>
-                    <td [attr.colspan]="cols.length" class="text-center p-6">
-                        <div class="flex flex-column align-items-center gap-3 py-4">
-                            <i class="pi pi-inbox text-6xl text-400"></i>
-                            <h3 class="text-900 font-bold">No hay registros disponibles</h3>
-                            <p class="text-600 m-0">No se encontraron registros de ganado que coincidan con los criterios de búsqueda.</p>
-                            <button pButton 
-                                class="p-button-outlined mt-3"
-                                icon="pi pi-plus" 
-                                label="Agregar primer registro"
-                                routerLink="create">
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            </ng-template>
-            
-            <!-- Loading template mejorado -->
-            <ng-template pTemplate="loadingbody">
-                <tr>
-                    <td [attr.colspan]="cols.length" class="text-center p-6">
-                        <div class="flex flex-column align-items-center gap-3">
-                            <p-progressSpinner strokeWidth="3" animationDuration="1s"></p-progressSpinner>
-                            <span class="text-600">Cargando datos...</span>
-                        </div>
-                    </td>
-                </tr>
-            </ng-template>
-        </p-table>
+              </th>
+              <th *ngIf="col.field === 'actions'" 
+                  [class]="col.nameClass"
+                  [style]="col.minWidth">
+                <span class="header-text">
+                  <i class="pi pi-cog mr-2"></i>
+                  {{ col.header }}
+                </span>
+              </th>
+            </ng-container>
+          </tr>
+        </ng-template>
+
+        <!-- Filas con mejor presentación -->
+        <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+          <tr class="table-row" [attr.data-index]="rowIndex">
+            <td *ngFor="let col of cols" 
+                [class]="col.nameClass + ' table-cell'"
+                [attr.data-field]="col.field">
+              
+              <!-- Campo de estado con tags mejorados -->
+              <div *ngIf="col.type === 'icon'" class="status-cell">
+                <p-tag
+                  [value]="getEstadoLabel(item.activo)"
+                  [severity]="getEstadoSeverity(item.activo)"
+                  class="status-tag"
+                ></p-tag>
+              </div>
+              
+              <!-- Campo numérico -->
+              <div *ngIf="col.type === 'number'" class="number-cell">
+                <span class="number-value">{{ item[col.field] | number:'1.0-0' }}</span>
+              </div>
+              
+              <!-- Campo de texto -->
+              <div *ngIf="col.type === 'string'" class="text-cell">
+                <div class="text-info">
+                  <span class="text-value">{{ item[col.field] | titlecase }}</span>
+                </div>
+              </div>
+              
+              <!-- Acciones -->
+              <div *ngIf="col.field === 'actions'" class="action-buttons">
+                <p-button
+                  icon="pi pi-pencil"
+                  severity="info"
+                  size="small"
+                  [routerLink]="'edit/' + item.id"
+                  pTooltip="Editar registro"
+                  tooltipPosition="top"
+                  class="edit-button"
+                ></p-button>
+                <p-button
+                  icon="pi pi-trash"
+                  severity="danger"
+                  size="small"
+                  (onClick)="deleteCattle(item.id)"
+                  pTooltip="Eliminar registro"
+                  tooltipPosition="top"
+                  class="delete-button"
+                ></p-button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <!-- Mensaje vacío mejorado -->
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td [attr.colspan]="cols.length" class="empty-message">
+              <div class="empty-state">
+                <i class="pi pi-inbox empty-icon"></i>
+                <h3>No hay ganado registrado</h3>
+                <p>
+                  No se encontraron registros que coincidan con tu búsqueda.
+                </p>
+                <p-button
+                  label="Agregar el primero"
+                  icon="pi pi-plus"
+                  routerLink="create"
+                  class="mt-3"
+                ></p-button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <!-- Loading template -->
+        <ng-template pTemplate="loadingbody">
+          <tr>
+            <td [attr.colspan]="cols.length">
+              <div class="loading-state">
+                <i class="pi pi-spin pi-spinner loading-spinner"></i>
+                <span>Cargando ganado...</span>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
     </div>
+  </div>
 </div>
 
-<!-- Dialog de confirmación mejorado -->
-<p-confirmDialog
-    [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
-    [style]="{ width: '35vw', 'min-width': '300px' }"
-    [baseZIndex]="10000"
-    rejectButtonStyleClass="p-button-outlined p-button-danger"
-    acceptButtonStyleClass="p-button-danger"
-    header="Confirmar eliminación"
-    icon="pi pi-exclamation-triangle"
-    acceptLabel="Eliminar"
-    rejectLabel="Cancelar">
-</p-confirmDialog>
+<p-toast></p-toast>
+<p-confirmDialog styleClass="modern-confirm-dialog"></p-confirmDialog>

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import com.erp.backend_erp.dto.births.BirthsTableDto;
 import com.erp.backend_erp.dto.births.DashboardBirthDto;
+import com.erp.backend_erp.dto.births.DesteteTableDto;
 import com.erp.backend_erp.util.MapperRepository;
 import com.erp.backend_erp.util.PageableDto;
 
@@ -153,5 +154,52 @@ public class BirthsQueryRepository {
         params.addValue("id", birthId);
         namedParameterJdbcTemplate.update(sql, params);
     }
+    public List<DesteteTableDto> listDesteteDashboard(Long farmId) {
+        String sql = """
+            SELECT id,
+                numero_cria,
+                fecha_nacimiento::date,
+                (fecha_nacimiento::date + INTERVAL '8 months')::date AS fecha_proxima_destete,
+                (fecha_nacimiento::date + INTERVAL '8 months') - CURRENT_DATE AS dias_restante
+            FROM births
+            WHERE deleted_at IS NULL
+            AND farm_id = :farmId
+            ORDER BY fecha_proxima_destete
+            LIMIT 10;
+        """;
 
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("farmId", farmId);
+
+        return namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> {
+            DesteteTableDto dto = new DesteteTableDto();
+            dto.setId(rs.getLong("id"));
+            dto.setNumero_cria(rs.getString("numero_cria"));
+            dto.setFecha_nacimiento(rs.getDate("fecha_nacimiento").toLocalDate());
+            dto.setFecha_proxima_destete(rs.getDate("fecha_proxima_destete").toLocalDate());
+            
+            // Extraer días del interval de PostgreSQL
+            String intervalStr = rs.getString("dias_restante");
+            Long dias = extractDaysFromPostgreSQLInterval(intervalStr);
+            dto.setDias_restantes(dias);
+            
+            return dto;
+        });
+    }
+
+    private Long extractDaysFromPostgreSQLInterval(String interval) {
+        if (interval == null || interval.isEmpty()) {
+            return 0L;
+        }
+        
+        // Buscar patrón "X days" en el string
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("(\\d+)\\s+days");
+        java.util.regex.Matcher matcher = pattern.matcher(interval);
+        
+        if (matcher.find()) {
+            return Long.parseLong(matcher.group(1));
+        }
+        
+        return 0L;
+    }
 }

@@ -39,7 +39,7 @@ import { ToastModule } from 'primeng/toast';
   providers: [ConfirmationService, MessageService]
 })
 export class TiposInsumosComponent implements OnInit {
-  
+  public rowSize = 10
   tiposInsumos: TipoInsumo[] = [];
   displayDialog = false;
   displayDeleteDialog = false;

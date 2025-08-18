@@ -376,3 +376,31 @@
     margin-bottom: 0.5rem;
   }
 }
+/* Destete Section */
+.destete-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e9ecef;
+}
+
+.destete-header {
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 1rem;
+}
+
+.destete-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.destete-subtitle {
+  color: #6c757d;
+  font-size: 0.875rem;
+}
+
+.destete-table {
+  margin-top: 1rem;
+}

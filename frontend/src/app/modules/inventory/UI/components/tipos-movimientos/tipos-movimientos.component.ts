@@ -15,6 +15,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { TooltipModule } from 'primeng/tooltip';
 import { ToolbarModule } from 'primeng/toolbar';
 import { ToastModule } from 'primeng/toast';
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 @Component({
   selector: 'app-tipos-movimientos',
@@ -34,7 +35,8 @@ import { ToastModule } from 'primeng/toast';
     TagModule,
     ConfirmDialogModule,
     TooltipModule,
-    ToastModule
+    ToastModule,
+    InputSwitchModule 
   ],
   providers: [ConfirmationService, MessageService]
 })
@@ -66,6 +68,10 @@ export class TiposMovimientosComponent implements OnInit {
     this.tipoMovimientoForm = this.fb.group({
       codigo: ['', [Validators.required, Validators.maxLength(20)]],
       nombre: ['', [Validators.required, Validators.maxLength(100)]],
+      esEntrada: [false, Validators.required],
+      esSalida: [false, Validators.required],
+      requiereEmpleado: [false, Validators.required],
+      requiereAprobacion: [false, Validators.required],
       descripcion: ['', Validators.maxLength(500)],
       activo: [1, Validators.required]
     });

@@ -178,4 +178,78 @@ export class IndexCattleComponent {
             },
         });
     }
+// Métodos adicionales para el componente de ganado
+
+// Variables adicionales que necesitarás
+globalFilter: string = '';
+selectedCattle: any = null;
+
+// Método para obtener campos de filtro global
+getFilterFields(): string[] {
+  return this.cols
+    .filter(col => col.field !== 'actions')
+    .map(col => col.field);
+}
+
+// Método para manejar filtro global
+onGlobalFilter(event: any): void {
+  this.globalFilter = event.target.value;
+  // Aquí puedes implementar la lógica de filtrado
+  // Si usas lazy loading, podrías disparar una nueva búsqueda
+}
+
+// Método para limpiar filtros
+clearFilter(): void {
+  this.globalFilter = '';
+  // Recargar la tabla sin filtros
+  this.loadTable({ first: 0, rows: this.rowSize });
+}
+
+// Método para obtener íconos de columnas
+getColumnIcon(field: string): string {
+  const iconMap: { [key: string]: string } = {
+    'tipo_ganado': 'pi pi-hashtag',
+    'numero_ganado': 'pi pi-user',
+    'color': 'pi pi-tags',
+    'sexo': 'pi pi-venus-mars',
+    'fecha_nacimiento': 'pi pi-calendar',
+    'lote_ganado': 'pi pi-chart-line',
+    'peso': 'pi pi-chart-line',
+    'observaciones': 'pi pi-comment',
+    'estado': 'pi pi-circle',
+    'activo': 'pi pi-power-off'
+  };
+  return iconMap[field] || 'pi pi-circle';
+}
+
+// Método para obtener etiqueta de estado
+getEstadoLabel(activo: number): string {
+  switch (activo) {
+    case 1:
+      return 'Activo';
+    case 2:
+      return 'Inactivo';
+    default:
+      return 'Desconocido';
+  }
+}
+
+// Método para obtener severidad de estado
+getEstadoSeverity(activo: number): string {
+  switch (activo) {
+    case 1:
+      return 'success';
+    case 2:
+      return 'danger';
+    default:
+      return 'info';
+  }
+}
+  filterGlobal(event: Event) {
+    this.loadTable({
+      first: 0,
+      rows: this.rowSize,
+      globalFilter: (event.target as HTMLInputElement)?.value ?? '',
+    })
+  }
 }

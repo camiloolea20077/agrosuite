@@ -202,95 +202,202 @@
   [draggable]="false"
   [resizable]="false"
   styleClass="p-fluid modern-dialog"
-  [style]="{ width: '500px' }"
+  [style]="{ width: '600px' }"
 >
   <div class="form-container">
     <form [formGroup]="tipoMovimientoForm" (ngSubmit)="saveTipoMovimiento()">
-      <!-- Campo Estado -->
-      <div class="field">
-        <label for="activo">
-          <i class="pi pi-power-off mr-2"></i>
-          Estado
-        </label>
-        <p-dropdown
-          id="activo"
-          formControlName="activo"
-          [options]="[
-            { label: '✓ Activo', value: 1 },
-            { label: '✗ Inactivo', value: 0 }
-          ]"
-          placeholder="Seleccione el estado"
-          [class.ng-invalid]="isFieldInvalid('activo')"
-          [class.ng-dirty]="tipoMovimientoForm.get('activo')?.touched"
-          class="form-dropdown"
-        ></p-dropdown>
-        <small class="p-error" *ngIf="isFieldInvalid('activo')">
-          {{ getFieldError("activo") }}
-        </small>
-      </div>
       
-      <!-- Campo Código -->
-      <div class="field">
-        <label for="codigo">
-          <i class="pi pi-code mr-2"></i>
-          Código
-        </label>
-        <input
-          type="text"
-          pInputText
-          id="codigo"
-          formControlName="codigo"
-          placeholder="Ej: ENT, SAL, TRA..."
-          [class.ng-invalid]="isFieldInvalid('codigo')"
-          [class.ng-dirty]="tipoMovimientoForm.get('codigo')?.touched"
-          class="form-input"
-        />
-        <small class="p-error" *ngIf="isFieldInvalid('codigo')">
-          {{ getFieldError("codigo") }}
-        </small>
+      <!-- Sección Información Básica -->
+      <div class="form-section">
+        <h5 class="section-title">
+          <i class="pi pi-info-circle mr-2"></i>
+          Información Básica
+        </h5>
+        
+        <!-- Campo Estado -->
+        <div class="field">
+          <label for="activo">
+            <i class="pi pi-power-off mr-2"></i>
+            Estado
+          </label>
+          <p-dropdown
+            id="activo"
+            formControlName="activo"
+            [options]="[
+              { label: '✓ Activo', value: 1 },
+              { label: '✗ Inactivo', value: 0 }
+            ]"
+            placeholder="Seleccione el estado"
+            [class.ng-invalid]="isFieldInvalid('activo')"
+            [class.ng-dirty]="tipoMovimientoForm.get('activo')?.touched"
+            class="form-dropdown"
+          ></p-dropdown>
+          <small class="p-error" *ngIf="isFieldInvalid('activo')">
+            {{ getFieldError("activo") }}
+          </small>
+        </div>
+        
+        <!-- Campo Código -->
+        <div class="field">
+          <label for="codigo">
+            <i class="pi pi-code mr-2"></i>
+            Código
+          </label>
+          <input
+            type="text"
+            pInputText
+            id="codigo"
+            formControlName="codigo"
+            placeholder="Ej: ENT, SAL, TRA..."
+            [class.ng-invalid]="isFieldInvalid('codigo')"
+            [class.ng-dirty]="tipoMovimientoForm.get('codigo')?.touched"
+            class="form-input"
+          />
+          <small class="p-error" *ngIf="isFieldInvalid('codigo')">
+            {{ getFieldError("codigo") }}
+          </small>
+        </div>
+
+        <!-- Campo Nombre -->
+        <div class="field">
+          <label for="nombre">
+            <i class="pi pi-arrow-right-arrow-left mr-2"></i>
+            Nombre
+          </label>
+          <input
+            type="text"
+            pInputText
+            id="nombre"
+            formControlName="nombre"
+            placeholder="Ej: Entrada, Salida, Transferencia..."
+            [class.ng-invalid]="isFieldInvalid('nombre')"
+            [class.ng-dirty]="tipoMovimientoForm.get('nombre')?.touched"
+            class="form-input"
+          />
+          <small class="p-error" *ngIf="isFieldInvalid('nombre')">
+            {{ getFieldError("nombre") }}
+          </small>
+        </div>
+
+        <!-- Campo Descripción -->
+        <div class="field">
+          <label for="descripcion" data-optional>
+            <i class="pi pi-file-edit mr-2"></i>
+            Descripción
+            <span class="optional-text">(opcional)</span>
+          </label>
+          <textarea
+            pInputTextarea
+            id="descripcion"
+            formControlName="descripcion"
+            placeholder="Describe brevemente este tipo de movimiento..."
+            rows="3"
+            [class.ng-invalid]="isFieldInvalid('descripcion')"
+            [class.ng-dirty]="tipoMovimientoForm.get('descripcion')?.touched"
+            class="form-textarea"
+          ></textarea>
+          <small class="p-error" *ngIf="isFieldInvalid('descripcion')">
+            {{ getFieldError("descripcion") }}
+          </small>
+        </div>
       </div>
 
-      <!-- Campo Nombre -->
-      <div class="field">
-        <label for="nombre">
-          <i class="pi pi-arrow-right-arrow-left mr-2"></i>
-          Nombre
-        </label>
-        <input
-          type="text"
-          pInputText
-          id="nombre"
-          formControlName="nombre"
-          placeholder="Ej: Entrada, Salida, Transferencia..."
-          [class.ng-invalid]="isFieldInvalid('nombre')"
-          [class.ng-dirty]="tipoMovimientoForm.get('nombre')?.touched"
-          class="form-input"
-        />
-        <small class="p-error" *ngIf="isFieldInvalid('nombre')">
-          {{ getFieldError("nombre") }}
-        </small>
+      <!-- Sección Configuración de Movimiento -->
+      <div class="form-section">
+        <h5 class="section-title">
+          <i class="pi pi-cog mr-2"></i>
+          Configuración de Movimiento
+        </h5>
+        
+        <!-- Grid de 2 columnas para switches -->
+        <div class="grid">
+          <!-- Es Entrada -->
+          <div class="col-12 md:col-6">
+            <div class="field-checkbox">
+              <p-inputSwitch 
+                id="esEntrada" 
+                [trueValue]="1"
+                [falseValue]="0"
+                formControlName="esEntrada"
+                class="form-switch">
+              </p-inputSwitch>
+              <label for="esEntrada" class="switch-label">
+                <i class="pi pi-sign-in mr-2 text-green-500"></i>
+                Es Entrada
+              </label>
+            </div>
+          </div>
+          <!-- Es Salida -->
+          <div class="col-12 md:col-6">
+            <div class="field-checkbox">
+              <p-inputSwitch 
+                id="esSalida" 
+                formControlName="esSalida"
+                [trueValue]="1"
+                [falseValue]="0"
+                class="form-switch">
+              </p-inputSwitch>
+              <label for="esSalida" class="switch-label">
+                <i class="pi pi-sign-out mr-2 text-red-500"></i>
+                Es Salida
+              </label>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Campo Descripción -->
-      <div class="field">
-        <label for="descripcion" data-optional>
-          <i class="pi pi-file-edit mr-2"></i>
-          Descripción
-          <span class="optional-text">(opcional)</span>
-        </label>
-        <textarea
-          pInputTextarea
-          id="descripcion"
-          formControlName="descripcion"
-          placeholder="Describe brevemente este tipo de movimiento..."
-          rows="3"
-          [class.ng-invalid]="isFieldInvalid('descripcion')"
-          [class.ng-dirty]="tipoMovimientoForm.get('descripcion')?.touched"
-          class="form-textarea"
-        ></textarea>
-        <small class="p-error" *ngIf="isFieldInvalid('descripcion')">
-          {{ getFieldError("descripcion") }}
-        </small>
+      <!-- Sección Requisitos -->
+      <div class="form-section">
+        <h5 class="section-title">
+          <i class="pi pi-shield mr-2"></i>
+          Requisitos y Permisos
+        </h5>
+        
+        <!-- Grid de 2 columnas para switches de requisitos -->
+        <div class="grid">
+          <!-- Requiere Empleado -->
+          <div class="col-12 md:col-6">
+            <div class="field-checkbox">
+              <p-inputSwitch 
+                id="requiereEmpleado" 
+                [trueValue]="1"
+                [falseValue]="0"
+                formControlName="requiereEmpleado"
+                class="form-switch">
+              </p-inputSwitch>
+              <label for="requiereEmpleado" class="switch-label">
+                <i class="pi pi-user mr-2 text-blue-500"></i>
+                Requiere Empleado
+              </label>
+            </div>
+          </div>
+
+          <!-- Requiere Aprobación -->
+          <div class="col-12 md:col-6">
+            <div class="field-checkbox">
+              <p-inputSwitch 
+                id="requiereAprobacion" 
+                formControlName="requiereAprobacion"
+                [trueValue]="1"
+                [falseValue]="0"
+                class="form-switch">
+              </p-inputSwitch>
+              <label for="requiereAprobacion" class="switch-label">
+                <i class="pi pi-verified mr-2 text-orange-500"></i>
+                Requiere Aprobación
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alerta informativa sobre configuración -->
+      <div class="alert-info">
+        <i class="pi pi-info-circle mr-2"></i>
+        <span>
+          <strong>Nota:</strong> Un tipo de movimiento puede ser tanto de entrada como de salida 
+          (ej: transferencias), pero debe ser al menos uno de los dos.
+        </span>
       </div>
     </form>
   </div>

@@ -1,283 +1,397 @@
 <!-- inventory-management.component.html -->
-<div class="inventory-management">
-  <!-- Header -->
+<div class="main-container">
   <div class="card">
-    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center mb-4">
-      <div class="flex align-items-center mb-3 md:mb-0">
-        <i class="pi pi-database mr-2 text-2xl text-primary"></i>
-        <h2 class="text-2xl font-bold m-0">Gestión de Inventario</h2>
-      </div>
-      
-      <div class="flex gap-2">
-        <p-button 
-          label="Nuevo Insumo"
-          icon="pi pi-plus"
-          class="p-button-primary"
-          (onClick)="showAddDialog()">
-        </p-button>
-      </div>
+    <!-- Header de la tarjeta -->
+    <div class="card-header">
+      <h4>Gestión de Inventario</h4>
     </div>
 
-    <!-- Search and filters -->
-    <div class="flex flex-column md:flex-row gap-3 mb-4">
-      <div class="flex-1">
-        <span class="p-input-icon-left w-full">
-          <i class="pi pi-search"></i>
-          <input 
-            pInputText 
-            type="text" 
-            placeholder="Buscar insumos..." 
-            class="w-full"
-            [(ngModel)]="globalFilterValue"
-            (input)="onGlobalFilter($event)">
-        </span>
-      </div>
-      
-      <p-button 
-        icon="pi pi-filter-slash"
-        class="p-button-outlined"
-        pTooltip="Limpiar filtros"
-        (onClick)="clear()">
-      </p-button>
-    </div>
-
-    <!-- Inventory Table -->
-    <p-table 
-      [value]="inventory"
-      [loading]="isLoading"
-      [paginator]="false"
-      [responsive]="true"
-      (onLazyLoad)="loadTable($event)"
-      styleClass="p-datatable-gridlines p-datatable-striped"
-      [tableStyle]="{ 'min-width': '80rem' }">
-      
-      <ng-template pTemplate="header">
-        <tr>
-          <th style="width: 3rem">
-            <span class="font-semibold">#</span>
-          </th>
-          <th pSortableColumn="nombre_insumo" style="min-width: 15rem">
-            <div class="flex align-items-center">
-              <span class="font-semibold">Nombre del Insumo</span>
-              <p-sortIcon field="nombre_insumo"></p-sortIcon>
-            </div>
-          </th>
-          <th style="min-width: 10rem">
-            <span class="font-semibold">Descripción</span>
-          </th>
-          <th pSortableColumn="unidad" style="min-width: 8rem">
-            <div class="flex align-items-center">
-              <span class="font-semibold">Unidad</span>
-              <p-sortIcon field="unidad"></p-sortIcon>
-            </div>
-          </th>
-          <th pSortableColumn="stock_actual" style="min-width: 10rem">
-            <div class="flex align-items-center">
-              <span class="font-semibold">Stock Actual</span>
-              <p-sortIcon field="stock_actual"></p-sortIcon>
-            </div>
-          </th>
-          <th style="min-width: 8rem">
-            <span class="font-semibold">Estado Stock</span>
-          </th>
-          <th style="width: 10rem">
-            <span class="font-semibold">Acciones</span>
-          </th>
-        </tr>
-      </ng-template>
-      
-      <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
-        <tr>
-          <td>
-            <span class="text-sm text-500">{{ first + rowIndex + 1 }}</span>
-          </td>
-          <td>
-            <div class="flex flex-column">
-              <span class="font-medium">{{ item.nombre_insumo }}</span>
-              <small class="text-500" *ngIf="item.codigo">{{ item.codigo }}</small>
-            </div>
-          </td>
-          <td>
-            <span class="text-sm" 
-                  [pTooltip]="item.descripcion" 
-                  *ngIf="item.descripcion">
-              {{ (item.descripcion.length > 50) ? (item.descripcion | slice:0:50) + '...' : item.descripcion }}
-            </span>
-            <span class="text-500 text-sm" *ngIf="!item.descripcion">Sin descripción</span>
-          </td>
-          <td>
-            <span class="font-medium">{{ item.unidad }}</span>
-          </td>
-          <td>
-            <div class="flex align-items-center">
-              <span class="font-bold text-lg mr-2">{{ item.stock_actual }}</span>
-              <span class="text-500 text-sm">{{ item.unidad }}</span>
-            </div>
-          </td>
-          <td>
-            <p-tag 
-              [value]="getStockLabel(item.stock_actual, 10)"
-              [severity]="getStockSeverity(item.stock_actual, 10)">
-            </p-tag>
-          </td>
-          <td>
-            <div class="flex gap-1">
-              <p-button 
-                icon="pi pi-eye"
-                class="p-button-text p-button-rounded p-button-info"
-                size="small"
-                pTooltip="Ver detalles"
-                (onClick)="showEditDialog(item)">
-              </p-button>
-              
-              <p-button 
-                icon="pi pi-pencil"
-                class="p-button-text p-button-rounded p-button-warning"
-                size="small"
-                pTooltip="Editar"
-                (onClick)="showEditDialog(item)">
-              </p-button>
-              
-              <p-button 
-                icon="pi pi-trash"
-                class="p-button-text p-button-rounded p-button-danger"
-                size="small"
-                pTooltip="Eliminar"
-                (onClick)="confirmDelete(item)">
-              </p-button>
-            </div>
-          </td>
-        </tr>
-      </ng-template>
-      
-      <ng-template pTemplate="emptymessage">
-        <tr>
-          <td colspan="7" class="text-center p-4">
-            <div class="flex flex-column align-items-center justify-content-center">
-              <i class="pi pi-inbox text-4xl text-400 mb-3"></i>
-              <span class="text-500 text-lg">No se encontraron insumos</span>
-              <small class="text-400">Agrega el primer insumo al inventario</small>
-            </div>
-          </td>
-        </tr>
-      </ng-template>
-    </p-table>
-
-    <!-- Pagination -->
-    <p-paginator 
-      *ngIf="totalRecords > 0"
-      [rows]="rows"
-      [totalRecords]="totalRecords"
-      [first]="first"
-      [rowsPerPageOptions]="[10, 25, 50]"
-      [showCurrentPageReport]="true"
-      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
-      (onPageChange)="onPageChange($event)">
-    </p-paginator>
-  </div>
-
-  <!-- Form Dialog -->
-  <p-dialog 
-    [header]="isEditing ? 'Editar Insumo' : 'Nuevo Insumo'"
-    [(visible)]="isFormVisible"
-    [modal]="true"
-    [style]="{ width: '90vw', maxWidth: '800px' }"
-    [closable]="!isLoading"
-    [dismissableMask]="!isLoading"
-    styleClass="p-fluid">
-    
-    <form [formGroup]="inventoryForm" (ngSubmit)="onSubmit()">
-      <div class="grid">
-        <!-- Información básica -->
-        <div class="col-12">
-          <h4 class="text-primary mb-3">
-            <i class="pi pi-info-circle mr-2"></i>
-            Información Básica
-          </h4>
+    <div class="card-content">
+      <!-- Toolbar mejorado -->
+      <div class="p-toolbar mb-4">
+        <div class="toolbar-left"></div>
+        <div class="toolbar-right">
+          <p-button
+            severity="success"
+            label="Nuevo Insumo"
+            icon="pi pi-plus"
+            (onClick)="showAddDialog()"
+            class="create-button"
+          ></p-button>
         </div>
-        
-        <div class="col-12 md:col-6">
-          <label for="codigoInterno" class="font-semibold">
-            Código Interno *
+      </div>
+
+      <!-- Tabla con estilos mejorados -->
+      <p-table
+        #dt
+        [value]="inventory"
+        [loading]="isLoading"
+        styleClass="p-datatable-gridlines modern-table"
+        [paginator]="true"
+        [rows]="rows"
+        [rowsPerPageOptions]="[10, 25, 50, 100]"
+        [globalFilterFields]="['nombre_insumo', 'codigo', 'descripcion', 'unidad']"
+        responsiveLayout="scroll"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} insumos"
+        [totalRecords]="totalRecords"
+        [lazy]="true"
+        (onLazyLoad)="loadTable($event)"
+        selectionMode="single"
+        [(selection)]="selectedItem"
+        [first]="first"
+      >
+        <!-- Búsqueda mejorada -->
+        <ng-template pTemplate="caption">
+          <div class="table-header">
+            <div class="search-container">
+              <span class="p-input-icon-left">
+                <i class="pi pi-search"></i>
+                <input
+                  pInputText
+                  type="text"
+                  [(ngModel)]="globalFilterValue"
+                  (input)="onGlobalFilter($event)"
+                  placeholder="Buscar por nombre, código, descripción o unidad..."
+                  class="search-input"
+                />
+              </span>
+              <p-button
+                *ngIf="globalFilterValue"
+                icon="pi pi-times"
+                severity="secondary"
+                size="small"
+                (onClick)="clear()"
+                class="clear-filter-button"
+                pTooltip="Limpiar búsqueda"
+              ></p-button>
+            </div>
+          </div>
+        </ng-template>
+
+        <!-- Headers con mejor diseño -->
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 60px">
+              <div class="flex justify-content-between align-items-center">
+                <span class="header-text">
+                  <i class="pi pi-hashtag mr-2"></i>
+                  #
+                </span>
+              </div>
+            </th>
+            <th pSortableColumn="nombre_insumo" style="width: 300px">
+              <div class="flex justify-content-between align-items-center">
+                <span class="header-text">
+                  <i class="pi pi-box mr-2"></i>
+                  Insumo
+                </span>
+                <p-sortIcon field="nombre_insumo"></p-sortIcon>
+              </div>
+            </th>
+            <th style="width: 200px">
+              <div class="flex justify-content-between align-items-center">
+                <span class="header-text">
+                  <i class="pi pi-file-edit mr-2"></i>
+                  Descripción
+                </span>
+              </div>
+            </th>
+            <th pSortableColumn="unidad" style="width: 120px">
+              <div class="flex justify-content-between align-items-center">
+                <span class="header-text">
+                  <i class="pi pi-calculator mr-2"></i>
+                  Unidad
+                </span>
+                <p-sortIcon field="unidad"></p-sortIcon>
+              </div>
+            </th>
+            <th pSortableColumn="stock_actual" style="width: 150px">
+              <div class="flex justify-content-between align-items-center">
+                <span class="header-text">
+                  <i class="pi pi-chart-bar mr-2"></i>
+                  Stock Actual
+                </span>
+                <p-sortIcon field="stock_actual"></p-sortIcon>
+              </div>
+            </th>
+            <th style="width: 120px">
+              <div class="flex justify-content-between align-items-center">
+                <span class="header-text">
+                  <i class="pi pi-power-off mr-2"></i>
+                  Estado
+                </span>
+              </div>
+            </th>
+            <th style="width: 140px">
+              <span class="header-text">
+                <i class="pi pi-cog mr-2"></i>
+                Acciones
+              </span>
+            </th>
+          </tr>
+        </ng-template>
+
+        <!-- Filas con mejor presentación -->
+        <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+          <tr class="table-row" [attr.data-index]="rowIndex">
+            <td>
+              <div class="number-cell">
+                <strong class="code-badge">{{ first + rowIndex + 1 }}</strong>
+              </div>
+            </td>
+            <td>
+              <div class="company-cell">
+                <div class="company-info">
+                  <span class="name-text">{{ item.nombre_insumo }}</span>
+                  <small class="company-detail" *ngIf="item.codigo">
+                    <i class="pi pi-tag"></i> {{ item.codigo }}
+                  </small>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="contact-cell">
+                <div class="contact-info">
+                  <span class="contact-name" 
+                        [pTooltip]="item.descripcion" 
+                        *ngIf="item.descripcion">
+                    {{ (item.descripcion.length > 30) ? (item.descripcion | slice:0:30) + '...' : item.descripcion }}
+                  </span>
+                  <small class="contact-detail" *ngIf="!item.descripcion">
+                    Sin descripción
+                  </small>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="phone-cell">
+                <span class="phone-number">
+                  <i class="pi pi-calculator"></i> {{ item.unidad }}
+                </span>
+              </div>
+            </td>
+            <td>
+              <div class="email-cell">
+                <div class="flex align-items-center">
+                  <span class="stock-number">{{ item.stock_actual }}</span>
+                  <span class="stock-unit">{{ item.unidad }}</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="status-cell">
+                <p-tag
+                  [value]="getStockLabel(item.stock_actual, 10)"
+                  [severity]="getStockSeverity(item.stock_actual, 10)"
+                  class="status-tag"
+                ></p-tag>
+              </div>
+            </td>
+            <td>
+              <div class="action-buttons">
+                <p-button
+                  icon="pi pi-eye"
+                  severity="info"
+                  size="small"
+                  (onClick)="showEditDialog(item)"
+                  pTooltip="Ver detalles"
+                  tooltipPosition="top"
+                  class="edit-button"
+                ></p-button>
+                <p-button
+                  icon="pi pi-pencil"
+                  severity="warning"
+                  size="small"
+                  (onClick)="showEditDialog(item)"
+                  pTooltip="Editar insumo"
+                  tooltipPosition="top"
+                  class="edit-button"
+                ></p-button>
+                <p-button
+                  icon="pi pi-trash"
+                  severity="danger"
+                  size="small"
+                  (onClick)="confirmDelete(item)"
+                  pTooltip="Eliminar insumo"
+                  tooltipPosition="top"
+                  class="delete-button"
+                ></p-button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <!-- Mensaje vacío mejorado -->
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="7" class="empty-message">
+              <div class="empty-state">
+                <i class="pi pi-database empty-icon"></i>
+                <h3>No hay insumos registrados</h3>
+                <p>
+                  No se encontraron insumos que coincidan con tu búsqueda.
+                </p>
+                <p-button
+                  label="Crear el primero"
+                  icon="pi pi-plus"
+                  (onClick)="showAddDialog()"
+                  class="mt-3"
+                ></p-button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <!-- Loading template -->
+        <ng-template pTemplate="loadingbody">
+          <tr>
+            <td colspan="7">
+              <div class="loading-state">
+                <i class="pi pi-spin pi-spinner loading-spinner"></i>
+                <span>Cargando insumos...</span>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+
+<!-- Dialog mejorado para Crear/Editar -->
+<p-dialog
+  [(visible)]="isFormVisible"
+  [header]="isEditing ? 'Editar Insumo' : 'Crear Nuevo Insumo'"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="p-fluid modern-dialog"
+  [style]="{ width: '900px' }"
+>
+  <div class="form-container">
+    <form [formGroup]="inventoryForm" (ngSubmit)="onSubmit()">
+      <!-- Información básica -->
+      <div class="section-header">
+        <h4 class="text-primary mb-3">
+          <i class="pi pi-info-circle mr-2"></i>
+          Información Básica
+        </h4>
+      </div>
+
+      <div class="form-grid">
+        <!-- Código Interno -->
+        <div class="field">
+          <label for="codigoInterno">
+            <i class="pi pi-tag mr-2"></i>
+            Código Interno
           </label>
-          <input 
+          <input
             id="codigoInterno"
-            type="text" 
-            pInputText 
+            type="text"
+            pInputText
             formControlName="codigoInterno"
+            placeholder="Ej: INS-001"
             [class.ng-invalid]="isFieldInvalid('codigoInterno')"
-            placeholder="Ej: INS-001">
+            class="form-input"
+          />
           <small class="p-error" *ngIf="isFieldInvalid('codigoInterno')">
             {{ getFieldError('codigoInterno') }}
           </small>
         </div>
-        
-        <div class="col-12 md:col-6">
-          <label for="nombreInsumo" class="font-semibold">
-            Nombre del Insumo *
+
+        <!-- Nombre del Insumo -->
+        <div class="field">
+          <label for="nombreInsumo">
+            <i class="pi pi-box mr-2"></i>
+            Nombre del Insumo
           </label>
-          <input 
+          <input
             id="nombreInsumo"
-            type="text" 
-            pInputText 
+            type="text"
+            pInputText
             formControlName="nombreInsumo"
+            placeholder="Nombre del insumo"
             [class.ng-invalid]="isFieldInvalid('nombreInsumo')"
-            placeholder="Nombre del insumo">
+            class="form-input"
+          />
           <small class="p-error" *ngIf="isFieldInvalid('nombreInsumo')">
             {{ getFieldError('nombreInsumo') }}
           </small>
         </div>
-        
-        <div class="col-12 md:col-6">
-          <label for="marca" class="font-semibold">Marca</label>
-          <input 
-            id="marca"
-            type="text" 
-            pInputText 
-            formControlName="marca"
-            placeholder="Marca del producto">
-        </div>
-        
-        <div class="col-12 md:col-6">
-          <label for="tipoInsumoId" class="font-semibold">
-            Tipo de Insumo *
+
+        <!-- Marca -->
+        <div class="field">
+          <label for="marca" data-optional>
+            <i class="pi pi-bookmark mr-2"></i>
+            Marca
+            <span class="optional-text">(opcional)</span>
           </label>
-          <p-dropdown 
+          <input
+            id="marca"
+            type="text"
+            pInputText
+            formControlName="marca"
+            placeholder="Marca del producto"
+            class="form-input"
+          />
+        </div>
+
+        <!-- Tipo de Insumo -->
+        <div class="field">
+          <label for="tipoInsumoId">
+            <i class="pi pi-list mr-2"></i>
+            Tipo de Insumo
+          </label>
+          <p-dropdown
             id="tipoInsumoId"
             formControlName="tipoInsumoId"
             [options]="tiposInsumos"
             optionLabel="nombre"
             optionValue="id"
             [class.ng-invalid]="isFieldInvalid('tipoInsumoId')"
-            placeholder="Seleccione un tipo">
-          </p-dropdown>
+            placeholder="Seleccione un tipo"
+            class="form-dropdown"
+          ></p-dropdown>
           <small class="p-error" *ngIf="isFieldInvalid('tipoInsumoId')">
             {{ getFieldError('tipoInsumoId') }}
           </small>
         </div>
-        
-        <div class="col-12">
-          <label for="descripcion" class="font-semibold">Descripción</label>
-          <textarea 
+
+        <!-- Descripción -->
+        <div class="field full-width">
+          <label for="descripcion" data-optional>
+            <i class="pi pi-file-edit mr-2"></i>
+            Descripción
+            <span class="optional-text">(opcional)</span>
+          </label>
+          <textarea
             id="descripcion"
-            pInputTextarea 
+            pInputTextarea
             formControlName="descripcion"
             rows="3"
-            placeholder="Descripción del insumo">
-          </textarea>
+            placeholder="Descripción del insumo"
+            class="form-textarea"
+            [autoResize]="true"
+          ></textarea>
         </div>
+      </div>
 
-        <!-- Unidades y conversión -->
-        <div class="col-12">
-          <h4 class="text-primary mb-3 mt-4">
+      <!-- Unidades y conversión -->
+      <div class="section-header">
+        <h4 class="text-primary mb-3 mt-4">
+          <i class="pi pi-calculator mr-2"></i>
+          Unidades y Conversión
+        </h4>
+      </div>
+
+      <div class="form-grid">
+        <!-- Unidad de Medida -->
+        <div class="field">
+          <label for="unidadMedida">
             <i class="pi pi-calculator mr-2"></i>
-            Unidades y Conversión
-          </h4>
-        </div>
-        
-        <div class="col-12 md:col-4">
-          <label for="unidadMedida" class="font-semibold">
-            Unidad de Medida *
+            Unidad de Medida
           </label>
           <p-dropdown
             id="unidadMedida"
@@ -287,21 +401,21 @@
             optionValue="value"
             placeholder="Seleccione unidad"
             [class.ng-invalid]="isFieldInvalid('unidadMedida')"
-            class="w-full"
+            class="form-dropdown"
             [filter]="true"
             filterBy="label"
             [showClear]="true"
-          >
-          </p-dropdown>
-
+          ></p-dropdown>
           <small class="p-error" *ngIf="isFieldInvalid('unidadMedida')">
             {{ getFieldError('unidadMedida') }}
           </small>
         </div>
-        
-        <div class="col-12 md:col-4">
-          <label for="unidadCompra" class="font-semibold">
-            Unidad de Compra *
+
+        <!-- Unidad de Compra -->
+        <div class="field">
+          <label for="unidadCompra">
+            <i class="pi pi-shopping-cart mr-2"></i>
+            Unidad de Compra
           </label>
           <p-dropdown
             id="unidadCompra"
@@ -311,223 +425,259 @@
             optionValue="value"
             placeholder="Seleccione unidad de compra"
             [class.ng-invalid]="isFieldInvalid('unidadCompra')"
-            class="w-full"
+            class="form-dropdown"
             [filter]="true"
             filterBy="label"
             [showClear]="true"
-          >
-          </p-dropdown>
-
+          ></p-dropdown>
           <small class="p-error" *ngIf="isFieldInvalid('unidadCompra')">
             {{ getFieldError('unidadCompra') }}
           </small>
         </div>
-        
-        <div class="col-12 md:col-4">
-          <label for="factorConversion" class="font-semibold">
-            Factor de Conversión *
+
+        <!-- Factor de Conversión -->
+        <div class="field">
+          <label for="factorConversion">
+            <i class="pi pi-percentage mr-2"></i>
+            Factor de Conversión
           </label>
-          <p-inputNumber 
+          <p-inputNumber
             id="factorConversion"
             formControlName="factorConversion"
             [class.ng-invalid]="isFieldInvalid('factorConversion')"
             mode="decimal"
             [minFractionDigits]="2"
             [maxFractionDigits]="4"
-            placeholder="1.0000">
-          </p-inputNumber>
+            placeholder="1.0000"
+            styleClass="form-input"
+          ></p-inputNumber>
           <small class="p-error" *ngIf="isFieldInvalid('factorConversion')">
             {{ getFieldError('factorConversion') }}
           </small>
         </div>
+      </div>
 
-        <!-- Cantidades -->
-        <div class="col-12">
-          <h4 class="text-primary mb-3 mt-4">
+      <!-- Control de Stock -->
+      <div class="section-header">
+        <h4 class="text-primary mb-3 mt-4">
+          <i class="pi pi-chart-bar mr-2"></i>
+          Control de Stock
+        </h4>
+      </div>
+
+      <div class="form-grid">
+        <!-- Cantidad Actual -->
+        <div class="field">
+          <label for="cantidadActual">
             <i class="pi pi-chart-bar mr-2"></i>
-            Control de Stock
-          </h4>
-        </div>
-        
-        <div class="col-12 md:col-3">
-          <label for="cantidadActual" class="font-semibold">
-            Cantidad Actual *
+            Cantidad Actual
           </label>
-          <p-inputNumber 
+          <p-inputNumber
             id="cantidadActual"
             formControlName="cantidadActual"
             [class.ng-invalid]="isFieldInvalid('cantidadActual')"
             mode="decimal"
             [minFractionDigits]="2"
             [maxFractionDigits]="2"
-            [min]="0">
-          </p-inputNumber>
+            [min]="0"
+            styleClass="form-input"
+          ></p-inputNumber>
           <small class="p-error" *ngIf="isFieldInvalid('cantidadActual')">
             {{ getFieldError('cantidadActual') }}
           </small>
         </div>
-        
-        <div class="col-12 md:col-3">
-          <label for="cantidadMinima" class="font-semibold">
-            Cantidad Mínima *
+
+        <!-- Cantidad Mínima -->
+        <div class="field">
+          <label for="cantidadMinima">
+            <i class="pi pi-exclamation-triangle mr-2"></i>
+            Cantidad Mínima
           </label>
-          <p-inputNumber 
+          <p-inputNumber
             id="cantidadMinima"
             formControlName="cantidadMinima"
             [class.ng-invalid]="isFieldInvalid('cantidadMinima')"
             mode="decimal"
             [minFractionDigits]="2"
             [maxFractionDigits]="2"
-            [min]="0">
-          </p-inputNumber>
+            [min]="0"
+            styleClass="form-input"
+          ></p-inputNumber>
           <small class="p-error" *ngIf="isFieldInvalid('cantidadMinima')">
             {{ getFieldError('cantidadMinima') }}
           </small>
         </div>
-        
-        <div class="col-12 md:col-3">
-          <label for="puntoReorden" class="font-semibold">
-            Punto de Reorden *
+
+        <!-- Punto de Reorden -->
+        <div class="field">
+          <label for="puntoReorden">
+            <i class="pi pi-refresh mr-2"></i>
+            Punto de Reorden
           </label>
-          <p-inputNumber 
+          <p-inputNumber
             id="puntoReorden"
             formControlName="puntoReorden"
             [class.ng-invalid]="isFieldInvalid('puntoReorden')"
             mode="decimal"
             [minFractionDigits]="2"
             [maxFractionDigits]="2"
-            [min]="0">
-          </p-inputNumber>
+            [min]="0"
+            styleClass="form-input"
+          ></p-inputNumber>
           <small class="p-error" *ngIf="isFieldInvalid('puntoReorden')">
             {{ getFieldError('puntoReorden') }}
           </small>
         </div>
-        
-        <div class="col-12 md:col-3">
-          <label for="cantidadReservada" class="font-semibold">
+
+        <!-- Cantidad Reservada -->
+        <div class="field">
+          <label for="cantidadReservada" data-optional>
+            <i class="pi pi-lock mr-2"></i>
             Cantidad Reservada
+            <span class="optional-text">(opcional)</span>
           </label>
-          <p-inputNumber 
+          <p-inputNumber
             id="cantidadReservada"
             formControlName="cantidadReservada"
             mode="decimal"
             [minFractionDigits]="2"
             [maxFractionDigits]="2"
-            [min]="0">
-          </p-inputNumber>
+            [min]="0"
+            styleClass="form-input"
+          ></p-inputNumber>
+        </div>
+      </div>
+
+      <!-- Ubicación y características -->
+      <div class="section-header">
+        <h4 class="text-primary mb-3 mt-4">
+          <i class="pi pi-map-marker mr-2"></i>
+          Ubicación y Características
+        </h4>
+      </div>
+
+      <div class="form-grid">
+        <!-- Ubicación en Almacén -->
+        <div class="field">
+          <label for="ubicacionAlmacen" data-optional>
+            <i class="pi pi-map-marker mr-2"></i>
+            Ubicación en Almacén
+            <span class="optional-text">(opcional)</span>
+          </label>
+          <input
+            id="ubicacionAlmacen"
+            type="text"
+            pInputText
+            formControlName="ubicacionAlmacen"
+            placeholder="Ej: Estante A, Nivel 2"
+            class="form-input"
+          />
         </div>
 
-        <!-- Ubicación y características -->
-        <div class="col-12">
-          <h4 class="text-primary mb-3 mt-4">
-            <i class="pi pi-map-marker mr-2"></i>
-            Ubicación y Características
-          </h4>
-        </div>
-        
-        <div class="col-12 md:col-6">
-          <label for="ubicacionAlmacen" class="font-semibold">
-            Ubicación en Almacén
+        <!-- Estado -->
+        <div class="field">
+          <label for="estadoId">
+            <i class="pi pi-power-off mr-2"></i>
+            Estado
           </label>
-          <input 
-            id="ubicacionAlmacen"
-            type="text" 
-            pInputText 
-            formControlName="ubicacionAlmacen"
-            placeholder="Ej: Estante A, Nivel 2">
-        </div>
-        
-        <div class="col-12 md:col-6">
-          <label for="estadoId" class="font-semibold">
-            Estado *
-          </label>
-          <p-dropdown 
+          <p-dropdown
             id="estadoId"
             formControlName="estadoId"
             [options]="estadosInventario"
             optionLabel="nombre"
             optionValue="id"
             [class.ng-invalid]="isFieldInvalid('estadoId')"
-            placeholder="Seleccione un estado">
-          </p-dropdown>
+            placeholder="Seleccione un estado"
+            class="form-dropdown"
+          ></p-dropdown>
           <small class="p-error" *ngIf="isFieldInvalid('estadoId')">
             {{ getFieldError('estadoId') }}
           </small>
         </div>
-        
-        <div class="col-12 md:col-6">
+
+        <!-- Checkboxes -->
+        <div class="field checkbox-field">
           <div class="field-checkbox">
-            <p-checkbox 
+            <p-checkbox
               id="esPeligroso"
               formControlName="esPeligroso"
-              [binary]="true">
-            </p-checkbox>
+              [binary]="true"
+            ></p-checkbox>
             <label for="esPeligroso" class="ml-2">
               <i class="pi pi-exclamation-triangle text-orange-500 mr-1"></i>
               Es peligroso
             </label>
           </div>
         </div>
-        
-        <div class="col-12 md:col-6">
+
+        <div class="field checkbox-field">
           <div class="field-checkbox">
-            <p-checkbox 
+            <p-checkbox
               id="requiereCuidadoEspecial"
               formControlName="requiereCuidadoEspecial"
-              [binary]="false">
-            </p-checkbox>
+              [binary]="false"
+            ></p-checkbox>
             <label for="requiereCuidadoEspecial" class="ml-2">
               <i class="pi pi-shield text-blue-500 mr-1"></i>
               Requiere cuidado especial
             </label>
           </div>
         </div>
-        <div class="col-12">
-          <label for="notas" class="font-semibold">Notas</label>
-          <textarea 
+
+        <!-- Notas -->
+        <div class="field full-width">
+          <label for="notas" data-optional>
+            <i class="pi pi-comment mr-2"></i>
+            Notas
+            <span class="optional-text">(opcional)</span>
+          </label>
+          <textarea
             id="notas"
-            pInputTextarea 
+            pInputTextarea
             formControlName="notas"
             rows="3"
-            placeholder="Notas adicionales sobre el insumo">
-          </textarea>
+            placeholder="Notas adicionales sobre el insumo"
+            class="form-textarea"
+            [autoResize]="true"
+          ></textarea>
         </div>
       </div>
     </form>
-    
-    <ng-template pTemplate="footer">
-      <div class="flex justify-content-end gap-2">
-        <p-button 
-          label="Cancelar"
-          icon="pi pi-times"
-          class="p-button-text"
-          [disabled]="isLoading"
-          (onClick)="hideDialog()">
-        </p-button>
-        
-        <p-button 
-          [label]="isEditing ? 'Actualizar' : 'Crear'"
-          icon="pi pi-check"
-          class="p-button-primary"
-          [loading]="isLoading"
-          [disabled]="inventoryForm.invalid"
-          (onClick)="onSubmit()">
-        </p-button>
-      </div>
-    </ng-template>
-  </p-dialog>
+  </div>
 
-  <!-- Toast Messages -->
-  <p-toast position="top-right" [life]="5000"></p-toast>
-  
-  <!-- Confirmation Dialog -->
-  <p-confirmDialog></p-confirmDialog>
-  
-  <!-- Loading Spinner -->
-  <div *ngIf="isLoading" class="loading-overlay">
-    <div class="loading-content">
-      <p-progressSpinner></p-progressSpinner>
-      <p>Procesando...</p>
+  <!-- Footer del dialog -->
+  <ng-template pTemplate="footer">
+    <div class="dialog-footer">
+      <p-button
+        label="Cancelar"
+        icon="pi pi-times"
+        severity="secondary"
+        (onClick)="hideDialog()"
+        [disabled]="isLoading"
+        class="cancel-button"
+      ></p-button>
+      <p-button
+        [label]="isEditing ? 'Actualizar' : 'Crear'"
+        [icon]="isEditing ? 'pi pi-check' : 'pi pi-plus'"
+        (onClick)="onSubmit()"
+        [loading]="isLoading"
+        [disabled]="inventoryForm.invalid"
+        class="save-button"
+      ></p-button>
     </div>
+  </ng-template>
+</p-dialog>
+
+<!-- Toast Messages -->
+<p-toast position="top-right" [life]="5000"></p-toast>
+
+<!-- Confirmation Dialog -->
+<p-confirmDialog styleClass="modern-confirm-dialog"></p-confirmDialog>
+
+<!-- Loading Spinner -->
+<div *ngIf="isLoading" class="loading-overlay">
+  <div class="loading-content">
+    <p-progressSpinner></p-progressSpinner>
+    <p>Procesando...</p>
   </div>
 </div>

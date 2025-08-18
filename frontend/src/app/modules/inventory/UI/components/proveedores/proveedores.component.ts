@@ -131,8 +131,8 @@ async loadTable(lazyTable: TableLazyLoadEvent): Promise<void> {
 private prepareTableParams(
   lazyTable: TableLazyLoadEvent
 ): IFilterTable<IFilterTableSupplier> {
-  this.rowSize = lazyTable.rows ?? this.rowSize ?? 10;   // mantiene tu rowSize
-  const first = lazyTable.first ?? 0;                    // 0 válido
+  this.rowSize = lazyTable.rows ?? this.rowSize ?? 10;
+  const first = lazyTable.first ?? 0;
   const currentPage = Math.floor(first / this.rowSize);
 
   return {
@@ -143,14 +143,13 @@ private prepareTableParams(
     order_by: lazyTable.sortField ?? 'id',
   };
 }
-
-  onGlobalFilter(event: any) {
-    this.globalFilter = event.target.value;
-    this.currentPage = 0;
-    // Debounce para evitar muchas llamadas
-    this.debounceSearch();
+  filterGlobal(event: Event) {
+    this.loadTable({
+      first: 0,
+      rows: this.rowSize,
+      globalFilter: (event.target as HTMLInputElement)?.value ?? '',
+    })
   }
-
   private searchTimeout: any;
   private debounceSearch() {
     clearTimeout(this.searchTimeout);

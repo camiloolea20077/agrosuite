@@ -110,6 +110,13 @@ export interface EstadoInventario {
   descripcion?: string;
   activo: number;
 }
+export interface IFilterEstadoInventario {
+  id?: number;
+  codigo: string;
+  nombre: string;
+  descripcion?: string;
+  activo: number;
+}
 
 export interface TipoMovimiento {
   id?: number;

@@ -10,6 +10,9 @@ import { ButtonModule } from 'primeng/button';
 import { ChipModule } from 'primeng/chip';
 import { TooltipModule } from 'primeng/tooltip';
 import { CommonModule } from '@angular/common';
+import { DesteteTableDto } from 'src/app/shared/dto/destete.dto';
+import { TagModule } from "primeng/tag";
+import { TableModule } from "primeng/table";
 
 @Component({
     selector: 'app-dashboard',
@@ -17,17 +20,18 @@ import { CommonModule } from '@angular/common';
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss'],
     imports: [ChartModule,
-        CommonModule,
-        ButtonModule,
-        ChipModule,
-        TooltipModule,
-        RouterModule,
-        CardModule,],
+    CommonModule,
+    ButtonModule,
+    ChipModule,
+    TooltipModule,
+    RouterModule,
+    CardModule, TagModule, TableModule],
 })
 export class DashboardComponent implements OnInit {
      barChartData: any;
     pieChartData: any;
     birthData: DashboardBirthDto[] = [];
+    desteteData: DesteteTableDto[] = []
     totalCattle: number = 0;
     totalBirths: number = 0;
     totalEmployees: number = 0;
@@ -159,6 +163,15 @@ export class DashboardComponent implements OnInit {
     }
 
     loadDashboardData(): void {
+        this.dashboardService.getDesteteData().subscribe(
+            (response: ResponseModel<DesteteTableDto[]>) => {
+                if (response && response.data) {
+                    this.desteteData = response.data;
+                } else {
+                    console.error('No se recibieron datos de destete.');
+                }
+            }
+        )
         this.dashboardService.getBirthsData().subscribe(
             (response: ResponseModel<DashboardData>) => {
                 if (response && response.data) {
@@ -294,5 +307,26 @@ export class DashboardComponent implements OnInit {
     // Método para refrescar datos
     refreshData(): void {
         this.loadDashboardData();
+    }
+        // Métodos para manejo de destete
+    getDaysUntilWeaning(diasRestantes: number): string {
+        if (diasRestantes === 0) return 'Hoy';
+        if (diasRestantes < 0) return 'Vencido';
+        return `${diasRestantes} días`;
+    }
+
+    getWeaningStatus(diasRestantes: number): 'success' | 'warning' | 'danger' {
+        if (diasRestantes < 0) return 'danger';
+        if (diasRestantes <= 7) return 'warning';
+        return 'success';
+    }
+
+    formatDate(dateString: string): string {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('es-ES', { 
+            day: '2-digit', 
+            month: '2-digit', 
+            year: 'numeric' 
+        });
     }
 }
