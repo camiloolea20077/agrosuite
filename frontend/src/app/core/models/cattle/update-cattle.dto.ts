@@ -9,4 +9,7 @@ export interface UpdateCattleDto {
     lote_ganado: string;
     observaciones: string;
     activo: number;
+    embarazada: number;
+    tipo_animal:string;
+    fecha_embarazo:string | null
 }

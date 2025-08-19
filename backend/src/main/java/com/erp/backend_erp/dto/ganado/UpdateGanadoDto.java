@@ -15,5 +15,9 @@ public class UpdateGanadoDto {
     private String fecha_nacimiento;
     private String lote_ganado;
     private String observaciones;
+    private Long farmId;
     private Long activo;
+    private String tipo_animal;
+    private Integer embarazada;
+    private String fecha_embarazo;
 }

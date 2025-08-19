@@ -9,11 +9,11 @@ public class GanadoTableDto {
     private Long id;
     private String tipo_ganado;
     private String numero_ganado;
-    private String sexo;
-    private String color;
     private String peso;
+    private String tipo_animal;
+    private Long embarazo;
     private String fecha_nacimiento;
     private String lote_ganado;
-    private String observaciones;
+    private String fecha_embarazo;
     private Long activo;
 }

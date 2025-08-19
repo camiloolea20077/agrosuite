@@ -9,8 +9,14 @@ export class CattleModel{
     lote_ganado: string;
     observaciones: string;
     activo: number;
+    embarazada: number;
+    tipo_animal:string
+    fecha_embarazo:string | null
     constructor(
         id: number,
+        embarazada: number,
+        tipo_animal:string,
+        fecha_embarazo:string,
         tipo_ganado: string,
         numero_ganado: string,
         sexo: string,
@@ -31,5 +37,8 @@ export class CattleModel{
         this.lote_ganado = lote_ganado;
         this.observaciones = observaciones;
         this.activo = activo;
+        this.embarazada = embarazada;
+        this.tipo_animal=tipo_animal;
+        this.fecha_embarazo=fecha_embarazo
     }
 }

@@ -1,6 +1,7 @@
 package com.erp.backend_erp.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -16,13 +17,18 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.erp.backend_erp.dto.births.BirthsDto;
 import com.erp.backend_erp.dto.births.BirthsTableDto;
 import com.erp.backend_erp.dto.births.CreateBirthsDto;
+import com.erp.backend_erp.dto.births.DesteteTableDto;
+import com.erp.backend_erp.dto.births.MigrarTerneroDto;
+import com.erp.backend_erp.dto.births.ResultadoMigracionDto;
 import com.erp.backend_erp.dto.births.UpdateBirthsDto;
 import com.erp.backend_erp.services.BirthsService;
+import com.erp.backend_erp.services.DesteteService;
 import com.erp.backend_erp.util.ApiResponse;
 import com.erp.backend_erp.util.GlobalException;
 import com.erp.backend_erp.util.PageableDto;
@@ -33,6 +39,9 @@ public class BirthsController {
     
     @Autowired
     BirthsService birthsService;
+
+    @Autowired
+    private DesteteService desteteService;
 
     @PostMapping("/create")
     public ResponseEntity<ApiResponse<Object>> createCattle(
@@ -126,6 +135,70 @@ public class BirthsController {
             return ResponseEntity.ok(response);
         } catch (Exception ex) {
             throw ex;
+        }
+    }
+    @GetMapping("/proximos-destetes")
+    public ResponseEntity<ApiResponse<List<DesteteTableDto>>> obtenerProximosDestetes(
+            @RequestHeader("farmid") Long farmId,
+            @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
+        try {
+            List<DesteteTableDto> terneros = desteteService.obtenerProximosDestetes(farmId, limit);
+            
+            String mensaje = terneros.isEmpty() 
+                ? "No hay próximos destetes programados" 
+                : "Encontrados " + terneros.size() + " próximos destetes";
+                
+            ApiResponse<List<DesteteTableDto>> response = new ApiResponse<>(
+                HttpStatus.OK.value(), 
+                mensaje, 
+                false, 
+                terneros
+            );
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al obtener próximos destetes", ex);
+        }
+    }
+
+    @PostMapping("/migrar-ternero")
+    public ResponseEntity<ApiResponse<ResultadoMigracionDto>> migrarTernero(
+            @RequestHeader("farmid") Long farmId,
+            @Valid @RequestBody MigrarTerneroDto migrarDto) {
+        try {
+            ResultadoMigracionDto resultado = desteteService.migrarTernero(migrarDto, farmId);
+            
+            HttpStatus status = resultado.getSuccess() ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
+            
+            ApiResponse<ResultadoMigracionDto> response = new ApiResponse<>(
+                status.value(),
+                resultado.getMessage(),
+                !resultado.getSuccess(),
+                resultado
+            );
+            
+            return ResponseEntity.status(status).body(response);
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al migrar ternero", ex);
+        }
+    }
+
+    @GetMapping("/historial-destetes")
+    public ResponseEntity<ApiResponse<List<Map<String, Object>>>> obtenerHistorialDestetes(
+            @RequestHeader("farmid") Long farmId) {
+        try {
+            List<Map<String, Object>> historial = desteteService.obtenerHistorialDestetes(farmId);
+            
+            ApiResponse<List<Map<String, Object>>> response = new ApiResponse<>(
+                HttpStatus.OK.value(),
+                "Historial de destetes obtenido exitosamente",
+                false,
+                historial
+            );
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al obtener historial de destetes", ex);
         }
     }
 }

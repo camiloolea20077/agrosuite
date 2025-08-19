@@ -1,280 +1,319 @@
-
-<p-toast></p-toast>
-<div class="card">
-  <!-- Header -->
-  <div class="flex justify-content-between align-items-center mb-4">
-    <h1 class="m-0 text-primary">
-      <i class="pi pi-plus-circle mr-2"></i>
-      {{ slug === "edit" ? "Editar Ganado" : "Nuevo Ganado" }}
-    </h1>
-    <p-chip 
-      label="Registro de Ganado" 
-      icon="pi pi-tag" 
-      styleClass="p-chip-outlined">
-    </p-chip>
-  </div>
-
-  <!-- Form Container with Card Styling -->
-  <div class="surface-card p-4 shadow-2 border-round">
-    <form
-      [formGroup]="frmGanado"
-      name="frmGanado"
-      id="frmGanado"
-      (ngSubmit)="buildsaveCattle()"
-      class="formgrid grid"
-    >
-      <!-- Status Section -->
-      <div class="col-12">
-        <p-panel header="Estado del Registro" [toggleable]="true" [collapsed]="false">
-          <div class="flex align-items-center">
-            <p-inputSwitch 
-              formControlName="activo" 
-              [style]="{'transform': 'scale(1.2)'}">
-            </p-inputSwitch>
-            <label class="ml-3 font-semibold">
-              <span class="text-green-600" *ngIf="frmGanado.get('activo')?.value">Activo</span>
-              <span class="text-red-600" *ngIf="!frmGanado.get('activo')?.value">Inactivo</span>
-            </label>
-          </div>
-        </p-panel>
+<!-- Modal Form Template -->
+<!-- Dialog mejorado para Crear/Editar Ganado -->
+<p-dialog
+  [(visible)]="displayModal"
+  [header]="isEditMode ? 'Editar Ganado' : 'Crear Nuevo Ganado'"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="p-fluid modern-dialog"
+  [style]="{ width: '800px', maxHeight: '90vh' }"
+>
+  <div class="form-container">
+    <form [formGroup]="frmGanado" (ngSubmit)="buildsaveCattle()">
+      
+      <!-- Estado del Registro -->
+      <div class="field">
+        <label for="activo">
+          <i class="pi pi-power-off mr-2"></i>
+          Estado
+        </label>
+        <p-dropdown
+          id="activo"
+          formControlName="activo"
+          [options]="[
+            { label: '✓ Activo', value: true },
+            { label: '✗ Inactivo', value: false }
+          ]"
+          placeholder="Seleccione el estado"
+          [class.ng-invalid]="frmGanado.get('activo')?.invalid && frmGanado.get('activo')?.touched"
+          [class.ng-dirty]="frmGanado.get('activo')?.touched"
+          class="form-dropdown"
+        ></p-dropdown>
+        <small class="p-error" *ngIf="frmGanado.get('activo')?.invalid && frmGanado.get('activo')?.touched">
+          Este campo es obligatorio
+        </small>
       </div>
 
-      <!-- Basic Information Section -->
-      <div class="col-12 mt-4">
-        <p-panel header="Información Básica" [toggleable]="true" [collapsed]="false">
-          <div class="formgrid grid">
-            <!-- Tipo de ganado -->
-            <div class="field col-12 md:col-6">
-              <label for="tipo_ganado" class="font-semibold block mb-2">
-                <i class="pi pi-tag mr-1"></i>Tipo de Ganado *
-              </label>
-              <input
-                pInputText
-                id="tipo_ganado"
-                formControlName="tipo_ganado"
-                placeholder="Ej: Bovino, Porcino, Ovino"
-                class="w-full"
-                [class.ng-invalid]="frmGanado.get('tipo_ganado')?.invalid && frmGanado.get('tipo_ganado')?.touched"
-              />
-              <small
-                class="p-error block mt-1"
-                *ngIf="frmGanado.get('tipo_ganado')?.invalid && frmGanado.get('tipo_ganado')?.touched"
-              >
-                <i class="pi pi-exclamation-triangle mr-1"></i>
-                Este campo es obligatorio
-              </small>
-            </div>
-
-            <!-- Número de ganado -->
-            <div class="field col-12 md:col-6">
-              <label for="numero_ganado" class="font-semibold block mb-2">
-                <i class="pi pi-hashtag mr-1"></i>Número de Ganado *
-              </label>
-              <input
-                pInputText
-                id="numero_ganado"
-                formControlName="numero_ganado"
-                placeholder="Ej: 001, A-123"
-                class="w-full"
-                [class.ng-invalid]="frmGanado.get('numero_ganado')?.invalid && frmGanado.get('numero_ganado')?.touched"
-              />
-              <small
-                class="p-error block mt-1"
-                *ngIf="frmGanado.get('numero_ganado')?.invalid && frmGanado.get('numero_ganado')?.touched"
-              >
-                <i class="pi pi-exclamation-triangle mr-1"></i>
-                Este campo es obligatorio
-              </small>
-            </div>
-
-            <!-- Fecha de ingreso -->
-            <div class="field col-12 md:col-6">
-              <label for="fecha_nacimiento" class="font-semibold block mb-2">
-                <i class="pi pi-calendar mr-1"></i>Fecha de Ingreso *
-              </label>
-              <p-calendar
-                id="fecha_nacimiento"
-                formControlName="fecha_nacimiento"
-                dateFormat="yy-mm-dd"
-                [showIcon]="true"
-                placeholder="Seleccionar fecha"
-                class="w-full"
-                [class.ng-invalid]="frmGanado.get('fecha_nacimiento')?.invalid && frmGanado.get('fecha_nacimiento')?.touched"
-              ></p-calendar>
-              <small
-                class="p-error block mt-1"
-                *ngIf="frmGanado.get('fecha_nacimiento')?.invalid && frmGanado.get('fecha_nacimiento')?.touched"
-              >
-                <i class="pi pi-exclamation-triangle mr-1"></i>
-                Este campo es obligatorio
-              </small>
-            </div>
-
-            <!-- Sexo -->
-            <div class="field col-12 md:col-6">
-              <label for="sexo" class="font-semibold block mb-2">
-                <i class="pi pi-users mr-1"></i>Sexo *
-              </label>
-              <p-dropdown
-                id="sexo"
-                [options]="sexOptions"
-                optionLabel="name"
-                optionValue="value"
-                formControlName="sexo"
-                placeholder="Seleccionar sexo"
-                class="w-full"
-                [class.ng-invalid]="frmGanado.get('sexo')?.invalid && frmGanado.get('sexo')?.touched"
-              ></p-dropdown>
-              <small
-                class="p-error block mt-1"
-                *ngIf="frmGanado.get('sexo')?.invalid && frmGanado.get('sexo')?.touched"
-              >
-                <i class="pi pi-exclamation-triangle mr-1"></i>
-                Este campo es obligatorio
-              </small>
-            </div>
-          </div>
-        </p-panel>
-      </div>
-
-      <!-- Physical Characteristics Section -->
-      <div class="col-12 mt-4">
-        <p-panel header="Características Físicas" [toggleable]="true" [collapsed]="false">
-          <div class="formgrid grid">
-            <!-- Peso -->
-            <div class="field col-12 md:col-6">
-              <label for="peso" class="font-semibold block mb-2">
-                <i class="pi pi-chart-line mr-1"></i>Peso (kg) *
-              </label>
-              <p-inputNumber
-                id="peso"
-                formControlName="peso"
-                mode="decimal"
-                [minFractionDigits]="0"
-                [maxFractionDigits]="2"
-                suffix=" kg"
-                placeholder="0.00"
-                class="w-full"
-                [class.ng-invalid]="frmGanado.get('peso')?.invalid && frmGanado.get('peso')?.touched"
-              ></p-inputNumber>
-              <small
-                class="p-error block mt-1"
-                *ngIf="frmGanado.get('peso')?.invalid && frmGanado.get('peso')?.touched"
-              >
-                <i class="pi pi-exclamation-triangle mr-1"></i>
-                Este campo es obligatorio
-              </small>
-            </div>
-
-            <!-- Color -->
-            <div class="field col-12 md:col-6">
-              <label for="color" class="font-semibold block mb-2">
-                <i class="pi pi-palette mr-1"></i>Color *
-              </label>
-              <input
-                pInputText
-                id="color"
-                formControlName="color"
-                placeholder="Ej: Negro, Blanco, Marrón"
-                class="w-full"
-                [class.ng-invalid]="frmGanado.get('color')?.invalid && frmGanado.get('color')?.touched"
-              />
-              <small
-                class="p-error block mt-1"
-                *ngIf="frmGanado.get('color')?.invalid && frmGanado.get('color')?.touched"
-              >
-                <i class="pi pi-exclamation-triangle mr-1"></i>
-                Este campo es obligatorio
-              </small>
-            </div>
-          </div>
-        </p-panel>
-      </div>
-
-      <!-- Management Information Section -->
-      <div class="col-12 mt-4">
-        <p-panel header="Información de Gestión" [toggleable]="true" [collapsed]="false">
-          <div class="formgrid grid">
-            <!-- Lote ganado -->
-            <div class="field col-12 md:col-6">
-              <label for="lote_ganado" class="font-semibold block mb-2">
-                <i class="pi pi-th-large mr-1"></i>Lote *
-              </label>
-              <input
-                pInputText
-                id="lote_ganado"
-                formControlName="lote_ganado"
-                placeholder="Ej: Lote A, Sector 1"
-                class="w-full"
-                [class.ng-invalid]="frmGanado.get('lote_ganado')?.invalid && frmGanado.get('lote_ganado')?.touched"
-              />
-              <small
-                class="p-error block mt-1"
-                *ngIf="frmGanado.get('lote_ganado')?.invalid && frmGanado.get('lote_ganado')?.touched"
-              >
-                <i class="pi pi-exclamation-triangle mr-1"></i>
-                Este campo es obligatorio
-              </small>
-            </div>
-          </div>
-        </p-panel>
-      </div>
-
-      <!-- Additional Information Section -->
-      <div class="col-12 mt-4">
-        <p-panel header="Información Adicional" [toggleable]="true" [collapsed]="false">
-          <!-- Observaciones -->
-          <div class="field">
-            <label for="observaciones" class="font-semibold block mb-2">
-              <i class="pi pi-file-edit mr-1"></i>Observaciones
-            </label>
-            <textarea
-              pInputTextarea
-              id="observaciones"
-              formControlName="observaciones"
-              rows="4"
-              placeholder="Ingrese observaciones adicionales sobre el ganado..."
-              class="w-full"
-              [autoResize]="true"
-            ></textarea>
-          </div>
-        </p-panel>
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="col-12 mt-5">
-        <p-divider></p-divider>
-        <div class="flex flex-wrap gap-3 justify-content-center md:justify-content-end">
-          <p-button
-            type="submit"
-            label="Guardar"
-            icon="pi pi-save"
-            severity="success"
-            [style]="{'min-width': '120px'}"
-            [disabled]="frmGanado.invalid"
-          ></p-button>
-          
-          <p-button
-            type="button"
-            label="Limpiar"
-            icon="pi pi-refresh"
-            severity="warning"
-            [outlined]="true"
-            [style]="{'min-width': '120px'}"
-            (click)="resetForm()"
-          ></p-button>
-          
-          <p-button
-            type="button"
-            label="Volver"
-            icon="pi pi-arrow-left"
-            severity="secondary"
-            [outlined]="true"
-            [style]="{'min-width': '120px'}"
-            routerLink="/cattle"
-          ></p-button>
+      <!-- Información Básica - Primera Fila -->
+      <div class="field-row">
+        <!-- Tipo de ganado -->
+        <div class="field">
+          <label for="tipo_ganado">
+            <i class="pi pi-tag mr-2"></i>
+            Tipo de Ganado
+          </label>
+          <input
+            type="text"
+            pInputText
+            id="tipo_ganado"
+            formControlName="tipo_ganado"
+            placeholder="Ej: Bovino, Porcino, Ovino..."
+            [class.ng-invalid]="frmGanado.get('tipo_ganado')?.invalid && frmGanado.get('tipo_ganado')?.touched"
+            [class.ng-dirty]="frmGanado.get('tipo_ganado')?.touched"
+            class="form-input"
+          />
+          <small class="p-error" *ngIf="frmGanado.get('tipo_ganado')?.invalid && frmGanado.get('tipo_ganado')?.touched">
+            Este campo es obligatorio
+          </small>
         </div>
+
+        <!-- Tipo específico de animal -->
+        <div class="field">
+          <label for="tipo_animal">
+            <i class="pi pi-users mr-2"></i>
+            Tipo Específico
+          </label>
+          <p-dropdown
+            id="tipo_animal"
+            [options]="tipoAnimalOptions"
+            optionLabel="name"
+            optionValue="value"
+            formControlName="tipo_animal"
+            placeholder="Seleccionar tipo específico"
+            [class.ng-invalid]="frmGanado.get('tipo_animal')?.invalid && frmGanado.get('tipo_animal')?.touched"
+            [class.ng-dirty]="frmGanado.get('tipo_animal')?.touched"
+            class="form-dropdown"
+            (onChange)="onTipoAnimalChange($event)"
+          ></p-dropdown>
+          <small class="p-error" *ngIf="frmGanado.get('tipo_animal')?.invalid && frmGanado.get('tipo_animal')?.touched">
+            Este campo es obligatorio
+          </small>
+        </div>
+      </div>
+
+      <!-- Información Básica - Segunda Fila -->
+      <div class="field-row">
+        <!-- Número de ganado -->
+        <div class="field">
+          <label for="numero_ganado">
+            <i class="pi pi-hashtag mr-2"></i>
+            Número de Ganado
+          </label>
+          <input
+            type="text"
+            pInputText
+            id="numero_ganado"
+            formControlName="numero_ganado"
+            placeholder="Ej: 001, A-123"
+            [class.ng-invalid]="frmGanado.get('numero_ganado')?.invalid && frmGanado.get('numero_ganado')?.touched"
+            [class.ng-dirty]="frmGanado.get('numero_ganado')?.touched"
+            class="form-input"
+          />
+          <small class="p-error" *ngIf="frmGanado.get('numero_ganado')?.invalid && frmGanado.get('numero_ganado')?.touched">
+            Este campo es obligatorio
+          </small>
+        </div>
+
+        <!-- Sexo -->
+        <div class="field">
+          <label for="sexo">
+            <i class="pi pi-venus-mars mr-2"></i>
+            Sexo
+          </label>
+          <p-dropdown
+            id="sexo"
+            [options]="sexOptions"
+            optionLabel="name"
+            optionValue="value"
+            formControlName="sexo"
+            placeholder="Seleccionar sexo"
+            [class.ng-invalid]="frmGanado.get('sexo')?.invalid && frmGanado.get('sexo')?.touched"
+            [class.ng-dirty]="frmGanado.get('sexo')?.touched"
+            class="form-dropdown"
+          ></p-dropdown>
+          <small class="p-error" *ngIf="frmGanado.get('sexo')?.invalid && frmGanado.get('sexo')?.touched">
+            Este campo es obligatorio
+          </small>
+        </div>
+      </div>
+
+      <!-- Información Básica - Tercera Fila -->
+      <div class="field-row">
+        <!-- Fecha de nacimiento -->
+        <div class="field">
+          <label for="fecha_nacimiento">
+            <i class="pi pi-calendar mr-2"></i>
+            Fecha de Nacimiento
+          </label>
+          <p-calendar
+            id="fecha_nacimiento"
+            formControlName="fecha_nacimiento"
+            dateFormat="yy-mm-dd"
+            [showIcon]="true"
+            placeholder="Seleccionar fecha"
+            [class.ng-invalid]="frmGanado.get('fecha_nacimiento')?.invalid && frmGanado.get('fecha_nacimiento')?.touched"
+            [class.ng-dirty]="frmGanado.get('fecha_nacimiento')?.touched"
+            class="form-input"
+          ></p-calendar>
+          <small class="p-error" *ngIf="frmGanado.get('fecha_nacimiento')?.invalid && frmGanado.get('fecha_nacimiento')?.touched">
+            Este campo es obligatorio
+          </small>
+        </div>
+
+        <!-- Lote ganado -->
+        <div class="field">
+          <label for="lote_ganado">
+            <i class="pi pi-th-large mr-2"></i>
+            Lote
+          </label>
+          <input
+            type="text"
+            pInputText
+            id="lote_ganado"
+            formControlName="lote_ganado"
+            placeholder="Ej: Lote A, Sector 1"
+            [class.ng-invalid]="frmGanado.get('lote_ganado')?.invalid && frmGanado.get('lote_ganado')?.touched"
+            [class.ng-dirty]="frmGanado.get('lote_ganado')?.touched"
+            class="form-input"
+          />
+          <small class="p-error" *ngIf="frmGanado.get('lote_ganado')?.invalid && frmGanado.get('lote_ganado')?.touched">
+            Este campo es obligatorio
+          </small>
+        </div>
+      </div>
+
+      <!-- Características Físicas -->
+      <div class="field-row">
+        <!-- Peso -->
+        <div class="field">
+          <label for="peso">
+            <i class="pi pi-chart-line mr-2"></i>
+            Peso (kg)
+          </label>
+          <p-inputNumber
+            id="peso"
+            formControlName="peso"
+            mode="decimal"
+            [minFractionDigits]="0"
+            [maxFractionDigits]="2"
+            suffix=" kg"
+            placeholder="0.00"
+            [class.ng-invalid]="frmGanado.get('peso')?.invalid && frmGanado.get('peso')?.touched"
+            [class.ng-dirty]="frmGanado.get('peso')?.touched"
+            class="form-input"
+          ></p-inputNumber>
+          <small class="p-error" *ngIf="frmGanado.get('peso')?.invalid && frmGanado.get('peso')?.touched">
+            Este campo es obligatorio
+          </small>
+        </div>
+
+        <!-- Color -->
+        <div class="field">
+          <label for="color">
+            <i class="pi pi-palette mr-2"></i>
+            Color
+          </label>
+          <input
+            type="text"
+            pInputText
+            id="color"
+            formControlName="color"
+            placeholder="Ej: Negro, Blanco, Marrón"
+            [class.ng-invalid]="frmGanado.get('color')?.invalid && frmGanado.get('color')?.touched"
+            [class.ng-dirty]="frmGanado.get('color')?.touched"
+            class="form-input"
+          />
+          <small class="p-error" *ngIf="frmGanado.get('color')?.invalid && frmGanado.get('color')?.touched">
+            Este campo es obligatorio
+          </small>
+        </div>
+      </div>
+
+      <!-- Información Reproductiva (Solo para vacas) -->
+      <div class="field-row" *ngIf="showPregnancySection">
+        <!-- Estado de embarazo -->
+        <div class="field">
+          <label for="embarazada">
+            <i class="pi pi-heart mr-2"></i>
+            Estado de Embarazo
+          </label>
+          <p-dropdown
+            id="embarazada"
+            [options]="embarazadaOptions"
+            optionLabel="name"
+            optionValue="value"
+            formControlName="embarazada"
+            placeholder="Seleccionar estado"
+            class="form-dropdown"
+            (onChange)="onEmbarazadaChange($event)"
+          ></p-dropdown>
+        </div>
+
+        <!-- Fecha de embarazo (solo si está embarazada) -->
+        <div class="field" *ngIf="showPregnancyDate">
+          <label for="fecha_embarazo" data-optional>
+            <i class="pi pi-calendar-plus mr-2"></i>
+            Fecha de Embarazo
+            <span class="optional-text">(opcional)</span>
+          </label>
+          <p-calendar
+            id="fecha_embarazo"
+            formControlName="fecha_embarazo"
+            dateFormat="yy-mm-dd"
+            [showIcon]="true"
+            placeholder="Seleccionar fecha de embarazo"
+            [maxDate]="today"
+            class="form-input"
+          ></p-calendar>
+          <small class="text-muted block mt-1">
+            <i class="pi pi-info-circle mr-1"></i>
+            Fecha cuando se confirmó el embarazo
+          </small>
+        </div>
+      </div>
+
+      <!-- Observaciones -->
+      <div class="field">
+        <label for="observaciones" data-optional>
+          <i class="pi pi-file-edit mr-2"></i>
+          Observaciones
+          <span class="optional-text">(opcional)</span>
+        </label>
+        <textarea
+          pInputTextarea
+          id="observaciones"
+          formControlName="observaciones"
+          rows="3"
+          placeholder="Ingrese observaciones adicionales sobre el ganado..."
+          [autoResize]="true"
+          class="form-textarea"
+        ></textarea>
       </div>
     </form>
   </div>
-</div>
+
+  <!-- Footer del dialog -->
+  <ng-template pTemplate="footer">
+    <div class="dialog-footer">
+      <p-button
+        label="Cancelar"
+        icon="pi pi-times"
+        severity="secondary"
+        (onClick)="closeModal()"
+        [disabled]="isSubmitting"
+        class="cancel-button"
+      ></p-button>
+      <p-button
+        label="Limpiar"
+        icon="pi pi-refresh"
+        severity="warning"
+        [outlined]="true"
+        (onClick)="resetForm()"
+        [disabled]="isSubmitting"
+        class="reset-button"
+      ></p-button>
+      <p-button
+        [label]="isEditMode ? 'Actualizar' : 'Guardar'"
+        [icon]="isEditMode ? 'pi pi-check' : 'pi pi-save'"
+        (onClick)="buildsaveCattle()"
+        [loading]="isSubmitting"
+        [disabled]="frmGanado.invalid"
+        class="save-button"
+      ></p-button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<p-toast></p-toast>

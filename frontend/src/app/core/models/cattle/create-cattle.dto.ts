@@ -1,4 +1,5 @@
 export interface CreateCattleDto{
+     id?: number
     tipo_ganado: string;
     numero_ganado: string;
     sexo: string;
@@ -8,4 +9,7 @@ export interface CreateCattleDto{
     lote_ganado: string;
     observaciones: string;
     activo: number;
+    embarazada: number;
+    tipo_animal:string
+    fecha_embarazo:string | null
 }

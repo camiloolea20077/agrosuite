@@ -97,6 +97,7 @@ public ResponseEntity<ApiResponse<Object>> createMultipleCattle(
             @RequestHeader("farmid") Long farmId,
             @Valid @RequestBody UpdateGanadoDto updateGanadoDto) throws Exception {
         try {
+            updateGanadoDto.setFarmId(farmId);
             Boolean isUpdated = ganadoService.update(updateGanadoDto);
             ApiResponse<Object> response = new ApiResponse<>(HttpStatus.OK.value(),
                     "Registro actualizado correctamente", false, isUpdated);

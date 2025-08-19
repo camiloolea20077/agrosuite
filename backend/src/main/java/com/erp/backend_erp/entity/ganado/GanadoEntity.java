@@ -47,6 +47,15 @@ public class GanadoEntity {
     @Column(name = "farm_id")
     private Long farmId;
 
+    @Column(name = "tipo_animal")
+    private String tipo_animal;
+
+    @Column(name = "embarazada")
+    private Integer embarazada;
+
+    @Column(name = "fecha_embarazo")
+    private String fecha_embarazo;
+
     @Column(name = "created_at", nullable = false, updatable = false)
 	private LocalDateTime created_at;
 

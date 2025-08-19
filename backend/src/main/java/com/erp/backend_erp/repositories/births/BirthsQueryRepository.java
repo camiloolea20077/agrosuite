@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -15,14 +16,23 @@ import org.springframework.stereotype.Repository;
 import com.erp.backend_erp.dto.births.BirthsTableDto;
 import com.erp.backend_erp.dto.births.DashboardBirthDto;
 import com.erp.backend_erp.dto.births.DesteteTableDto;
+import com.erp.backend_erp.dto.births.ResultadoMigracionDto;
 import com.erp.backend_erp.util.MapperRepository;
 import com.erp.backend_erp.util.PageableDto;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Repository
 public class BirthsQueryRepository {
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     public Boolean existCattle(String numeroCria) {
         String sql = "SELECT COUNT(*) FROM births WHERE numero_cria = :numeroCria";
@@ -31,6 +41,7 @@ public class BirthsQueryRepository {
         Long count = namedParameterJdbcTemplate.queryForObject(sql, params, Long.class);
         return count != null && count > 0;
     }
+
     public PageImpl<BirthsTableDto> listBirths(PageableDto<Object> pageableDto) {
         int pageNumber = pageableDto.getPage() != null ? pageableDto.getPage().intValue() : 0;
         int pageSize = pageableDto.getRows() != null ? pageableDto.getRows().intValue() : 10;
@@ -86,6 +97,7 @@ public class BirthsQueryRepository {
         PageRequest pageable = PageRequest.of(pageNumber, pageSize);
         return new PageImpl<>(result, pageable, count);
     }
+
     public List<DashboardBirthDto> getBirthsByMonth(Long farmId) {
         String sql = """
             SELECT 
@@ -112,12 +124,12 @@ public class BirthsQueryRepository {
             }).collect(Collectors.toList());
     }
 
-
     public long getTotalCattleCount(Long farmId) {
         String sql = "SELECT COUNT(*) FROM cattle WHERE deleted_at IS NULL AND activo = 1 AND farm_id = :farmId";
-            MapSqlParameterSource params = new MapSqlParameterSource("farmId", farmId);
-            return namedParameterJdbcTemplate.queryForObject(sql, params, Long.class);
+        MapSqlParameterSource params = new MapSqlParameterSource("farmId", farmId);
+        return namedParameterJdbcTemplate.queryForObject(sql, params, Long.class);
     }
+
     public long getTotalBirths(Long farmId) {
         String sql = "SELECT COUNT(*) FROM births WHERE deleted_at IS NULL AND farm_id = :farmId";
         MapSqlParameterSource params = new MapSqlParameterSource("farmId", farmId);
@@ -147,6 +159,7 @@ public class BirthsQueryRepository {
         params.addValue("ids", cattleIds);
         namedParameterJdbcTemplate.update(sql, params);
     }
+
     public void updateFarmId(Long birthId, Long newFarmId) {
         String sql = "UPDATE births SET farm_id = :farmId WHERE id = :id";
         MapSqlParameterSource params = new MapSqlParameterSource();
@@ -154,13 +167,14 @@ public class BirthsQueryRepository {
         params.addValue("id", birthId);
         namedParameterJdbcTemplate.update(sql, params);
     }
+
     public List<DesteteTableDto> listDesteteDashboard(Long farmId) {
         String sql = """
             SELECT id,
                 numero_cria,
                 fecha_nacimiento::date,
                 (fecha_nacimiento::date + INTERVAL '8 months')::date AS fecha_proxima_destete,
-                (fecha_nacimiento::date + INTERVAL '8 months') - CURRENT_DATE AS dias_restante
+                GREATEST(0, EXTRACT(days FROM (fecha_nacimiento::date + INTERVAL '8 months') - CURRENT_DATE)::integer) AS dias_restantes
             FROM births
             WHERE deleted_at IS NULL
             AND farm_id = :farmId
@@ -177,29 +191,235 @@ public class BirthsQueryRepository {
             dto.setNumero_cria(rs.getString("numero_cria"));
             dto.setFecha_nacimiento(rs.getDate("fecha_nacimiento").toLocalDate());
             dto.setFecha_proxima_destete(rs.getDate("fecha_proxima_destete").toLocalDate());
-            
-            // Extraer días del interval de PostgreSQL
-            String intervalStr = rs.getString("dias_restante");
-            Long dias = extractDaysFromPostgreSQLInterval(intervalStr);
-            dto.setDias_restantes(dias);
-            
+            dto.setDias_restantes(Long.valueOf(rs.getInt("dias_restantes")));
             return dto;
         });
     }
 
+    public List<DesteteTableDto> obtenerTernerosListosParaDestetar(Long farmId) {
+        String sql = """
+            SELECT id,
+                   numero_cria,
+                   fecha_nacimiento::date,
+                   (fecha_nacimiento::date + INTERVAL '8 months')::date AS fecha_proxima_destete,
+                   GREATEST(0, EXTRACT(days FROM (fecha_nacimiento::date + INTERVAL '8 months') - CURRENT_DATE)::integer) AS dias_restantes
+            FROM births
+            WHERE deleted_at IS NULL
+              AND COALESCE(migrado_cattle, FALSE) = FALSE
+              AND farm_id = :farmId
+              AND (fecha_nacimiento::date + INTERVAL '8 months') <= CURRENT_DATE
+            ORDER BY fecha_proxima_destete;
+        """;
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("farmId", farmId);
+
+        return namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> {
+            DesteteTableDto dto = new DesteteTableDto();
+            dto.setId(rs.getLong("id"));
+            dto.setNumero_cria(rs.getString("numero_cria"));
+            dto.setFecha_nacimiento(rs.getDate("fecha_nacimiento").toLocalDate());
+            dto.setFecha_proxima_destete(rs.getDate("fecha_proxima_destete").toLocalDate());
+            dto.setDias_restantes(Long.valueOf(rs.getInt("dias_restantes")));
+            return dto;
+        });
+    }
+
+    public List<DesteteTableDto> obtenerProximosDestetes(Long farmId, Integer limit) {
+        String sql = """
+            SELECT id,
+                   numero_cria,
+                   fecha_nacimiento::date,
+                   (fecha_nacimiento::date + INTERVAL '8 months')::date AS fecha_proxima_destete,
+                   EXTRACT(days FROM (fecha_nacimiento::date + INTERVAL '8 months') - CURRENT_DATE)::integer AS dias_restantes
+            FROM births
+            WHERE deleted_at IS NULL
+              AND COALESCE(migrado_cattle, FALSE) = FALSE
+              AND farm_id = :farmId
+            ORDER BY fecha_proxima_destete
+            LIMIT :limit;
+        """;
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("farmId", farmId);
+        params.addValue("limit", limit != null ? limit : 10);
+
+        return namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> {
+            DesteteTableDto dto = new DesteteTableDto();
+            dto.setId(rs.getLong("id"));
+            dto.setNumero_cria(rs.getString("numero_cria"));
+            dto.setFecha_nacimiento(rs.getDate("fecha_nacimiento").toLocalDate());
+            dto.setFecha_proxima_destete(rs.getDate("fecha_proxima_destete").toLocalDate());
+            dto.setDias_restantes(Long.valueOf(rs.getInt("dias_restantes")));
+            return dto;
+        });
+    }
+
+    public ResultadoMigracionDto migrarTerneroACattle(Long birthId, String decision) {
+        // Usar JdbcTemplate simple para la función
+        String sql = "SELECT migrar_ternero_a_cattle(?, ?)";
+        
+        try {
+            String jsonResult = jdbcTemplate.queryForObject(sql, String.class, birthId, decision);
+            
+            if (jsonResult == null) {
+                return new ResultadoMigracionDto(
+                    false, 
+                    "No se recibió respuesta de la función", 
+                    birthId, 
+                    null, 
+                    decision
+                );
+            }
+
+            // Parsear el JSON usando Jackson ObjectMapper
+            JsonNode jsonNode = objectMapper.readTree(jsonResult);
+            
+            boolean success = jsonNode.get("success").asBoolean();
+            String message = jsonNode.get("message").asText();
+            Long cattleId = null;
+            
+            if (jsonNode.has("cattle_id") && !jsonNode.get("cattle_id").isNull()) {
+                cattleId = jsonNode.get("cattle_id").asLong();
+            }
+            
+            return new ResultadoMigracionDto(success, message, birthId, cattleId, decision);
+            
+        } catch (Exception e) {
+            // Log del error completo
+            System.err.println("Error al migrar ternero: " + e.getMessage());
+            e.printStackTrace();
+            
+            return new ResultadoMigracionDto(
+                false, 
+                "Error al migrar ternero: " + e.getMessage(), 
+                birthId, 
+                null, 
+                decision
+            );
+        }
+    }
+
+    public List<Map<String, Object>> obtenerHistorialDestetes(Long farmId) {
+        String sql = "SELECT * FROM obtener_historial_destetes(?)";
+        
+        try {
+            return jdbcTemplate.query(sql, new ColumnMapRowMapper(), farmId);
+        } catch (Exception e) {
+            System.err.println("Error al obtener historial de destetes: " + e.getMessage());
+            e.printStackTrace();
+            return List.of(); // Retornar lista vacía en caso de error
+        }
+    }
+
+    // Método para verificar si un ternero puede ser migrado
+    public boolean puedeSerMigrado(Long birthId, Long farmId) {
+        String sql = """
+            SELECT CASE 
+                WHEN (fecha_nacimiento::date + INTERVAL '8 months') <= CURRENT_DATE 
+                     AND COALESCE(migrado_cattle, FALSE) = FALSE 
+                     AND deleted_at IS NULL 
+                THEN TRUE 
+                ELSE FALSE 
+            END as puede_migrar
+            FROM births 
+            WHERE id = ? AND farm_id = ?;
+        """;
+        
+        try {
+            Boolean resultado = jdbcTemplate.queryForObject(sql, Boolean.class, birthId, farmId);
+            return resultado != null && resultado;
+        } catch (Exception e) {
+            System.err.println("Error verificando si puede ser migrado: " + e.getMessage());
+            return false;
+        }
+    }
+
+    // Método para obtener estadísticas de destetes
+    public Map<String, Object> obtenerEstadisticasDestetes(Long farmId) {
+        String sql = """
+            SELECT 
+                COUNT(*) FILTER (WHERE COALESCE(migrado_cattle, FALSE) = FALSE AND (fecha_nacimiento::date + INTERVAL '8 months') <= CURRENT_DATE) as listos_para_destetar,
+                COUNT(*) FILTER (WHERE COALESCE(migrado_cattle, FALSE) = FALSE AND (fecha_nacimiento::date + INTERVAL '8 months') > CURRENT_DATE) as proximos_destetes,
+                COUNT(*) FILTER (WHERE COALESCE(migrado_cattle, FALSE) = TRUE) as ya_destetados,
+                COUNT(*) FILTER (WHERE COALESCE(migrado_cattle, FALSE) = TRUE AND decision_destete = 'cria') as enviados_a_cria,
+                COUNT(*) FILTER (WHERE COALESCE(migrado_cattle, FALSE) = TRUE AND decision_destete = 'venta') as enviados_a_venta
+            FROM births 
+            WHERE farm_id = ? AND deleted_at IS NULL;
+        """;
+        
+        try {
+            return jdbcTemplate.queryForMap(sql, farmId);
+        } catch (Exception e) {
+            System.err.println("Error obteniendo estadísticas: " + e.getMessage());
+            return Map.of(
+                "listos_para_destetar", 0,
+                "proximos_destetes", 0, 
+                "ya_destetados", 0,
+                "enviados_a_cria", 0,
+                "enviados_a_venta", 0
+            );
+        }
+    }
+
+    // Método auxiliar mejorado para parsear intervalos (ya no se necesita)
+    @Deprecated
     private Long extractDaysFromPostgreSQLInterval(String interval) {
         if (interval == null || interval.isEmpty()) {
             return 0L;
         }
         
-        // Buscar patrón "X days" en el string
-        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("(\\d+)\\s+days");
-        java.util.regex.Matcher matcher = pattern.matcher(interval);
-        
-        if (matcher.find()) {
-            return Long.parseLong(matcher.group(1));
+        try {
+            // Buscar patrón "X days" en el string
+            java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("(\\d+)\\s+days");
+            java.util.regex.Matcher matcher = pattern.matcher(interval);
+            
+            if (matcher.find()) {
+                return Long.parseLong(matcher.group(1));
+            }
+            
+            // Buscar patrón "-X days" para números negativos
+            java.util.regex.Pattern negPattern = java.util.regex.Pattern.compile("-(\\d+)\\s+days");
+            java.util.regex.Matcher negMatcher = negPattern.matcher(interval);
+            
+            if (negMatcher.find()) {
+                return -Long.parseLong(negMatcher.group(1));
+            }
+            
+        } catch (Exception e) {
+            System.err.println("Error parsing interval: " + interval);
         }
         
         return 0L;
+    }
+
+    // Métodos auxiliares obsoletos - reemplazados por Jackson ObjectMapper
+    @Deprecated
+    private Long extractCattleIdFromJson(String json) {
+        // Este método es obsoleto, se reemplazó por Jackson ObjectMapper
+        try {
+            String[] parts = json.split("\"cattle_id\":");
+            if (parts.length > 1) {
+                String idPart = parts[1].split(",")[0].trim();
+                return Long.parseLong(idPart);
+            }
+        } catch (Exception e) {
+            System.err.println("Error extracting cattle_id: " + e.getMessage());
+        }
+        return null;
+    }
+
+    @Deprecated
+    private String extractMessageFromJson(String json) {
+        // Este método es obsoleto, se reemplazó por Jackson ObjectMapper
+        try {
+            String[] parts = json.split("\"message\":\"");
+            if (parts.length > 1) {
+                return parts[1].split("\"")[0];
+            }
+        } catch (Exception e) {
+            System.err.println("Error extracting message: " + e.getMessage());
+        }
+        return "Error desconocido";
     }
 }

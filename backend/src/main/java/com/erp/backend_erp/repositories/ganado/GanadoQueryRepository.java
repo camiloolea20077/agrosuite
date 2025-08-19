@@ -42,13 +42,13 @@ public class    GanadoQueryRepository {
                 SELECT 
                     o.id,
                     o.tipo_ganado AS tipo_ganado,
+                    o.embarazada AS embarazo,
+                    o.tipo_animal AS tipo_animal,
                     o.numero_ganado AS numero_ganado,
-                    o.sexo AS sexo,
-                    o.color AS color,
                     o.peso AS peso,
                     o.fecha_nacimiento as fecha_nacimiento,
                     o.lote_ganado as lote_ganado,
-                    o.observaciones as observaciones,
+                    o.fecha_embarazo as fecha_embarazo,
                     o.activo as activo,
                     COUNT(*) OVER() AS total_rows
                 FROM 
