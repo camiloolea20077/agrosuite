@@ -81,9 +81,29 @@ public class    GanadoQueryRepository {
         params.addValue("offset", offset);
         params.addValue("limit", pageSize);
 
-        List<Map<String, Object>> resultList = namedParameterJdbcTemplate.query(sql, params, new ColumnMapRowMapper());
-        List<GanadoTableDto> result = MapperRepository.mapListToDtoList(resultList, GanadoTableDto.class);
-
+    List<Map<String, Object>> resultList = namedParameterJdbcTemplate.query(sql, params, new ColumnMapRowMapper());
+    
+    // 🔍 DEBUG: Agregar logs temporales
+    if (!resultList.isEmpty()) {
+        Map<String, Object> firstRow = resultList.get(0);
+        System.out.println("=== DEBUG CATTLE MAPPING ===");
+        firstRow.forEach((key, value) -> {
+            String type = value != null ? value.getClass().getSimpleName() : "null";
+            System.out.println(key + " = " + value + " (Type: " + type + ")");
+        });
+    }
+    
+    // 🔍 Envolver el mapeo en try-catch para capturar el error exacto
+    List<GanadoTableDto> result;
+    try {
+        result = MapperRepository.mapListToDtoList(resultList, GanadoTableDto.class);
+    } catch (Exception e) {
+        System.out.println("=== ERROR EN MAPEO ===");
+        System.out.println("Error: " + e.getMessage());
+        e.printStackTrace();
+        throw e; // Re-lanzar el error
+    }
+    
         long count = resultList.isEmpty() ? 0 : (long) resultList.get(0).get("total_rows");
         PageRequest pageable = PageRequest.of(pageNumber, pageSize);
         return new PageImpl<>(result, pageable, count);
