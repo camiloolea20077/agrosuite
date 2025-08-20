@@ -1,5 +1,6 @@
 package com.erp.backend_erp.entity.ganado;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.SQLDelete;
@@ -34,7 +35,7 @@ public class GanadoEntity {
 
     private String color;
 
-    private String peso;
+    private BigDecimal peso;
 
     private String fecha_nacimiento;
 

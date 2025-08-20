@@ -1,5 +1,7 @@
 package com.erp.backend_erp.dto.ganado;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +12,7 @@ public class CreateGanadoDto {
     private String numero_ganado;
     private String sexo;
     private String color;
-    private String peso;
+    private BigDecimal peso;
     private String fecha_nacimiento;
     private String lote_ganado;
     private String observaciones;
