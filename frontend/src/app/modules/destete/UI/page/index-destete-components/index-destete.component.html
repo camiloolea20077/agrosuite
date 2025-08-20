@@ -1,0 +1,386 @@
+<!-- Tabla de Destetes con estilos mejorados -->
+<div class="main-container">
+  <div class="card">
+    <!-- Header de la tarjeta -->
+    <div class="card-header">
+      <h4>Gestión de Destetes</h4>
+    </div>
+
+    <div class="card-content">
+      <!-- Toolbar mejorado -->
+      <div class="p-toolbar mb-4">
+        <div class="toolbar-left"></div>
+        <div class="toolbar-right">
+          <p-button 
+            label="Ver Historial" 
+            icon="pi pi-history" 
+            severity="info"
+            [loading]="loadingHistorial"
+            (onClick)="loadHistorialDestetes()"
+            class="history-button">
+          </p-button>
+          <p-button 
+            label="Migrar Lote" 
+            icon="pi pi-users" 
+            severity="warning"
+            [disabled]="selectedTerneros.length === 0"
+            (onClick)="confirmBatchMigration()"
+            class="batch-button">
+          </p-button>
+        </div>
+      </div>
+
+      <!-- Tabla con estilos mejorados -->
+      <p-table
+        #dt
+        [value]="terneros"
+        [loading]="loadingTable"
+        styleClass="p-datatable-gridlines modern-table"
+        [paginator]="true"
+        [rows]="10"
+        [rowsPerPageOptions]="[10, 25, 50, 100]"
+        [globalFilterFields]="getFilterFields()"
+        responsiveLayout="scroll"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+        [totalRecords]="terneros.length"
+        [(selection)]="selectedTerneros"
+        [tableStyle]="{ 'min-width': '50rem' }"
+        [scrollable]="true"
+        scrollHeight="600px"
+      >
+        <!-- Búsqueda mejorada -->
+        <ng-template pTemplate="caption">
+          <div class="table-header">
+            <div class="search-container">
+              <span class="p-input-icon-left">
+                <i class="pi pi-search"></i>
+                <input
+                  pInputText
+                  type="text"
+                  [(ngModel)]="globalFilter"
+                  (input)="filterGlobal($event)"
+                  placeholder="Buscar terneros para destetar..."
+                  class="search-input"
+                />
+              </span>
+              <div class="results-info">
+                <span class="text-sm text-500">
+                  Total: {{ terneros.length }} terneros
+                </span>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+
+        <!-- Headers con mejor diseño -->
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 4rem; background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%); color: var(--primary-color-text);">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <ng-container *ngFor="let col of cols">
+              <th
+                *ngIf="col.field !== 'actions'"
+                [pSortableColumn]="col.field"
+                [style]="col.minWidth"
+                [class]="col.nameClass"
+              >
+                <div class="flex justify-content-between align-items-center">
+                  <span class="header-text">
+                    <i [class]="getColumnIcon(col.field)" class="mr-2"></i>
+                    {{ col.header }}
+                  </span>
+                  <p-sortIcon [field]="col.field"></p-sortIcon>
+                </div>
+              </th>
+              <th
+                *ngIf="col.field === 'actions'"
+                [class]="col.nameClass"
+                [style]="col.minWidth"
+              >
+                <span class="header-text">
+                  <i class="pi pi-cog mr-2"></i>
+                  {{ col.header }}
+                </span>
+              </th>
+            </ng-container>
+          </tr>
+        </ng-template>
+
+        <!-- Filas con mejor presentación -->
+        <ng-template pTemplate="body" let-ternero let-rowIndex="rowIndex">
+          <tr class="table-row" [attr.data-index]="rowIndex" [pSelectableRow]="ternero" [pSelectableRowIndex]="rowIndex">
+            <td>
+              <p-tableCheckbox [value]="ternero"></p-tableCheckbox>
+            </td>
+
+            <td
+              *ngFor="let col of cols"
+              [class]="col.nameClass + ' table-cell'"
+              [attr.data-field]="col.field"
+            >
+              <!-- Número Cría -->
+              <div *ngIf="col.field === 'numero_cria'" class="text-cell">
+                <div class="text-info">
+                  <span class="text-value font-semibold">{{ ternero.numero_cria }}</span>
+                </div>
+              </div>
+
+              <!-- Fechas -->
+              <div *ngIf="col.field === 'fecha_nacimiento' || col.field === 'fecha_proxima_destete'" class="text-cell">
+                <div class="text-info">
+                  <span class="text-value">{{ ternero[col.field] | date:'dd/MM/yyyy' }}</span>
+                </div>
+              </div>
+
+              <!-- Días Restantes con estado -->
+              <div *ngIf="col.field === 'dias_restantes'" class="status-cell">
+                <p-tag 
+                  [value]="getDiasRestantesLabel(ternero.dias_restantes)"
+                  [severity]="getDiasRestantesSeverity(ternero.dias_restantes)"
+                  class="status-tag">
+                </p-tag>
+              </div>
+
+              <!-- Acciones -->
+              <div *ngIf="col.field === 'actions'" class="action-buttons">
+                <p-button
+                  icon="pi pi-arrow-right"
+                  severity="success"
+                  size="small"
+                  (onClick)="confirmMigration(ternero)"
+                  pTooltip="Procesar Destete"
+                  tooltipPosition="top"
+                  class="process-button"
+                ></p-button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <!-- Mensaje vacío mejorado -->
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td [attr.colspan]="cols.length + 1" class="empty-message">
+              <div class="empty-state">
+                <i class="pi pi-baby empty-icon"></i>
+                <h3>No hay terneros listos para destetar</h3>
+                <p>
+                  Los terneros aparecerán aquí cuando estén cerca de la fecha de destete.
+                </p>
+                <p>
+                  Revisa el módulo de nacimientos para gestionar los terneros recién nacidos.
+                </p>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <!-- Loading template -->
+        <ng-template pTemplate="loadingbody">
+          <tr>
+            <td [attr.colspan]="cols.length + 1">
+              <div class="loading-state">
+                <i class="pi pi-spin pi-spinner loading-spinner"></i>
+                <span>Cargando terneros para destetar...</span>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+
+<!-- Dialog para Migración Individual -->
+<p-dialog 
+  header="Procesar Destete Individual" 
+  [(visible)]="showMigrationDialog" 
+  [modal]="true" 
+  [style]="{width: '450px'}"
+  [closable]="!loadingMigracion">
+  
+  <div class="flex flex-column gap-4" *ngIf="selectedTernero">
+    <div class="text-center">
+      <h4 class="mb-2">Ternero: {{ selectedTernero.numero_cria }}</h4>
+      <p class="text-600 mb-0">
+        Fecha de nacimiento: {{ selectedTernero.fecha_nacimiento | date:'dd/MM/yyyy' }}
+      </p>
+    </div>
+
+    <div class="field">
+      <label for="decision" class="block text-900 font-medium mb-2">
+        Decisión de Destete
+      </label>
+      <p-dropdown 
+        id="decision"
+        [(ngModel)]="migrationDecision"
+        [options]="decisionOptions"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Seleccione una opción"
+        styleClass="w-full">
+      </p-dropdown>
+    </div>
+
+    <div class="flex justify-content-end gap-2">
+      <p-button 
+        label="Cancelar" 
+        icon="pi pi-times" 
+        severity="secondary" 
+        [disabled]="loadingMigracion"
+        (onClick)="showMigrationDialog = false">
+      </p-button>
+      <p-button 
+        label="Procesar" 
+        icon="pi pi-check" 
+        [loading]="loadingMigracion"
+        (onClick)="migrarTernero()">
+      </p-button>
+    </div>
+  </div>
+</p-dialog>
+
+<!-- Dialog para Migración por Lotes -->
+<p-dialog 
+  header="Procesar Destete por Lotes" 
+  [(visible)]="showBatchMigrationDialog" 
+  [modal]="true" 
+  [style]="{width: '500px'}"
+  [closable]="!loadingMigracion">
+  
+  <div class="flex flex-column gap-4">
+    <div class="text-center">
+      <h4 class="mb-2">
+        Procesar {{ selectedTerneros.length }} terneros
+      </h4>
+      <p class="text-600 mb-0">
+        Todos los terneros seleccionados tendrán la misma decisión
+      </p>
+    </div>
+
+    <div class="field">
+      <label for="batchDecision" class="block text-900 font-medium mb-2">
+        Decisión de Destete
+      </label>
+      <p-dropdown 
+        id="batchDecision"
+        [(ngModel)]="batchMigrationDecision"
+        [options]="decisionOptions"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Seleccione una opción"
+        styleClass="w-full">
+      </p-dropdown>
+    </div>
+
+    <!-- Lista de terneros seleccionados -->
+    <div class="border-1 border-300 border-round p-3 max-h-20rem overflow-auto">
+      <h5 class="mt-0 mb-3">Terneros seleccionados:</h5>
+      <div class="flex flex-column gap-2">
+        <div 
+          *ngFor="let ternero of selectedTerneros" 
+          class="flex justify-content-between align-items-center p-2 border-bottom-1 border-200">
+          <span class="font-medium">{{ ternero.numero_cria }}</span>
+          <span class="text-sm text-600">
+            {{ ternero.fecha_nacimiento | date:'dd/MM/yyyy' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-content-end gap-2">
+      <p-button 
+        label="Cancelar" 
+        icon="pi pi-times" 
+        severity="secondary" 
+        [disabled]="loadingMigracion"
+        (onClick)="showBatchMigrationDialog = false">
+      </p-button>
+      <p-button 
+        label="Procesar Lote" 
+        icon="pi pi-check" 
+        [loading]="loadingMigracion"
+        (onClick)="migrarLoteTerneros()">
+      </p-button>
+    </div>
+  </div>
+</p-dialog>
+
+<!-- Dialog para Historial -->
+<!-- Dialog para Historial - SECCIÓN CORREGIDA -->
+<p-dialog 
+  header="Historial de Destetes" 
+  [(visible)]="showHistorialDialog" 
+  [modal]="true" 
+  [style]="{width: '80vw', height: '70vh'}"
+  [maximizable]="true">
+  
+  <div *ngIf="loadingHistorial" class="flex justify-content-center p-4">
+    <p-progressSpinner></p-progressSpinner>
+  </div>
+
+  <div *ngIf="!loadingHistorial">
+    <p-table 
+      [value]="historialDestetes" 
+      [paginator]="true" 
+      [rows]="10"
+      [showCurrentPageReport]="true"
+      [rowHover]="true"
+      styleClass="p-datatable-gridlines"
+      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros">
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Fecha</th>
+          <th>Ternero</th>
+          <th>Decisión</th>
+          <th>Estado</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-registro>
+        <tr>
+          <!-- CORREGIDO: Usar fecha_destete en lugar de fecha -->
+          <td>{{ registro.fecha_destete | date:'dd/MM/yyyy' }}</td>
+          
+          <!-- CORREGIDO: Usar numero_cria (ya estaba correcto) -->
+          <td>{{ registro.numero_cria }}</td>
+          
+          <!-- CORREGIDO: Usar decision_destete y getDecisionLabel() -->
+          <td>
+            <p-tag 
+              [value]="getDecisionLabel(registro.decision_destete)"
+              [severity]="getDecisionSeverity(registro.decision_destete)">
+            </p-tag>
+          </td>
+          
+          <!-- CORREGIDO: Usar método getEstadoDestete() -->
+          <td>
+            <p-tag 
+              [value]="getEstadoDestete(registro).label"
+              [severity]="getEstadoDestete(registro).severity">
+            </p-tag>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="4" class="text-center py-4">
+            <div class="flex flex-column align-items-center gap-2">
+              <i class="pi pi-info-circle text-4xl text-400"></i>
+              <span class="text-lg text-600">No hay historial de destetes</span>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</p-dialog>
+<!-- Toast para mensajes -->
+<p-toast></p-toast>
+
+<!-- Dialog de confirmación -->
+<p-confirmDialog></p-confirmDialog>

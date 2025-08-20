@@ -51,6 +51,7 @@ export class LayoutComponent {
     const routeLabels: { [key: string]: string } = {
       '/dashboard': 'Dashboard',
       '/cattle': 'Ganado',
+      '/destete': 'Destetes',
       '/inventory': 'Inventario', 
       '/births': 'Nacimientos',
       '/employees': 'Empleados',

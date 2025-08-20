@@ -12,5 +12,6 @@ export const environment = {
     salesUrl: 'https://agrosuite.onrender.com/cattle-sale',
     tercerosUrl: 'https://agrosuite.onrender.com/terceros',
     cattleTransfers : 'https://agrosuite.onrender.com/cattle-transfer',
-    tipoInsumosUrl: 'https://agrosuite.onrender.com/tipos-insumos/'
+    tipoInsumosUrl: 'https://agrosuite.onrender.com/tipos-insumos/',
+    destetesURL: 'https://agrosuite.onrender.com/destetes'
 };

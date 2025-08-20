@@ -134,6 +134,11 @@ private buildMenu(): void {
       icon: 'pi pi-heart-fill', 
       route: '/births' 
     },
+    { 
+      label: 'Destetes', 
+      icon: 'pi pi-truck', 
+      route: '/destete' 
+    },
   ];
  // Módulo de Inventario expandido con las nuevas funcionalidades
   if (this.hasInventoryPermissions()) {

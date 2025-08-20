@@ -93,6 +93,14 @@ const routes: Routes = [
           ),
           canActivate: [AuthGuard],
       },
+      {
+        path: 'destete',
+        loadChildren: () =>
+          import('./modules/destete/destete.module').then(
+            (m) => m.DesteteModule
+          ),
+          canActivate: [AuthGuard],
+      }
     ],
   },
   {
