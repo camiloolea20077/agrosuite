@@ -11,7 +11,7 @@ public class GanadoTableDto {
     private String numero_ganado;
     private String peso;
     private String tipo_animal;
-    private Long embarazo;
+    private Integer embarazo;
     private String fecha_nacimiento;
     private String lote_ganado;
     private String fecha_embarazo;
