@@ -9,6 +9,7 @@ import { IFilterTable } from 'src/app/shared/utils/models/filter-table';
 import { InventoryStateTableModel } from '../domain/models/inventory-state-table.models';
 import { IFilterInventoryStateTableModel, IFilterTiposMovimientosTableModel } from '../domain/models/inventory-state-filter.models';
 import { TiposMovimientosTableModel } from '../domain/models/tipos-movimientos-table.models';
+import { InsumosTableModel } from '../domain/models/tipos-insumos-table.models';
 
 
 
@@ -23,6 +24,15 @@ export class InventoryCatalogService {
   // ========================= Tipos de Insumos =========================
   pageTiposInsumos(): Observable<ResponseModel<TipoInsumo[]>> {
     return this.http.get<ResponseModel<TipoInsumo[]>>(`${this.baseUrl2}active`);
+  }
+
+  pageInsumosTable(
+    iFilterTable: IFilterTable<IFilterInventoryStateTableModel>
+  ): Observable<ResponseTableModel<InsumosTableModel>> {
+    return this.http.post<ResponseTableModel<InsumosTableModel>>(
+      `${this.baseUrl2}page`,
+      iFilterTable
+    );
   }
 
   createTipoInsumo(tipo: Omit<TipoInsumo, 'id'>): Observable<ResponseModel<TipoInsumo>> {

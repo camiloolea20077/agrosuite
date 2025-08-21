@@ -23,7 +23,7 @@
       <!-- Tabla con estilos mejorados -->
       <p-table
         #dt
-        [value]="tiposInsumos"
+        [value]="tiposInsumosTable"
         [loading]="loading"
         styleClass="p-datatable-gridlines modern-table"
         [paginator]="true"
@@ -32,6 +32,8 @@
         [globalFilterFields]="['codigo', 'nombre', 'descripcion']"
         responsiveLayout="scroll"
         [showCurrentPageReport]="true"
+        [lazy]="true"
+        (onLazyLoad)="loadTable($event)"
         currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
       >
         <!-- Búsqueda mejorada -->
@@ -54,90 +56,64 @@
           </div>
         </ng-template>
 
-        <!-- Headers con mejor diseño -->
+        <!-- Header de la tabla -->
         <ng-template pTemplate="header">
           <tr>
-            <th pSortableColumn="codigo" style="width: 150px">
-              <div class="flex justify-content-between align-items-center">
-                <span class="header-text">
-                  <i class="pi pi-code mr-2"></i>
-                  Código
-                </span>
-                <p-sortIcon field="codigo"></p-sortIcon>
+            <th *ngFor="let col of cols" [class]="col.nameClass">
+              <div class="flex align-items-center gap-2">
+                <i [class]="getColumnIcon(col.field)" class="column-icon"></i>
+                <span class="header-text">{{ col.header }}</span>
               </div>
-            </th>
-            <th pSortableColumn="nombre" style="width: 250px">
-              <div class="flex justify-content-between align-items-center">
-                <span class="header-text">
-                  <i class="pi pi-tag mr-2"></i>
-                  Nombre
-                </span>
-                <p-sortIcon field="nombre"></p-sortIcon>
-              </div>
-            </th>
-            <th pSortableColumn="descripcion">
-              <div class="flex justify-content-between align-items-center">
-                <span class="header-text">
-                  <i class="pi pi-file-edit mr-2"></i>
-                  Descripción
-                </span>
-              </div>
-            </th>
-            <th pSortableColumn="activo" style="width: 120px">
-              <div class="flex justify-content-between align-items-center">
-                <span class="header-text">
-                  <i class="pi pi-power-off mr-2"></i>
-                  Estado
-                </span>
-                <p-sortIcon field="activo"></p-sortIcon>
-              </div>
-            </th>
-            <th style="width: 120px">
-              <span class="header-text">
-                <i class="pi pi-cog mr-2"></i>
-                Acciones
-              </span>
             </th>
           </tr>
         </ng-template>
 
         <!-- Filas con mejor presentación -->
-        <ng-template pTemplate="body" let-tipoInsumo let-rowIndex="rowIndex">
+        <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
           <tr class="table-row" [attr.data-index]="rowIndex">
-            <td>
-              <div class="code-cell">
-                <strong class="code-badge">{{ tipoInsumo.codigo }}</strong>
+            <td
+              *ngFor="let col of cols"
+              [class]="col.nameClass + ' table-cell'"
+              [attr.data-field]="col.field"
+            >
+              <!-- Campo de código -->
+              <div *ngIf="col.field === 'codigo'" class="text-cell">
+                <strong>{{ item[col.field] }}</strong>
               </div>
-            </td>
-            <td>
-              <div class="name-cell">
-                <span class="name-text">{{ tipoInsumo.nombre }}</span>
+
+              <!-- Campo de nombre -->
+              <div *ngIf="col.field === 'nombre'" class="text-cell">
+                <span class="font-medium">{{ item[col.field] }}</span>
               </div>
-            </td>
-            <td>
-              <div class="description-cell">
-                <span class="description-text">
-                  {{ tipoInsumo.descripcion || "Sin descripción" }}
+
+              <!-- Campo de descripción -->
+              <div *ngIf="col.field === 'descripcion'" class="text-cell">
+                <span class="text-color-secondary">
+                  {{ item[col.field] || 'Sin descripción' }}
                 </span>
               </div>
-            </td>
-            <td>
-              <div class="status-cell">
+
+              <!-- Campo de estado con tags (tipo icon) -->
+              <div *ngIf="col.type === 'icon'" class="status-cell">
                 <p-tag
-                  [value]="getEstadoLabel(tipoInsumo.activo)"
-                  [severity]="getEstadoSeverity(tipoInsumo.activo)"
-                  class="status-tag"
+                  [value]="getEstadoLabel(item.activo)"
+                  [severity]="getEstadoSeverity(item.activo)"
                 ></p-tag>
               </div>
-            </td>
-            <td>
-              <div class="action-buttons">
+
+              <!-- Campo de texto genérico -->
+              <div *ngIf="col.type === 'string' && col.field !== 'codigo' && col.field !== 'nombre' && col.field !== 'descripcion'" class="text-cell">
+                <span>{{ item[col.field] || 'N/A' }}</span>
+              </div>
+
+              <!-- Acciones -->
+              <div *ngIf="col.field === 'actions'" class="action-buttons">
                 <p-button
                   icon="pi pi-pencil"
                   severity="info"
                   size="small"
-                  (onClick)="editTipoInsumo(tipoInsumo)"
-                  pTooltip="Editar tipo de insumo"
+                  (onClick)="editTipoInsumo(item)"
+                  pTooltip="Editar estado de inventario"
                   tooltipPosition="top"
                   class="edit-button"
                 ></p-button>
@@ -145,8 +121,8 @@
                   icon="pi pi-trash"
                   severity="danger"
                   size="small"
-                  (onClick)="deleteTipoInsumo(tipoInsumo)"
-                  pTooltip="Eliminar tipo de insumo"
+                  (onClick)="deleteTipoInsumo(item)"
+                  pTooltip="Eliminar estado de inventario"
                   tooltipPosition="top"
                   class="delete-button"
                 ></p-button>

@@ -136,26 +136,6 @@ export class EstadosInventarioComponent implements OnInit {
     };
     return iconMap[field] || 'pi pi-circle';
   }
-
-  loadEstadosInventario() {
-    this.loading = true;
-    this.inventoryCatalogService.pageEstadosInventario().subscribe({
-      next: (response) => {
-        this.estadosInventario = response.data || [];
-        this.loading = false;
-      },
-      error: (error) => {
-        console.error('Error loading estados inventario:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'No se pudieron cargar los estados de inventario',
-        });
-        this.loading = false;
-      },
-    });
-  }
-
   openNew() {
     this.isEditing = false;
     this.selectedEstadoInventario = null;
@@ -195,7 +175,7 @@ export class EstadosInventarioComponent implements OnInit {
           summary: 'Éxito',
           detail: 'Estado de inventario eliminado correctamente',
         });
-        this.loadEstadosInventario();
+        this.loadTable({ first: 0, rows: this.rowSize });
       },
       error: (error) => {
         console.error('Error deleting estado inventario:', error);
@@ -232,7 +212,7 @@ export class EstadosInventarioComponent implements OnInit {
               detail: 'Estado de inventario actualizado correctamente',
             });
             this.displayDialog = false;
-            this.loadEstadosInventario();
+            this.loadTable({ first: 0, rows: this.rowSize });
             this.submitting = false;
           },
           error: (error) => {
@@ -256,7 +236,7 @@ export class EstadosInventarioComponent implements OnInit {
             detail: 'Estado de inventario creado correctamente',
           });
           this.displayDialog = false;
-          this.loadEstadosInventario();
+          this.loadTable({ first: 0, rows: this.rowSize });
           this.submitting = false;
         },
         error: (error) => {

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,9 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.erp.backend_erp.dto.inventory.CreateTiposInsumosDto;
 import com.erp.backend_erp.dto.inventory.TiposInsumosDto;
+import com.erp.backend_erp.dto.inventory.TiposInsumosTableDto;
 import com.erp.backend_erp.dto.inventory.UpdateTiposInsumosDto;
 import com.erp.backend_erp.services.TiposInsumosService;
 import com.erp.backend_erp.util.ApiResponse;
+import com.erp.backend_erp.util.GlobalException;
+import com.erp.backend_erp.util.PageableDto;
 
 @RestController
 @RequestMapping("/tipos-insumos")
@@ -77,13 +81,19 @@ public class TiposInsumosController {
         );
     }
 
-    // @PostMapping("/page")
-    // public ResponseEntity<ApiResponse<Object>> page(@RequestBody PageableDto<Object> pageableDto) {
-    //     PageImpl<TiposInsumosTableDto> page = tiposInsumosService.getPage(pageableDto);
-    //     return ResponseEntity.ok(
-    //         new ApiResponse<>(HttpStatus.OK.value(), "Datos obtenidos correctamente", false, page)
-    //     );
-    // }
+    @PostMapping("/page")
+    public ResponseEntity<ApiResponse<Object>> listTypeMovement(
+            @Valid @RequestBody PageableDto<Object> pageableDto) {
+        try {
+            Page<TiposInsumosTableDto> convention = this.tiposInsumosService.page(pageableDto);
+            if (convention.isEmpty())
+                throw new GlobalException(HttpStatus.PARTIAL_CONTENT, "No se encontraron registros");
+            ApiResponse<Object> response = new ApiResponse<>(HttpStatus.OK.value(), "", false, convention);
+            return ResponseEntity.ok(response);
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Object>> delete(@PathVariable Long id) {

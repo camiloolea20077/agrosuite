@@ -3,11 +3,13 @@ package com.erp.backend_erp.services.implementations;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.erp.backend_erp.dto.inventory.CreateTiposInsumosDto;
 import com.erp.backend_erp.dto.inventory.TiposInsumosDto;
+import com.erp.backend_erp.dto.inventory.TiposInsumosTableDto;
 import com.erp.backend_erp.dto.inventory.UpdateTiposInsumosDto;
 import com.erp.backend_erp.entity.inventory.TiposInsumosEntity;
 import com.erp.backend_erp.mappers.tiposInsumos.TiposInsumosMapper;
@@ -15,6 +17,7 @@ import com.erp.backend_erp.repositories.tiposInsumos.TiposInsumosJPARepository;
 import com.erp.backend_erp.repositories.tiposInsumos.TiposInsumosQueryRepository;
 import com.erp.backend_erp.services.TiposInsumosService;
 import com.erp.backend_erp.util.GlobalException;
+import com.erp.backend_erp.util.PageableDto;
 
 @Service
 public class TiposInsumosServiceImpl implements TiposInsumosService {
@@ -101,5 +104,10 @@ public class TiposInsumosServiceImpl implements TiposInsumosService {
     public List<TiposInsumosDto> findAllActive() {
         List<TiposInsumosEntity> entities = tiposInsumosJPARepository.findByActivoOrderByNombre(1L);
         return entities.stream().map(tiposInsumosMapper::toDto).toList();
+    }
+
+    @Override
+    public PageImpl<TiposInsumosTableDto> page(PageableDto<Object> pageableDto) {
+        return tiposInsumosQueryRepository.page(pageableDto);
     }
 }

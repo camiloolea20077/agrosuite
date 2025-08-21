@@ -81,7 +81,6 @@ export class TiposMovimientosComponent implements OnInit {
   async loadTable(lazyTable: TableLazyLoadEvent): Promise<void> {
     this.loading = true;
     this.filterTable = this.prepareTableParams(lazyTable);
-
     try {
       const response = await lastValueFrom(
         this.inventoryCatalogService.pageTipoMovimientosTable(this.filterTable)
@@ -137,25 +136,6 @@ export class TiposMovimientosComponent implements OnInit {
       globalFilter: (event.target as HTMLInputElement)?.value ?? '',
     });
   }
-  loadTiposMovimientos() {
-    this.loading = true;
-    this.inventoryCatalogService.pageTiposMovimientos().subscribe({
-      next: (response) => {
-        this.tiposMovimientos = response.data || [];
-        this.loading = false;
-      },
-      error: (error) => {
-        console.error('Error loading tipos movimientos:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'No se pudieron cargar los tipos de movimientos'
-        });
-        this.loading = false;
-      }
-    });
-  }
-
   openNew() {
     this.isEditing = false;
     this.selectedTipoMovimiento = null;
@@ -183,6 +163,7 @@ export class TiposMovimientosComponent implements OnInit {
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.performDelete(tipoMovimiento.id ?? 0);
+        this.loadTable({ first: 0, rows: this.rowSize });
       }
     });
   }
@@ -195,7 +176,7 @@ export class TiposMovimientosComponent implements OnInit {
           summary: 'Éxito',
           detail: 'Tipo de movimiento eliminado correctamente'
         });
-        this.loadTiposMovimientos();
+        this.loadTable({ first: 0, rows: this.rowSize });
       },
       error: (error) => {
         console.error('Error deleting tipo movimiento:', error);
@@ -226,7 +207,7 @@ export class TiposMovimientosComponent implements OnInit {
             detail: 'Tipo de movimiento actualizado correctamente'
           });
           this.displayDialog = false;
-          this.loadTiposMovimientos();
+          this.loadTable({ first: 0, rows: this.rowSize });
           this.submitting = false;
         },
         error: (error) => {
@@ -248,7 +229,7 @@ export class TiposMovimientosComponent implements OnInit {
             detail: 'Tipo de movimiento creado correctamente'
           });
           this.displayDialog = false;
-          this.loadTiposMovimientos();
+          this.loadTable({ first: 0, rows: this.rowSize });
           this.submitting = false;
         },
         error: (error) => {

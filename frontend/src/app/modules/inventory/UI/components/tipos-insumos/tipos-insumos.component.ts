@@ -5,7 +5,7 @@ import { TipoInsumo } from '../../../domain/dto/inventory.interface';
 import { InventoryCatalogService } from '../../../infraestructure/catalog.service';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
-import { TableModule } from 'primeng/table';
+import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
@@ -15,6 +15,11 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { TooltipModule } from 'primeng/tooltip';
 import { ToolbarModule } from 'primeng/toolbar';
 import { ToastModule } from 'primeng/toast';
+import { IFilterInventoryStateTableModel } from '../../../domain/models/inventory-state-filter.models';
+import { IFilterTable } from 'src/app/shared/utils/models/filter-table';
+import { InsumosTableModel } from '../../../domain/models/tipos-insumos-table.models';
+import { lastValueFrom } from 'rxjs';
+import { ColsModel } from 'src/app/shared/utils/models/cols.model';
 
 @Component({
   selector: 'app-tipos-insumos',
@@ -41,14 +46,23 @@ import { ToastModule } from 'primeng/toast';
 export class TiposInsumosComponent implements OnInit {
   public rowSize = 10
   tiposInsumos: TipoInsumo[] = [];
+  tiposInsumosTable: InsumosTableModel[] = [];
+  filterTable!: IFilterTable<IFilterInventoryStateTableModel>;
   displayDialog = false;
   displayDeleteDialog = false;
   tipoInsumoForm!: FormGroup;
   isEditing = false;
+  public totalRecords = 0;
   selectedTipoInsumo: TipoInsumo | null = null;
   loading = false;
   submitting = false;
-
+  cols: ColsModel[] = [
+    { field: 'codigo', header: 'Código',type: 'string' },
+    { field: 'nombre', header: 'Nombre' ,type: 'string'},
+    { field: 'descripcion', header: 'Descripción' ,type: 'string'},
+    { field: 'activo', header: 'Activo' ,type: 'icon'},
+    { field: 'actions', header: 'Acciones', type: 'actions' },
+  ];
   constructor(
     private inventoryCatalogService: InventoryCatalogService,
     private fb: FormBuilder,
@@ -59,34 +73,43 @@ export class TiposInsumosComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadTiposInsumos();
+    this.loadTable
   }
+  async loadTable(lazyTable: TableLazyLoadEvent): Promise<void> {
+    this.loading = true;
+    this.filterTable = this.prepareTableParams(lazyTable);
 
+    try {
+      const response = await lastValueFrom(
+        this.inventoryCatalogService.pageInsumosTable(this.filterTable)
+      );
+      this.tiposInsumosTable = response.data?.content ?? [];
+      this.totalRecords = response.data?.totalElements ?? 0;
+      this.loading = false;
+    } catch (error) {
+      this.tiposInsumosTable = [];
+      this.totalRecords = 0;
+      this.loading = false;
+    }
+  }
+  private prepareTableParams(lazyTable: TableLazyLoadEvent): IFilterTable<IFilterInventoryStateTableModel> {
+    this.rowSize = lazyTable.rows ?? this.rowSize ?? 10;
+    const first = lazyTable.first ?? 0;
+    const currentPage = Math.floor(first / this.rowSize);
+    return {
+      page: currentPage,
+      rows: this.rowSize,
+      search: lazyTable.globalFilter,
+      order: lazyTable.sortOrder === -1 ? 'desc' : 'asc',
+      order_by: lazyTable.sortField ?? 'id',
+    };
+  }
   private initForm() {
     this.tipoInsumoForm = this.fb.group({
       codigo: ['', [Validators.required, Validators.maxLength(20)]],
       nombre: ['', [Validators.required, Validators.maxLength(100)]],
       descripcion: ['', Validators.maxLength(500)],
       activo: [1, Validators.required]
-    });
-  }
-
-  loadTiposInsumos() {
-    this.loading = true;
-    this.inventoryCatalogService.pageTiposInsumos().subscribe({
-      next: (response) => {
-        this.tiposInsumos = response.data || [];
-        this.loading = false;
-      },
-      error: (error) => {
-        console.error('Error loading tipos insumos:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'No se pudieron cargar los tipos de insumos'
-        });
-        this.loading = false;
-      }
     });
   }
 
@@ -129,7 +152,7 @@ export class TiposInsumosComponent implements OnInit {
           summary: 'Éxito',
           detail: 'Tipo de insumo eliminado correctamente'
         });
-        this.loadTiposInsumos();
+        this.loadTable({ first: 0, rows: this.rowSize });
       },
       error: (error) => {
         console.error('Error deleting tipo insumo:', error);
@@ -160,7 +183,7 @@ export class TiposInsumosComponent implements OnInit {
             detail: 'Tipo de insumo actualizado correctamente'
           });
           this.displayDialog = false;
-          this.loadTiposInsumos();
+          this.loadTable({ first: 0, rows: this.rowSize });
           this.submitting = false;
         },
         error: (error) => {
@@ -182,7 +205,7 @@ export class TiposInsumosComponent implements OnInit {
             detail: 'Tipo de insumo creado correctamente'
           });
           this.displayDialog = false;
-          this.loadTiposInsumos();
+          this.loadTable({ first: 0, rows: this.rowSize });
           this.submitting = false;
         },
         error: (error) => {
@@ -213,7 +236,16 @@ export class TiposInsumosComponent implements OnInit {
       }
     });
   }
-
+  getColumnIcon(field: string): string {
+    const iconMap: { [key: string]: string } = {
+      codigo: 'pi pi-hashtag',
+      numero_ganado: 'pi pi-user',
+      nombre: 'pi pi-tag',
+      descripcion: 'pi pi-tags',
+      activo: 'pi pi-power-off',
+    };
+    return iconMap[field] || 'pi pi-circle';
+  }
   getFieldError(fieldName: string): string {
     const field = this.tipoInsumoForm.get(fieldName);
     if (field?.errors && field.touched) {
