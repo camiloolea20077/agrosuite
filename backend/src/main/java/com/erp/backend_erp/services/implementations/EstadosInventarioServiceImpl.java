@@ -3,11 +3,13 @@ package com.erp.backend_erp.services.implementations;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.erp.backend_erp.dto.inventory.CreateEstadosInventarioDto;
 import com.erp.backend_erp.dto.inventory.EstadosInventarioDto;
+import com.erp.backend_erp.dto.inventory.EstadosInventarioTableDto;
 import com.erp.backend_erp.dto.inventory.UpdateEstadosInventarioDto;
 import com.erp.backend_erp.entity.inventory.EstadosInventarioEntity;
 import com.erp.backend_erp.mappers.estadosInventario.EstadosInventarioMapper;
@@ -15,6 +17,7 @@ import com.erp.backend_erp.repositories.estadosInventarios.EstadosInventarioJPAR
 import com.erp.backend_erp.repositories.estadosInventarios.EstadosInventarioQueryRepository;
 import com.erp.backend_erp.services.EstadosInventarioService;
 import com.erp.backend_erp.util.GlobalException;
+import com.erp.backend_erp.util.PageableDto;
 
 @Service
 public class EstadosInventarioServiceImpl implements EstadosInventarioService {
@@ -103,8 +106,8 @@ public class EstadosInventarioServiceImpl implements EstadosInventarioService {
         return entities.stream().map(estadosInventarioMapper::toDto).toList();
     }
 
-    // @Override
-    // public PageImpl<EstadosInventarioTableDto> getPage(PageableDto<Object> pageableDto) {
-    //     return estadosInventarioQueryRepository.listEstadosInventario(pageableDto);
-    // }
+    @Override
+    public PageImpl<EstadosInventarioTableDto> page(PageableDto<Object> pageableDto) {
+        return estadosInventarioQueryRepository.pageEmployees(pageableDto);
+    }
 }

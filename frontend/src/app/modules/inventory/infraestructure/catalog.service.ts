@@ -6,6 +6,9 @@ import { ResponseTableModel } from 'src/app/shared/utils/models/response-table.m
 import { EstadoInventario, EstadoMovimiento, IFilterTableSupplier, Supplier, SupplierTableModelDto, TipoInsumo, TipoMovimiento } from '../domain/dto/inventory.interface';
 import { ResponseModel } from 'src/app/shared/utils/models/responde.models';
 import { IFilterTable } from 'src/app/shared/utils/models/filter-table';
+import { InventoryStateTableModel } from '../domain/models/inventory-state-table.models';
+import { IFilterInventoryStateTableModel, IFilterTiposMovimientosTableModel } from '../domain/models/inventory-state-filter.models';
+import { TiposMovimientosTableModel } from '../domain/models/tipos-movimientos-table.models';
 
 
 
@@ -43,6 +46,14 @@ export class InventoryCatalogService {
   pageEstadosInventario(): Observable<ResponseModel<EstadoInventario[]>> {
     return this.http.get<ResponseModel<EstadoInventario[]>>(`${this.baseUrl}estados-inventario/active`);
   }
+  pageEstadosInventarioTable(
+    iFilterTable: IFilterTable<IFilterInventoryStateTableModel>
+  ): Observable<ResponseTableModel<InventoryStateTableModel>> {
+    return this.http.post<ResponseTableModel<InventoryStateTableModel>>(
+      `${this.baseUrl}estados-inventario/page`,
+      iFilterTable
+    );
+  }
 
   createEstadoInventario(estado: Omit<EstadoInventario, 'id'>): Observable<ResponseModel<EstadoInventario>> {
     return this.http.post<ResponseModel<EstadoInventario>>(`${this.baseUrl}estados-inventario/create`, estado);
@@ -64,6 +75,14 @@ export class InventoryCatalogService {
   // ========================= Tipos de Movimientos =========================
   pageTiposMovimientos(): Observable<ResponseModel<TipoMovimiento[]>> {
     return this.http.get<ResponseModel<TipoMovimiento[]>>(`${this.baseUrl}tipos-movimientos/active`);
+  }
+  pageTipoMovimientosTable(
+    iFilterTable: IFilterTable<IFilterTiposMovimientosTableModel>
+  ): Observable<ResponseTableModel<TiposMovimientosTableModel>> {
+    return this.http.post<ResponseTableModel<TiposMovimientosTableModel>>(
+      `${this.baseUrl}tipos-movimientos/page`,
+      iFilterTable
+    );
   }
 
   createTipoMovimiento(tipo: Omit<TipoMovimiento, 'id'>): Observable<ResponseModel<TipoMovimiento>> {

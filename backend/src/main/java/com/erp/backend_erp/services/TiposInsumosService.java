@@ -14,5 +14,4 @@ public interface TiposInsumosService {
     Boolean activate(Long id);
     TiposInsumosDto findById(Long id);
     List<TiposInsumosDto> findAllActive();
-    // PageImpl<TiposInsumosTableDto> getPage(PageableDto<Object> pageableDto);
 }

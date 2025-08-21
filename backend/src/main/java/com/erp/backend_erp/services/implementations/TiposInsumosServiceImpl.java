@@ -102,9 +102,4 @@ public class TiposInsumosServiceImpl implements TiposInsumosService {
         List<TiposInsumosEntity> entities = tiposInsumosJPARepository.findByActivoOrderByNombre(1L);
         return entities.stream().map(tiposInsumosMapper::toDto).toList();
     }
-
-    // @Override
-    // public PageImpl<TiposInsumosTableDto> getPage(PageableDto<Object> pageableDto) {
-    //     return tiposInsumosQueryRepository.listTiposInsumos(pageableDto);
-    // }
 }

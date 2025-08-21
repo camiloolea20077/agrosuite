@@ -5,7 +5,7 @@ import { TipoMovimiento } from '../../../domain/dto/inventory.interface';
 import { InventoryCatalogService } from '../../../infraestructure/catalog.service';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
-import { TableModule } from 'primeng/table';
+import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
@@ -16,6 +16,11 @@ import { TooltipModule } from 'primeng/tooltip';
 import { ToolbarModule } from 'primeng/toolbar';
 import { ToastModule } from 'primeng/toast';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { ColsModel } from 'src/app/shared/utils/models/cols.model';
+import { TiposMovimientosTableModel } from '../../../domain/models/tipos-movimientos-table.models';
+import { IFilterTable } from 'src/app/shared/utils/models/filter-table';
+import { IFilterInventoryStateTableModel, IFilterTiposMovimientosTableModel } from '../../../domain/models/inventory-state-filter.models';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-tipos-movimientos',
@@ -41,7 +46,9 @@ import { InputSwitchModule } from 'primeng/inputswitch';
   providers: [ConfirmationService, MessageService]
 })
 export class TiposMovimientosComponent implements OnInit {
-  
+
+  tiposMovimientosTable: TiposMovimientosTableModel[] = [];
+  filterTable!: IFilterTable<IFilterTiposMovimientosTableModel>;
   tiposMovimientos: TipoMovimiento[] = [];
   displayDialog = false;
   displayDeleteDialog = false;
@@ -49,8 +56,16 @@ export class TiposMovimientosComponent implements OnInit {
   isEditing = false;
   selectedTipoMovimiento: TipoMovimiento | null = null;
   loading = false;
+  public totalRecords = 0;
+  public rowSize = 10;
   submitting = false;
-
+  cols: ColsModel[] = [
+    { field: 'codigo', header: 'Código',type: 'string' },
+    { field: 'nombre', header: 'Nombre' ,type: 'string'},
+    { field: 'descripcion', header: 'Descripción' ,type: 'string'},
+    { field: 'activo', header: 'Activo' ,type: 'icon'},
+    { field: 'actions', header: 'Acciones', type: 'actions' },
+  ];
   constructor(
     private inventoryCatalogService: InventoryCatalogService,
     private fb: FormBuilder,
@@ -61,9 +76,37 @@ export class TiposMovimientosComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadTiposMovimientos();
+    this.loadTable
   }
+  async loadTable(lazyTable: TableLazyLoadEvent): Promise<void> {
+    this.loading = true;
+    this.filterTable = this.prepareTableParams(lazyTable);
 
+    try {
+      const response = await lastValueFrom(
+        this.inventoryCatalogService.pageTipoMovimientosTable(this.filterTable)
+      );
+      this.tiposMovimientosTable = response.data?.content ?? [];
+      this.totalRecords = response.data?.totalElements ?? 0;
+      this.loading = false;
+    } catch (error) {
+      this.tiposMovimientosTable = [];
+      this.totalRecords = 0;
+      this.loading = false;
+    }
+  }
+  private prepareTableParams(lazyTable: TableLazyLoadEvent): IFilterTable<IFilterInventoryStateTableModel> {
+    this.rowSize = lazyTable.rows ?? this.rowSize ?? 10;
+    const first = lazyTable.first ?? 0;
+    const currentPage = Math.floor(first / this.rowSize);
+    return {
+      page: currentPage,
+      rows: this.rowSize,
+      search: lazyTable.globalFilter,
+      order: lazyTable.sortOrder === -1 ? 'desc' : 'asc',
+      order_by: lazyTable.sortField ?? 'id',
+    };
+  }
   private initForm() {
     this.tipoMovimientoForm = this.fb.group({
       codigo: ['', [Validators.required, Validators.maxLength(20)]],
@@ -76,7 +119,24 @@ export class TiposMovimientosComponent implements OnInit {
       activo: [1, Validators.required]
     });
   }
+    getColumnIcon(field: string): string {
+    const iconMap: { [key: string]: string } = {
+      codigo: 'pi pi-hashtag',
+      numero_ganado: 'pi pi-user',
+      nombre: 'pi pi-tag',
+      descripcion: 'pi pi-tags',
+      activo: 'pi pi-power-off',
+    };
+    return iconMap[field] || 'pi pi-circle';
+  }
 
+  filterGlobal(event: Event) {
+    this.loadTable({
+      first: 0,
+      rows: this.rowSize,
+      globalFilter: (event.target as HTMLInputElement)?.value ?? '',
+    });
+  }
   loadTiposMovimientos() {
     this.loading = true;
     this.inventoryCatalogService.pageTiposMovimientos().subscribe({

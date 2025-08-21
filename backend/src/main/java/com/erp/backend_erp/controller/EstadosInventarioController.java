@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,9 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.erp.backend_erp.dto.inventory.CreateEstadosInventarioDto;
 import com.erp.backend_erp.dto.inventory.EstadosInventarioDto;
+import com.erp.backend_erp.dto.inventory.EstadosInventarioTableDto;
 import com.erp.backend_erp.dto.inventory.UpdateEstadosInventarioDto;
 import com.erp.backend_erp.services.EstadosInventarioService;
 import com.erp.backend_erp.util.ApiResponse;
+import com.erp.backend_erp.util.GlobalException;
+import com.erp.backend_erp.util.PageableDto;
 
 @RestController
 @RequestMapping("/estados-inventario")
@@ -76,15 +80,19 @@ public class EstadosInventarioController {
             new ApiResponse<>(HttpStatus.OK.value(), "Datos obtenidos correctamente", false, list)
         );
     }
-
-    // @PostMapping("/page")
-    // public ResponseEntity<ApiResponse<Object>> page(@RequestBody PageableDto<Object> pageableDto) {
-    //     PageImpl<EstadosInventarioTableDto> page = estadosInventarioService.getPage(pageableDto);
-    //     return ResponseEntity.ok(
-    //         new ApiResponse<>(HttpStatus.OK.value(), "Datos obtenidos correctamente", false, page)
-    //     );
-    // }
-
+    @PostMapping("/page")
+    public ResponseEntity<ApiResponse<Object>> listStateInventory(
+            @Valid @RequestBody PageableDto<Object> pageableDto) {
+        try {
+            Page<EstadosInventarioTableDto> convention = this.estadosInventarioService.page(pageableDto);
+            if (convention.isEmpty())
+                throw new GlobalException(HttpStatus.PARTIAL_CONTENT, "No se encontraron registros");
+            ApiResponse<Object> response = new ApiResponse<>(HttpStatus.OK.value(), "", false, convention);
+            return ResponseEntity.ok(response);
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Object>> delete(@PathVariable Long id) {
         Boolean ok = estadosInventarioService.delete(id);

@@ -3,12 +3,14 @@ package com.erp.backend_erp.services.implementations;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.erp.backend_erp.dto.inventory.CreateTiposMovimientosDto;
 import com.erp.backend_erp.dto.inventory.TiposMovimientosDto;
+import com.erp.backend_erp.dto.inventory.TiposMovimientosTableDto;
 import com.erp.backend_erp.dto.inventory.UpdateTiposMovimientosDto;
 import com.erp.backend_erp.entity.inventory.TiposMovimientosEntity;
 import com.erp.backend_erp.mappers.tiposMovimientos.TiposMovimientosMapper;
@@ -16,6 +18,7 @@ import com.erp.backend_erp.repositories.tiposMovimientos.TiposMovimientosJPARepo
 import com.erp.backend_erp.repositories.tiposMovimientos.TiposMovimientosQueryRepository;
 import com.erp.backend_erp.services.TiposMovimientosService;
 import com.erp.backend_erp.util.GlobalException;
+import com.erp.backend_erp.util.PageableDto;
 
 @Service
 @Transactional
@@ -126,5 +129,10 @@ public class TiposMovimientosServiceImpl implements TiposMovimientosService {
             list = tiposMovimientosJPARepository.findByActivoOrderByNombre(ACTIVO);
         }
         return list.stream().map(tiposMovimientosMapper::toDto).toList();
+    }
+
+    @Override
+    public PageImpl<TiposMovimientosTableDto> page(PageableDto<Object> pageableDto) {
+        return tiposMovimientosQueryRepository.page(pageableDto);
     }
 }

@@ -3,13 +3,21 @@ package com.erp.backend_erp.repositories.tiposInsumos;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.erp.backend_erp.dto.insumos.TiposInsumosElementsDto;
+import com.erp.backend_erp.dto.inventory.EstadosInventarioTableDto;
+import com.erp.backend_erp.dto.inventory.TiposMovimientosTableDto;
+import com.erp.backend_erp.util.MapperRepository;
+import com.erp.backend_erp.util.PageableDto;
 
 @Repository
 public class TiposInsumosQueryRepository {
