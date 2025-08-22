@@ -1,274 +1,273 @@
-<p-toast position="top-right"></p-toast>
+<div class="main-container">
+  <div class="card">
+    <!-- Header de la tarjeta -->
+    <div class="card-header">
+      <h4>Gestión de Ventas</h4>
+    </div>
 
-<!-- Contenedor principal con mejor espaciado y sombra -->
-<div class="card shadow-3 border-round-lg overflow-hidden">
-    <!-- Header mejorado con gradiente y mejor tipografía -->
-    <div class="surface-0 p-4 border-bottom-1 surface-border">
-        <div class="flex flex-wrap align-items-center justify-content-between gap-3">
-            <div class="flex align-items-center gap-3">
-                <i class="pi pi-shopping-cart text-3xl text-green-600"></i>
-                <div>
-                    <h1 class="text-2xl font-bold text-900 m-0 line-height-3">Gestión de Ventas</h1>
-                </div>
-            </div>
-            <div class="flex gap-2">
-                <button pButton 
-                    class="p-button-success p-button-raised border-round-lg px-4 py-2 font-semibold"
-                    type="button"
-                    icon="pi pi-plus-circle" 
-                    label="Nueva Venta" 
-                    routerLink="create">
-                </button>
-            </div>
+    <div class="card-content">
+      <!-- Toolbar mejorado -->
+      <div class="p-toolbar mb-4">
+        <div class="toolbar-left">
         </div>
-    </div>
+        <div class="toolbar-right">
+          <p-button
+            severity="success"
+            label="Nueva Venta"
+            icon="pi pi-plus"
+            routerLink="create"
+            class="create-button"
+          ></p-button>
+        </div>
+      </div>
 
-    <!-- Contenido de la tabla -->
-    <div class="p-4">
-        <p-table #dt 
-            [value]="sales" 
-            [lazy]="true" 
-            responsiveLayout="scroll" 
-            dataKey="id" 
-            [loading]="loadingTable"
-            [rows]="rowSize" 
-            [totalRecords]="totalRecords" 
-            [paginator]="true" 
-            (onLazyLoad)="loadTable($event)"
-            [rowsPerPageOptions]="[10, 25, 50, 100]" 
-            [showCurrentPageReport]="true"
-            currentPageReportTemplate="Mostrando {first} - {last} de {totalRecords} registros"
-            styleClass="p-datatable-striped p-datatable-gridlines"
-            [tableStyle]="{'min-width': '50rem'}"
-            [scrollable]="true"
-            scrollHeight="600px">
-            
-            <!-- Caption mejorado con mejor buscador -->
-            <ng-template pTemplate="caption">
-                <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center gap-3 mb-3 p-3 surface-50 border-round-lg">
-                    <div class="flex align-items-center gap-2">
-                        <i class="pi pi-filter text-green-600"></i>
-                        <span class="font-semibold text-900">Filtros y Búsqueda</span>
-                    </div>
-                    <div class="flex gap-2">
-                        <span class="p-input-icon-left">
-                            <i class="pi pi-search"></i>
-                            <input pInputText 
-                                type="text" 
-                                class="w-full md:w-20rem"
-                                (input)="dt.filterGlobal($any($event.target).value, 'contains')" 
-                                placeholder="Buscar ventas..." />
-                        </span>
-                    </div>
+      <!-- Tabla con estilos mejorados -->
+      <p-table
+        #dt
+        [value]="sales"
+        [loading]="loadingTable"
+        styleClass="p-datatable-gridlines modern-table"
+        [paginator]="true"
+        [rows]="rowSize"
+        [rowsPerPageOptions]="[10, 25, 50, 100]"
+        [globalFilterFields]="['cliente', 'numero_factura', 'estado', 'fecha_venta']"
+        responsiveLayout="scroll"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} ventas"
+        [totalRecords]="totalRecords"
+        [lazy]="true"
+        (onLazyLoad)="loadTable($event)"
+        selectionMode="single"
+        dataKey="id"
+        [scrollable]="true"
+        scrollHeight="600px"
+      >
+
+        <!-- Headers con mejor diseño -->
+        <ng-template pTemplate="header">
+          <tr>
+            <ng-container *ngFor="let col of cols">
+              <th *ngIf="col.field != 'actions'" 
+                  pSortableColumn="{{ col.field }}"
+                  [class]="col.nameClass"
+                  [style]="col.minWidth">
+                <div class="flex justify-content-between align-items-center">
+                  <span class="header-text">
+                    <i [class]="getColumnIcon(col.field)" class="mr-2"></i>
+                    {{ col.header }}
+                  </span>
+                  <p-sortIcon field="{{ col.field }}"></p-sortIcon>
                 </div>
-            </ng-template>
-            
-            <!-- Header mejorado -->
-            <ng-template pTemplate="header">
-                <tr>
-                    <ng-container *ngFor="let col of cols">
-                        <th *ngIf="col.field != 'actions'" 
-                            [class]="col.nameClass + ' text-center'"
-                            [style]="col.minWidth" 
-                            pSortableColumn="{{ col.field }}"
-                            class="surface-100 text-900 font-bold p-3 text-sm uppercase letter-spacing-1 border-bottom-2 border-green-500">
-                            <div class="flex align-items-center justify-content-center gap-2">
-                                <span> {{ col.header }}</span>
-                                <p-sortIcon field="{{ col.field }}"></p-sortIcon>
-                            </div>
-                        </th>
-                        <th *ngIf="col.field == 'actions'" 
-                            [class]="col.nameClass + ' text-center'"
-                            class="surface-100 text-900 font-bold p-3 text-sm uppercase letter-spacing-1 border-bottom-2 border-green-500">
-                            <div class="flex align-items-center justify-content-center">
-                                <i class="pi pi-cog mr-2"></i>
-                                <span>{{ col.header }}</span>
-                            </div>
-                        </th>
-                    </ng-container>
-                </tr>
-            </ng-template>
-            
-            <!-- Body mejorado -->
-            <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
-                <tr class="hover:surface-hover transition-colors transition-duration-150">
-                    <td *ngFor="let col of cols" 
-                        [class]="col.nameClass + ' p-3 text-center border-bottom-1 surface-border'"
-                        [ngClass]="{'surface-50': rowIndex % 2 === 0}">
-                        
-                        <!-- Estado con badges mejorados -->
-                        <span *ngIf="col.type == 'icon'" class="flex justify-content-center">
-                            <p-tag *ngIf="item.activo == 1" 
-                                value="Activo" 
-                                severity="success" 
-                                icon="pi pi-check-circle"
-                                class="font-semibold">
-                            </p-tag>
-                            <p-tag *ngIf="item.activo == 2" 
-                                value="Inactivo" 
-                                severity="danger" 
-                                icon="pi pi-times-circle"
-                                class="font-semibold">
-                            </p-tag>
-                        </span>
-                        
-                        <!-- Números monetarios con formato especial -->
-                        <span *ngIf="col.type === 'number' && ['total_venta', 'subtotal', 'iva', 'descuentos', 'precio_kilo'].includes(col.field)" 
-                              class="font-bold text-900 flex justify-content-center align-items-center gap-2">
-                            {{ item[col.field] | currencyCop }}
-                        </span>
-                        
-                        <!-- Números normales con formato -->
-                        <span *ngIf="col.type === 'number' && !['total_venta', 'subtotal', 'iva', 'descuentos', 'precio_kilo'].includes(col.field)" 
-                              class="font-medium text-900">
-                            {{ item[col.field] | number:'1.0-0' }}
-                        </span>
-                        
-                        <!-- Strings con mejor formato -->
-                        <span *ngIf="col.type === 'string'" class="font-medium text-900">
-                            {{ item[col.field] | titlecase }}
-                        </span>
-                        
-                        <!-- Estado con tags mejorados -->
-                        <span *ngIf="col.field === 'estado'" class="flex justify-content-center">
-                            <p-tag [pTooltip]="getEstadoTooltip(item[col.field])"
-                                   tooltipPosition="top"
-                                   [value]="item[col.field]"
-                                   [severity]="item[col.field] === 'PENDIENTE' ? 'warning' : 
-                                             item[col.field] === 'CONFIRMADA' ? 'success' : 'danger'"
-                                   class="font-semibold">
-                            </p-tag>
-                        </span>
-                        
-                        <!-- Acciones originales con mejor estilo -->
-                        <ng-container *ngIf="col.field == 'actions'">
-                            <div class="flex justify-content-center gap-2 action-buttons">
-                                <button pButton 
-                                    type="button" 
-                                    icon="pi pi-eye"
-                                    class="p-button-rounded p-button-outlined p-button-info p-button-sm"
-                                    pTooltip="Ver detalle de la venta"
-                                    tooltipPosition="top"
-                                    [routerLink]="'view/' + item.id">
-                                </button>
+              </th>
+              
+              <th *ngIf="col.field == 'actions'" 
+                  [class]="col.nameClass"
+                  style="width: 140px">
+                <span class="header-text">
+                  <i class="pi pi-cog mr-2"></i>
+                  {{ col.header }}
+                </span>
+              </th>
+            </ng-container>
+          </tr>
+        </ng-template>
 
-                                <button *ngIf="item.estado === 'PENDIENTE'"
-                                    pButton 
-                                    type="button" 
-                                    icon="pi pi-check"
-                                    class="p-button-rounded p-button-success p-button-outlined p-button-sm"
-                                    (click)="confirmarVenta(item.id)"
-                                    pTooltip="Confirmar venta"
-                                    tooltipPosition="top">
-                                </button>
+        <!-- Filas con mejor presentación -->
+        <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+          <tr class="table-row" [attr.data-index]="rowIndex">
+            <td *ngFor="let col of cols" 
+                 [class]="col.nameClass ?? ''"
+                [ngClass]="{'surface-50': rowIndex % 2 === 0}">
+              
+              <!-- Estado con badges mejorados -->
+              <div *ngIf="col.type == 'icon'" class="status-cell">
+                <p-tag *ngIf="item.activo == 1" 
+                    value="Activo" 
+                    severity="success" 
+                    class="status-tag">
+                </p-tag>
+                <p-tag *ngIf="item.activo == 2" 
+                    value="Inactivo" 
+                    severity="danger"
+                    class="status-tag">
+                </p-tag>
+              </div>
+              
+              <!-- Números monetarios con formato especial -->
+              <div *ngIf="col.type === 'number' && ['total_venta', 'subtotal', 'iva', 'descuentos', 'precio_kilo'].includes(col.field)" 
+                    class="money-cell">
+                <span class="money-amount">{{ item[col.field] | currencyCop }}</span>
+              </div>
+              
+              <!-- Números normales con formato -->
+              <div *ngIf="col.type === 'number' && !['total_venta', 'subtotal', 'iva', 'descuentos', 'precio_kilo'].includes(col.field)" 
+                    class="number-cell">
+                <span>{{ item[col.field] | number:'1.0-0' }}</span>
+              </div>
+              
+              <!-- Strings con mejor formato -->
+              <div *ngIf="col.type === 'string'" class="text-cell">
+                <span>{{ item[col.field] | titlecase }}</span>
+              </div>
+              
+              <!-- Estado con tags mejorados -->
+              <div *ngIf="col.field === 'estado'" class="status-cell">
+                <p-tag [pTooltip]="getEstadoTooltip(item[col.field])"
+                       tooltipPosition="top"
+                       [value]="item[col.field]"
+                       [severity]="item[col.field] === 'PENDIENTE' ? 'warning' : 
+                                 item[col.field] === 'CONFIRMADA' ? 'success' : 'danger'"
+                       class="status-tag">
+                </p-tag>
+              </div>
+              
+              <!-- Cliente con información adicional -->
+              <div *ngIf="col.field === 'cliente'" class="client-cell">
+                <div class="client-info">
+                  <span class="client-name">{{ item[col.field] }}</span>
+                  <small class="client-detail" *ngIf="item.documento_cliente">
+                    <i class="pi pi-id-card"></i> {{ item.documento_cliente }}
+                  </small>
+                </div>
+              </div>
+              
+              <!-- Número de factura destacado -->
+              <div *ngIf="col.field === 'numero_factura'" class="invoice-cell">
+                <strong class="code-badge">{{ item[col.field] }}</strong>
+              </div>
+              
+              <!-- Acciones con mejor estilo -->
+              <ng-container *ngIf="col.field == 'actions'">
+                <div class="action-buttons">
+                  <p-button
+                    icon="pi pi-eye"
+                    severity="info"
+                    size="small"
+                    [routerLink]="'view/' + item.id"
+                    pTooltip="Ver detalle de la venta"
+                    tooltipPosition="top"
+                    class="view-button"
+                  ></p-button>
 
-                                <button *ngIf="item.estado === 'PENDIENTE'"
-                                    pButton 
-                                    type="button" 
-                                    icon="pi pi-envelope"
-                                    class="p-button-rounded p-button-warning p-button-outlined p-button-sm"
-                                    (click)="solicitarAnulacionConOtp(item.id)"
-                                    pTooltip="Anular venta"
-                                    tooltipPosition="top">
-                                </button>
-                            </div>
-                        </ng-container>
-                    </td>
-                </tr>
-            </ng-template>
-            
-            <!-- Empty message mejorado -->
-            <ng-template pTemplate="emptymessage">
-                <tr>
-                    <td [attr.colspan]="cols.length" class="text-center p-6">
-                        <div class="flex flex-column align-items-center gap-3 py-4">
-                            <i class="pi pi-shopping-cart text-6xl text-300"></i>
-                            <h3 class="text-900 font-bold">No hay ventas registradas</h3>
-                            <p class="text-600 m-0">No se encontraron registros de ventas que coincidan con los criterios de búsqueda.</p>
-                            <button pButton 
-                                class="p-button-outlined mt-3"
-                                icon="pi pi-plus" 
-                                label="Registrar primera venta"
-                                routerLink="create">
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            </ng-template>
-            
-            <!-- Loading template mejorado -->
-            <ng-template pTemplate="loadingbody">
-                <tr>
-                    <td [attr.colspan]="cols.length" class="text-center p-6">
-                        <div class="flex flex-column align-items-center gap-3">
-                            <p-progressSpinner strokeWidth="3" animationDuration="1s"></p-progressSpinner>
-                            <span class="text-600">Cargando datos de ventas...</span>
-                        </div>
-                    </td>
-                </tr>
-            </ng-template>
-        </p-table>
+                  <p-button *ngIf="item.estado === 'PENDIENTE'"
+                    icon="pi pi-check"
+                    severity="success"
+                    size="small"
+                    (onClick)="confirmarVenta(item.id)"
+                    pTooltip="Confirmar venta"
+                    tooltipPosition="top"
+                    class="confirm-button"
+                  ></p-button>
+
+                  <p-button *ngIf="item.estado === 'PENDIENTE'"
+                    icon="pi pi-envelope"
+                    severity="warning"
+                    size="small"
+                    (onClick)="solicitarAnulacionConOtp(item.id)"
+                    pTooltip="Anular venta"
+                    tooltipPosition="top"
+                    class="cancel-button"
+                  ></p-button>
+                </div>
+              </ng-container>
+            </td>
+          </tr>
+        </ng-template>
+
+        <!-- Mensaje vacío mejorado -->
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td [attr.colspan]="cols.length" class="empty-message">
+              <div class="empty-state">
+                <i class="pi pi-shopping-cart empty-icon"></i>
+                <h3>No hay ventas registradas</h3>
+                <p>
+                  No se encontraron ventas que coincidan con tu búsqueda.
+                </p>
+                <p-button
+                  label="Registrar primera venta"
+                  icon="pi pi-plus"
+                  routerLink="create"
+                  class="mt-3"
+                ></p-button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <!-- Loading template -->
+        <ng-template pTemplate="loadingbody">
+          <tr>
+            <td [attr.colspan]="cols.length">
+              <div class="loading-state">
+                <i class="pi pi-spin pi-spinner loading-spinner"></i>
+                <span>Cargando datos de ventas...</span>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
     </div>
+  </div>
 </div>
 
 <!-- Dialog de confirmación mejorado -->
 <p-confirmDialog
-    [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
-    [style]="{ width: '35vw', 'min-width': '300px' }"
-    [baseZIndex]="10000"
-    rejectButtonStyleClass="p-button-outlined p-button-danger"
-    acceptButtonStyleClass="p-button-danger"
-    header="Confirmar eliminación"
-    icon="pi pi-exclamation-triangle"
-    acceptLabel="Eliminar"
-    rejectLabel="Cancelar">
+  [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
+  [style]="{ width: '35vw', 'min-width': '300px' }"
+  [baseZIndex]="10000"
+  rejectButtonStyleClass="p-button-outlined p-button-danger"
+  acceptButtonStyleClass="p-button-danger"
+  header="Confirmar eliminación"
+  icon="pi pi-exclamation-triangle"
+  acceptLabel="Eliminar"
+  rejectLabel="Cancelar">
 </p-confirmDialog>
 
 <!-- Modal de aprobación mejorado -->
 <p-dialog
-    header="Seleccionar Aprobador"
-    [(visible)]="showModalOtp"
-    [modal]="true"
-    [style]="{ width: '35vw', minWidth: '350px' }"
-    [baseZIndex]="10000"
-    [closable]="true"
-    (onHide)="selectedApproverId = null"
-    styleClass="custom-dialog">
-    
-    <div class="p-fluid">
-        <div class="field mb-4">
-            <div class="flex align-items-center gap-2 mb-3">
-                <i class="pi pi-user text-primary"></i>
-                <label for="approver" class="font-semibold text-900">Seleccione el aprobador:</label>
-            </div>
-            <p-dropdown
-                id="approver"
-                [options]="filteredApprovers"
-                optionLabel="nombre_con_rol"
-                optionValue="id"
-                [(ngModel)]="selectedApproverId"
-                placeholder="Seleccione un aprobador"
-                [showClear]="true"
-                [filter]="true"
-                styleClass="w-full">
-            </p-dropdown>
-        </div>
-
-        <div class="flex justify-content-end mt-4 gap-2 pt-3 border-top-1 surface-border">
-            <button pButton 
-                type="button"
-                class="p-button-outlined p-button-secondary border-round-lg"
-                (click)="showModalOtp = false"
-                label="Cancelar">
-            </button>
-
-            <button pButton 
-                type="button"
-                class="p-button-primary border-round-lg"
-                label="Enviar Solicitud"
-                (click)="enviarSolicitudAnulacionConOtp()"
-                [disabled]="!selectedApproverId">
-            </button>
-        </div>
+  header="Seleccionar Aprobador"
+  [(visible)]="showModalOtp"
+  [modal]="true"
+  [style]="{ width: '35vw', minWidth: '350px' }"
+  [baseZIndex]="10000"
+  [closable]="true"
+  (onHide)="selectedApproverId = null"
+  styleClass="custom-dialog">
+  
+  <div class="form-container">
+    <div class="field">
+      <label for="approver">Seleccione el aprobador</label>
+      <p-dropdown
+        id="approver"
+        [options]="filteredApprovers"
+        optionLabel="nombre_con_rol"
+        optionValue="id"
+        [(ngModel)]="selectedApproverId"
+        placeholder="Seleccione un aprobador"
+        [showClear]="true"
+        [filter]="true"
+        class="w-full">
+      </p-dropdown>
     </div>
+
+    <div class="flex justify-content-end mt-4 gap-2 pt-3 border-top-1 surface-border">
+      <p-button 
+        type="button"
+        class="p-button-outlined p-button-secondary"
+        (onClick)="showModalOtp = false"
+        label="Cancelar">
+      </p-button>
+
+      <p-button 
+        type="button"
+        class="p-button-primary"
+        label="Enviar Solicitud"
+        (onClick)="enviarSolicitudAnulacionConOtp()"
+        [disabled]="!selectedApproverId">
+      </p-button>
+    </div>
+  </div>
 </p-dialog>
+
+<p-toast position="top-right"></p-toast>

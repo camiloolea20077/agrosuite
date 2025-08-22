@@ -1,28 +1,13 @@
-<div class="card">
-  <!-- Header -->
-  <div class="flex justify-content-between align-items-center mb-4">
-    <h1 class="m-0 text-primary">
-      <i class="pi pi-arrow-right-arrow-left mr-2"></i>
-      {{ slug === "create" ? "Nuevo Traslado" : "Visualizar Traslado" }}
-    </h1>
-    <div class="flex gap-2">
-      <p-chip
-        label="Traslados"
-        icon="pi pi-arrow-right-arrow-left"
-        styleClass="p-chip-outlined"
-      >
-      </p-chip>
-      <p-chip
-        [label]="slug === 'create' ? 'Creación' : 'Visualización'"
-        [icon]="slug === 'create' ? 'pi pi-plus' : 'pi pi-eye'"
-        [styleClass]="slug === 'create' ? 'p-chip-success' : 'p-chip-info'"
-      >
-      </p-chip>
-    </div>
-  </div>
-
+<div class="card mt-2">
   <!-- Form Container with Card Styling -->
   <div class="surface-card p-4 shadow-2 border-round">
+      <!-- Header -->
+    <div class="flex justify-content-between align-items-center mb-4">
+      <h1 class="m-0 text-primary">
+        {{ slug === "create" ? "Nuevo Traslado" : "Visualizar Traslado" }}
+      </h1>
+    </div>
+
     <form [formGroup]="frm" (ngSubmit)="submit()" class="formgrid grid">
       <!-- Transfer Information Section -->
       <div class="col-12">

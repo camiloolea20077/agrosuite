@@ -255,6 +255,24 @@ export class IndexCattleSalesComponent {
       return '';
   }
 }
+  // Método para obtener íconos de columnas
+  getColumnIcon(field: string): string {
+    const iconMap: { [key: string]: string } = {
+      id: 'pi pi-hashtag',
+      tipo_origen: 'pi pi-user',
+      total_animales: 'pi pi-tag',
+      destino: 'pi pi-tags',
+      peso: 'pi pi-tags',
+      fecha_venta: 'pi pi-calendar',
+      precio_kilo: 'pi pi-chart-line',
+      peso_total: 'pi pi-chart-line',
+      fecha_embarazo: 'pi pi-calendar',
+      total_venta: 'pi pi-comment',
+      estado: 'pi pi-circle',
+      activo: 'pi pi-power-off',
+    };
+    return iconMap[field] || 'pi pi-circle';
+  }
 async solicitarAnulacionConOtp(id: number): Promise<void> {
   this.currentSaleId = id;
   this.selectedApproverId = null;
