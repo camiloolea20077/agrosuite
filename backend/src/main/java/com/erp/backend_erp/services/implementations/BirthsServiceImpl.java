@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.erp.backend_erp.dto.births.BirthsDto;
+import com.erp.backend_erp.dto.births.BirthsListDto;
 import com.erp.backend_erp.dto.births.BirthsTableDto;
 import com.erp.backend_erp.dto.births.CreateBirthsDto;
 import com.erp.backend_erp.dto.births.DashboardBirthDto;
@@ -110,5 +111,12 @@ public class BirthsServiceImpl  implements BirthsService {
         Long totalEmployees = birthsQueryRepository.getTotalEmployees(farmId);
         // Crear el objeto DashboardData con los datos obtenidos
         return new DashboardData(birthData, totalCattle, totalBirths, totalEmployees);
+    }
+    @Override
+    public List<BirthsListDto> getBirths(Long farmId){
+        List<BirthsListDto> births = birthsQueryRepository.getBirhts(farmId);
+        if(births.isEmpty())
+            throw new GlobalException(HttpStatus.OK, "No se encontraron registros");
+        return births;
     }
 }

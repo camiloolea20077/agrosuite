@@ -1,5 +1,7 @@
 package com.erp.backend_erp.repositories.births;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -9,10 +11,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.erp.backend_erp.dto.births.BirthsListDto;
 import com.erp.backend_erp.dto.births.BirthsTableDto;
 import com.erp.backend_erp.dto.births.DashboardBirthDto;
 import com.erp.backend_erp.dto.births.DesteteTableDto;
@@ -422,4 +426,27 @@ public class BirthsQueryRepository {
         }
         return "Error desconocido";
     }
+    public List<BirthsListDto> getBirhts(Long farmId) {
+        String sql = """
+                SELECT 
+                    u.id,
+                    u.numero_cria AS nombre
+                FROM births u
+                WHERE u.deleted_at IS NULL 
+                AND u.farm_id = :farmId
+        """;
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("farmId", farmId);
+        return namedParameterJdbcTemplate.query(sql, params, new RowMapper<BirthsListDto>() {
+            @Override
+            public BirthsListDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                BirthsListDto dto = new BirthsListDto();
+                dto.setId(rs.getLong("id"));
+                dto.setNumero(rs.getString("nombre"));
+                return dto;
+            }
+        });
+    }
+
 }

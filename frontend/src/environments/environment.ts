@@ -13,5 +13,6 @@ export const environment = {
     tercerosUrl: 'http://localhost:9001/terceros',
     cattleTransfers : 'http://localhost:9001/cattle-transfer',
     tipoInsumosUrl: 'http://localhost:9001/tipos-insumos/',
-    destetesURL: 'http://localhost:9001/destetes'
+    destetesURL: 'http://localhost:9001/destetes',
+    cattleDeath: 'http://localhost:9001/cattle-death'
 };

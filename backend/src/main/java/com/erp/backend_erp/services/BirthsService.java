@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.PageImpl;
 
 import com.erp.backend_erp.dto.births.BirthsDto;
+import com.erp.backend_erp.dto.births.BirthsListDto;
 import com.erp.backend_erp.dto.births.BirthsTableDto;
 import com.erp.backend_erp.dto.births.CreateBirthsDto;
 import com.erp.backend_erp.dto.births.DashboardData;
@@ -19,4 +20,5 @@ public interface BirthsService {
     PageImpl<BirthsTableDto> pageGanado(PageableDto<Object> birthsTableDto);
     BirthsDto findById(Long id, Long farmId);
     DashboardData getDashboardData(Long farmId);
+    List<BirthsListDto> getBirths(Long farmId);
 }

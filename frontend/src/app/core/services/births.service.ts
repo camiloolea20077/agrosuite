@@ -10,6 +10,7 @@ import { BirthsModel } from "src/app/modules/births/domain/models/births.model";
 import { IFilterTable } from "src/app/shared/utils/models/filter-table";
 import { ResponseModel } from "src/app/shared/utils/models/responde.models";
 import { ResponseTableModel } from "src/app/shared/utils/models/response-table.model";
+import { BirthsList } from "src/app/modules/births/domain/models/births-list.model";
 
 @Injectable({
     providedIn: 'root',
@@ -45,5 +46,8 @@ export class BirthsService {
     }
     deleteBirth(id: number): Observable<ResponseModel<boolean>> {
         return this.http.delete<ResponseModel<boolean>>(`${this.apiUrl}/${id}`);
+    }
+    getAllBirths(): Observable<ResponseModel<BirthsList[]>> {
+        return this.http.get<ResponseModel<BirthsList[]>>(`${this.apiUrl}/list`);
     }
 }

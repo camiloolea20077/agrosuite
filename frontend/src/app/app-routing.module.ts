@@ -100,6 +100,13 @@ const routes: Routes = [
             (m) => m.DesteteModule
           ),
           canActivate: [AuthGuard],
+      },{
+        path: 'cattle-death',
+        loadChildren: () =>
+          import('./modules/cattle-death/cattle-death.module').then(
+            (m) => m.CattleDeathModule
+          ),
+          canActivate: [AuthGuard],
       }
     ],
   },

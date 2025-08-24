@@ -1,5 +1,7 @@
 package com.erp.backend_erp.repositories.ganado;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -8,10 +10,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.erp.backend_erp.dto.ganado.GanadoListDto;
 import com.erp.backend_erp.dto.ganado.GanadoTableDto;
 import com.erp.backend_erp.dto.listElements.CattleElementsDto;
 import com.erp.backend_erp.util.MapperRepository;
@@ -156,5 +160,27 @@ public class    GanadoQueryRepository {
         params.addValue("id", cattleId);
         namedParameterJdbcTemplate.update(sql, params);
         
+    }
+    public List<GanadoListDto> getCattle(Long farmId) {
+        String sql = """
+                SELECT 
+                    u.id,
+                    u.numero_ganado AS nombre
+                FROM cattle u
+                WHERE u.deleted_at IS NULL 
+                AND u.farm_id = :farmId
+        """;
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("farmId", farmId);
+        return namedParameterJdbcTemplate.query(sql, params, new RowMapper<GanadoListDto>() {
+            @Override
+            public GanadoListDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                GanadoListDto dto = new GanadoListDto();
+                dto.setId(rs.getLong("id"));
+                dto.setNombre(rs.getString("nombre"));
+                return dto;
+            }
+        });
     }
 }

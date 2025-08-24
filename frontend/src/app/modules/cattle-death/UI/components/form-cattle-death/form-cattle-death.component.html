@@ -1,0 +1,291 @@
+<p-dialog 
+    [(visible)]="displayModal" 
+    [modal]="true" 
+    [closable]="true"
+    [resizable]="false"
+    [draggable]="false"
+    styleClass="custom-dialog"
+    [style]="{ width: '70vw', maxWidth: '800px' }"
+    (onHide)="onModalHide()">
+    
+    <ng-template pTemplate="header">
+        <div class="flex align-items-center gap-2">
+            <i class="pi pi-exclamation-triangle text-orange-500"></i>
+            <span class="font-bold text-lg">
+                {{ isEditMode ? 'Editar Registro de Muerte' : 'Registrar Muerte de Ganado' }}
+            </span>
+        </div>
+    </ng-template>
+
+    <form [formGroup]="frmCattleDeath" (ngSubmit)="buildSaveCattleDeath()">
+        <div class="grid">
+            <!-- Selección del tipo de muerte -->
+            <p-panel header="Tipo de Registro" class="col-12 mb-3">
+                <div class="grid">
+                    <div class="col-12">
+                        <label class="block font-medium mb-2">
+                            <i class="pi pi-list mr-1"></i>
+                            ¿Qué tipo de animal falleció? *
+                        </label>
+                        <p-dropdown
+                            [(ngModel)]="tipoMuerte"
+                            [ngModelOptions]="{standalone: true}"
+                            [options]="tipoMuerteOptions"
+                            optionLabel="name"
+                            optionValue="value"
+                            placeholder="Seleccione el tipo"
+                            [style]="{ width: '100%' }"
+                            [disabled]="isEditMode"
+                            (onChange)="onTipoMuerteChange($event.value)">
+                        </p-dropdown>
+                    </div>
+                </div>
+            </p-panel>
+
+            <!-- Selección del animal específico -->
+            <p-panel header="Selección del Animal" class="col-12 mb-3">
+                <div class="grid">
+                    <!-- Dropdown para ganado adulto -->
+                    <div class="col-12"  *ngIf="tipoMuerte === 'ganado'">
+                        <label class="block font-medium mb-2">
+                            <i class="pi pi-id-card mr-1"></i>
+                            Seleccionar Ganado *
+                        </label>
+                        <p-dropdown
+                            formControlName="cattleId"
+                            [options]="cattles"
+                            optionLabel="nombre"
+                            optionValue="id"
+                            placeholder="Seleccione el ganado que falleció"
+                            [style]="{ width: '100%' }"
+                            [class]="isFieldInvalid('cattleId') ? 'p-invalid' : ''"
+                            [filter]="true"
+                            filterBy="nombre,tipo_animal,color">
+                            <ng-template let-cattle pTemplate="item">
+                                <div class="flex align-items-center gap-2">
+                                    <span class="font-bold">#{{ cattle.nombre }}</span>
+                                </div>
+                            </ng-template>
+                        </p-dropdown>
+                        <small class="p-error" *ngIf="isFieldInvalid('cattleId')">
+                            {{ getFieldError('cattleId') }}
+                        </small>
+                    </div>
+
+                    <!-- Dropdown para terneros/crías -->
+                    <div class="col-12" *ngIf="tipoMuerte === 'ternero'">
+                        <label class="block font-medium mb-2">
+                            <i class="pi pi-heart mr-1"></i>
+                            Seleccionar Ternero/Cría *
+                        </label>
+                        <p-dropdown
+                            formControlName="birthId"
+                            [options]="births"
+                            optionLabel="numero"
+                            optionValue="id"
+                            placeholder="Seleccione el ternero que falleció"
+                            [style]="{ width: '100%' }"
+                            [class]="isFieldInvalid('birthId') ? 'p-invalid' : ''"
+                            [filter]="true"
+                            filterBy="numero_cria,sexo_cria">
+                            <ng-template let-birth pTemplate="item">
+                                <div class="flex align-items-center gap-2">
+                                    <span class="font-bold">#{{ birth.numero }}</span>
+                                </div>
+                            </ng-template>
+                        </p-dropdown>
+                        <small class="p-error" *ngIf="isFieldInvalid('birthId')">
+                            {{ getFieldError('birthId') }}
+                        </small>
+                    </div>
+                </div>
+            </p-panel>
+
+            <p-divider></p-divider>
+
+            <!-- Información básica -->
+            <p-panel header="Información de la Muerte" class="col-12 mb-3">
+                <div class="grid">
+                    <!-- Fecha de muerte -->
+                    <div class="col-12 md:col-6">
+                        <label class="block font-medium mb-2">
+                            <i class="pi pi-calendar mr-1"></i>
+                            Fecha de Muerte *
+                        </label>
+                        <p-calendar
+                            formControlName="fechaMuerte"
+                            [maxDate]="today"
+                            dateFormat="dd/mm/yy"
+                            placeholder="Seleccione la fecha"
+                            [style]="{ width: '100%' }"
+                            [class]="isFieldInvalid('fechaMuerte') ? 'p-invalid' : ''">
+                        </p-calendar>
+                        <small class="p-error" *ngIf="isFieldInvalid('fechaMuerte')">
+                            {{ getFieldError('fechaMuerte') }}
+                        </small>
+                    </div>
+
+                    <!-- Peso al momento de la muerte -->
+                    <div class="col-12 md:col-6">
+                        <label class="block font-medium mb-2">
+                            <i class="pi pi-info-circle mr-1"></i>
+                            Peso al Momento de la Muerte (kg) *
+                        </label>
+                        <p-inputNumber
+                            formControlName="pesoMuerte"
+                            placeholder="Ej: 450.5"
+                            [style]="{ width: '100%' }"
+                            [class]="isFieldInvalid('pesoMuerte') ? 'p-invalid' : ''"
+                            [min]="1"
+                            [maxFractionDigits]="2"
+                            suffix=" kg">
+                        </p-inputNumber>
+                        <small class="p-error" *ngIf="isFieldInvalid('pesoMuerte')">
+                            {{ getFieldError('pesoMuerte') }}
+                        </small>
+                    </div>
+                </div>
+            </p-panel>
+
+            <p-divider></p-divider>
+
+            <!-- Causa de la muerte -->
+            <p-panel header="Causa de la Muerte" class="col-12 mb-3">
+                <div class="grid">
+                    <!-- Motivo de muerte -->
+                    <div class="col-12 md:col-6">
+                        <label class="block font-medium mb-2">
+                            <i class="pi pi-exclamation-triangle mr-1"></i>
+                            Motivo de Muerte *
+                        </label>
+                        <p-dropdown
+                            formControlName="motivoMuerte"
+                            [options]="motivoMuerteOptions"
+                            optionLabel="name"
+                            optionValue="value"
+                            placeholder="Seleccione el motivo"
+                            [style]="{ width: '100%' }"
+                            [class]="isFieldInvalid('motivoMuerte') ? 'p-invalid' : ''">
+                        </p-dropdown>
+                        <small class="p-error" *ngIf="isFieldInvalid('motivoMuerte')">
+                            {{ getFieldError('motivoMuerte') }}
+                        </small>
+                    </div>
+
+                    <!-- Categoría de la causa -->
+                    <div class="col-12 md:col-6">
+                        <label class="block font-medium mb-2">
+                            <i class="pi pi-tags mr-1"></i>
+                            Categoría de la Causa *
+                        </label>
+                        <p-dropdown
+                            formControlName="causaCategoria"
+                            [options]="causaCategoriaOptions"
+                            optionLabel="name"
+                            optionValue="value"
+                            placeholder="Seleccione la categoría"
+                            [style]="{ width: '100%' }"
+                            [class]="isFieldInvalid('causaCategoria') ? 'p-invalid' : ''">
+                        </p-dropdown>
+                        <small class="p-error" *ngIf="isFieldInvalid('causaCategoria')">
+                            {{ getFieldError('causaCategoria') }}
+                        </small>
+                    </div>
+                </div>
+            </p-panel>
+
+            <p-divider></p-divider>
+
+            <!-- Descripción detallada -->
+            <p-panel header="Descripción Detallada" class="col-12 mb-3">
+                <div class="grid">
+                    <div class="col-12">
+                        <label class="block font-medium mb-2">
+                            <i class="pi pi-file-edit mr-1"></i>
+                            Descripción Detallada de la Muerte *
+                        </label>
+                        <textarea
+                            pInputTextarea
+                            formControlName="descripcionDetallada"
+                            rows="4"
+                            placeholder="Describa detalladamente las circunstancias de la muerte, síntomas observados, tratamientos aplicados, etc."
+                            [style]="{ width: '100%', resize: 'vertical' }"
+                            [class]="isFieldInvalid('descripcionDetallada') ? 'p-invalid' : ''">
+                        </textarea>
+                        <small class="text-600">
+                            Mínimo 10 caracteres. Incluya toda la información relevante.
+                        </small>
+                        <small class="p-error block" *ngIf="isFieldInvalid('descripcionDetallada')">
+                            {{ getFieldError('descripcionDetallada') }}
+                        </small>
+                    </div>
+                </div>
+            </p-panel>
+
+            <p-divider></p-divider>
+
+            <!-- Información de referencia (mejorada) -->
+            <p-panel header="Información de Referencia" class="col-12 mb-3">
+                <div class="grid">
+                    <div class="col-12 md:col-4">
+                        <label class="block font-medium mb-2">
+                            <i class="pi pi-list mr-1"></i>
+                            Tipo de Muerte
+                        </label>
+                        <p-tag 
+                            [value]="(tipoMuerte | titlecase) || 'No seleccionado'"
+                            [severity]="tipoMuerte === 'ganado' ? 'info' : 'warning'"
+                            class="w-full">
+                        </p-tag>
+                    </div>
+                    <div class="col-12 md:col-4" *ngIf="frmCattleDeath.get('cattleId')?.value">
+                        <label class="block font-medium mb-2">
+                            <i class="pi pi-id-card mr-1"></i>
+                            ID del Ganado
+                        </label>
+                        <p-tag 
+                            [value]="'#' + frmCattleDeath.get('cattleId')?.value"
+                            severity="info"
+                            class="w-full">
+                        </p-tag>
+                    </div>
+                    <div class="col-12 md:col-4" *ngIf="frmCattleDeath.get('birthId')?.value">
+                        <label class="block font-medium mb-2">
+                            <i class="pi pi-heart mr-1"></i>
+                            ID del Nacimiento
+                        </label>
+                        <p-tag 
+                            [value]="'#' + frmCattleDeath.get('birthId')?.value"
+                            severity="warning"
+                            class="w-full">
+                        </p-tag>
+                    </div>
+                </div>
+            </p-panel>
+        </div>
+    </form>
+
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-end gap-2">
+            <p-button
+                label="Cancelar"
+                icon="pi pi-times"
+                severity="secondary"
+                [outlined]="true"
+                (click)="closeModal()"
+                [disabled]="isSubmitting">
+            </p-button>
+            
+            <p-button
+                [label]="isEditMode ? 'Actualizar Registro' : 'Registrar Muerte'"
+                [icon]="isSubmitting ? 'pi pi-spin pi-spinner' : (isEditMode ? 'pi pi-check' : 'pi pi-save')"
+                severity="danger"
+                (click)="buildSaveCattleDeath()"
+                [disabled]="isSubmitting || frmCattleDeath.invalid"
+                [loading]="isSubmitting">
+            </p-button>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-toast position="top-right"></p-toast>

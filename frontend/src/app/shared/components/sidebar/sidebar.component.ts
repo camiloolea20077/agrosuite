@@ -139,6 +139,11 @@ private buildMenu(): void {
       icon: 'pi pi-truck', 
       route: '/destete' 
     },
+    { 
+      label: 'Muertes', 
+      icon: 'pi pi-trash', 
+      route: '/cattle-death' 
+    },
   ];
  // Módulo de Inventario expandido con las nuevas funcionalidades
   if (this.hasInventoryPermissions()) {

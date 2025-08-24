@@ -10,6 +10,7 @@ import { CreateCattleDto } from '../models/cattle/create-cattle.dto';
 import { CattleModel } from '../models/cattle/cattle.models';
 import { UpdateCattleDto } from '../models/cattle/update-cattle.dto';
 import { environment } from 'src/environments/environment';
+import { CattleList } from '../models/cattle/cattle-list.dto';
 
 @Injectable({
     providedIn: 'root',
@@ -44,5 +45,8 @@ export class CattleService {
     }
     deleteCattle(id: number): Observable<ResponseModel<boolean>> {
         return this.http.delete<ResponseModel<boolean>>(`${this.apiUrl}/${id}`);
+    }
+    getAllCattle(): Observable<ResponseModel<CattleList[]>> {
+        return this.http.get<ResponseModel<CattleList[]>>(`${this.apiUrl}/list`);
     }
 }

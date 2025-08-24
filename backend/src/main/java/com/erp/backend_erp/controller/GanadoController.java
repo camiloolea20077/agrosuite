@@ -129,4 +129,13 @@ public ResponseEntity<ApiResponse<Object>> createMultipleCattle(
         return ResponseEntity.ok(
                 new ApiResponse<>(HttpStatus.OK.value(), "Elemento encontrado", false, inventory));
     }
+    @GetMapping("/list")
+    public ResponseEntity<ApiResponse<Object>> findAll(@RequestHeader("farmid") Long farmId) {
+        try {
+            ApiResponse<Object> response = new ApiResponse<>(HttpStatus.OK.value(), "", false, ganadoService.getGanado(farmId));
+            return ResponseEntity.ok(response);
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
 }

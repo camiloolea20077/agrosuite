@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.erp.backend_erp.dto.ganado.CreateGanadoDto;
 import com.erp.backend_erp.dto.ganado.GanadoDto;
+import com.erp.backend_erp.dto.ganado.GanadoListDto;
 import com.erp.backend_erp.dto.ganado.GanadoTableDto;
 import com.erp.backend_erp.dto.ganado.UpdateGanadoDto;
 import com.erp.backend_erp.entity.ganado.GanadoEntity;
@@ -97,5 +98,13 @@ public class GanadoServiceImpl implements GanadoService {
 		GanadoDto ganadoDto = ganadoMapper.toDto(ganadoEntity);
 		return ganadoDto;
 	}
+
+    @Override
+    public List<GanadoListDto> getGanado(Long farmId){
+        List<GanadoListDto> births = ganadoQueryRepository.getCattle(farmId);
+        if(births.isEmpty())
+            throw new GlobalException(HttpStatus.OK, "No se encontraron registros");
+        return births;
+    }
 
 }

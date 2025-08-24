@@ -201,4 +201,14 @@ public class BirthsController {
             throw new RuntimeException("Error al obtener historial de destetes", ex);
         }
     }
+
+    @GetMapping("/list")
+    public ResponseEntity<ApiResponse<Object>> findAll(@RequestHeader("farmid") Long farmId) {
+        try {
+            ApiResponse<Object> response = new ApiResponse<>(HttpStatus.OK.value(), "", false, birthsService.getBirths(farmId));
+            return ResponseEntity.ok(response);
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
 }
