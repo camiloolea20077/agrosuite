@@ -13,5 +13,6 @@ export const environment = {
     tercerosUrl: 'https://agrosuite.onrender.com/terceros',
     cattleTransfers : 'https://agrosuite.onrender.com/cattle-transfer',
     tipoInsumosUrl: 'https://agrosuite.onrender.com/tipos-insumos/',
-    destetesURL: 'https://agrosuite.onrender.com/destetes'
+    destetesURL: 'https://agrosuite.onrender.com/destetes',
+    cattleDeath: 'http://localhost:9001/cattle-death'
 };
